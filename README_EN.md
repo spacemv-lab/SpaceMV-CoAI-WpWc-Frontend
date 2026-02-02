@@ -280,7 +280,9 @@ We warmly welcome community developers to participate in the construction of the
 This project is licensed under the MIT License. 
 
 Copyright (c) 2018 RuoYi
+
 Copyright (c) 2013 ueditor
+
 Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
