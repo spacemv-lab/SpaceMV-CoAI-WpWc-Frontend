@@ -1,18 +1,18 @@
 <div align="center">
 <h1 style="margin: 30px 0 30px; font-weight: bold;">SpaceMV-CoAI-Wp/Wc-Frontend: Industrial Planet Operations AI Agent Vue Frontend</h1>
-<a href="./LICENSE"><img src="https://img.shields.io/github/license/mashape/apistatus.svg" alt="License"></a> <a href="https://github.com/tianxunweixiao/SpaceMV-CoAI-Wp/Wc-Frontend"><img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" alt="Maintenance"></a> <a href="https://github.com/vitejs/vite/actions/workflows/ci.yml"><img src="https://github.com/vitejs/vite/actions/workflows/ci.yml/badge.svg?branch=main" alt="build status"></a>
+<a href="./LICENSE"><img src="https://img.shields.io/github/license/mashape/apistatus.svg" alt="License"></a> <a href="https://github.com/tianxunweixiao/SpaceMV-CoAI-WpWc-Frontend"><img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" alt="Maintenance"></a> <a href="https://github.com/vitejs/vite/actions/workflows/ci.yml"><img src="https://github.com/vitejs/vite/actions/workflows/ci.yml/badge.svg?branch=main" alt="build status"></a>
 </div>
 <div align="center">
 <a href="./README.md"><strong>简体中文</strong></a> | <a href="./README_EN.md"><strong>English</strong></a>
 </div>
 &nbsp;&nbsp;
 <div align="center">
-<img width="800" height="450" alt="SpaceMV-CoAI-Wp/Wc-Frontend" src="./public/spacemv_coo.png" />
+<img width="800" height="450" alt="SpaceMV-CoAI-WpWc-Frontend" src="./public/spacemv_coo.png" />
 </div>
 
-[SpaceMV-CoAI-Wp/Wc](https://github.com/tianxunweixiao/SpaceMV-CoAI-Wp/Wc/tree/main) is an Industrial Planet Operations AI Agent developed by Chengdu Tianxun Microsatellite Technology Co., Ltd., integrating SpaceMV-CoAI-Wp (Enterprise Official Website) content management, one-stop self-media creation (SpaceMV-CoAI-Wc) and publishing, and operational data analysis (SpaceMV-CoAI-Wc). It aims to solve the problems faced by enterprise content operations, such as time-consuming multi-platform content distribution, scattered operational data that is difficult to insight into, and complex and inefficient content review processes.
+[SpaceMV-CoAI-Wp/Wc](https://github.com/tianxunweixiao/SpaceMV-CoAI) is an Industrial Planet Operations AI Agent developed by Chengdu Tianxun Microsatellite Technology Co., Ltd., integrating SpaceMV-CoAI-Wp (Enterprise Official Website) content management, one-stop self-media creation (SpaceMV-CoAI-Wc) and publishing, and operational data analysis (SpaceMV-CoAI-Wc). It aims to solve the problems faced by enterprise content operations, such as time-consuming multi-platform content distribution, scattered operational data that is difficult to insight into, and complex and inefficient content review processes.
 
-[SpaceMV-CoAI-Wp/Wc](https://github.com/tianxunweixiao/SpaceMV-CoAI-Wp/Wc/tree/main) serves as the enterprise operation content hub, featuring SpaceMV-CoAI-Wp (Enterprise Official Website) layout customization, quick article content update and publishing functions (SpaceMV-CoAI-Wc). It can complete self-media creation and multi-platform distribution in one stop, with review mechanisms to ensure content security, and can provide support for operational decision-making through multi-dimensional data analysis, helping to efficiently carry out brand operations.
+[SpaceMV-CoAI-Wp/Wc](https://github.com/tianxunweixiao/SpaceMV-CoAI) serves as the enterprise operation content hub, featuring SpaceMV-CoAI-Wp (Enterprise Official Website) layout customization, quick article content update and publishing functions (SpaceMV-CoAI-Wc). It can complete self-media creation and multi-platform distribution in one stop, with review mechanisms to ensure content security, and can provide support for operational decision-making through multi-dimensional data analysis, helping to efficiently carry out brand operations.
 
 `SpaceMV-CoAI-Wp/Wc-Frontend` serves as the core frontend component of the platform, responsible for SpaceMV-CoAI-Wp (Enterprise Official Website) content visual editing, unified self-media content creation and orchestration (SpaceMV-CoAI-Wc), and multi-dimensional display of operational data (SpaceMV-CoAI-Wc).
 
@@ -204,8 +204,8 @@ graph TD
 ### 1. Environment Preparation
 ```bash
 # Clone the repository  
-git clone https://github.com/tianxunweixiao/SpaceMV-CoAI-Wp/Wc-Frontend.git   
-cd SpaceMV-CoAI-Wp/Wc-Frontend
+git clone https://github.com/tianxunweixiao/SpaceMV-CoAI-WpWc-Frontend.git   
+cd SpaceMV-CoAI-WpWc-Frontend
 
 # Install dependencies  
 npm install
@@ -305,7 +305,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 For any questions, suggestions or business cooperation needs, please contact the project maintenance team.
 
 * **Email**: code@spacemv.com  
-* **Issues**: [GitHub Issues](https://github.com/tianxunweixiao/SpaceMV-CoAI-Wp/Wc-Frontend/issues)
+* **Issues**: [GitHub Issues](https://github.com/tianxunweixiao/SpaceMV-CoAI-WpWc-Frontend/issues)
 
 For more information, you can follow the company's WeChat official account:
 
