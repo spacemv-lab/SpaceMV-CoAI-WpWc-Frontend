@@ -5,9 +5,9 @@
 </template>
 
 <script setup>
-const url = ref('http://spacemv.com/')
+const url = ref('http:/example.com/');
 
 function goto() {
-  window.open(url.value)
+  window.open(url.value);
 }
 </script>

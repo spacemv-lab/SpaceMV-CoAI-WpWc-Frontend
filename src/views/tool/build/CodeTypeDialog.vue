@@ -1,3 +1,5 @@
+/** * Copyright (c) 2018 RuoYi | Copyright (c) 2026 成都天巡微小卫星科技有限责任公司 *This project
+is licensed under the MIT License - see the LICENSE file in the project root for details. **/
 <template>
   <el-dialog v-model="open" width="500px" title="选择生成类型" @open="onOpen" @close="onClose">
     <el-form ref="codeTypeForm" :model="formData" :rules="rules" label-width="100px">
@@ -21,51 +23,55 @@
 </template>
 
 <script setup>
-const open = defineModel()
+const open = defineModel();
 const props = defineProps({
-  showFileName: Boolean
-})
-const emit = defineEmits(['confirm'])
+  showFileName: Boolean,
+});
+const emit = defineEmits(['confirm']);
 const formData = ref({
   fileName: undefined,
-  type: 'file'
-})
-const codeTypeForm = ref()
+  type: 'file',
+});
+const codeTypeForm = ref();
 const rules = {
-  fileName: [{
-    required: true,
-    message: '请输入文件名',
-    trigger: 'blur'
-  }],
-  type: [{
-    required: true,
-    message: '生成类型不能为空',
-    trigger: 'change'
-  }]
-}
+  fileName: [
+    {
+      required: true,
+      message: '请输入文件名',
+      trigger: 'blur',
+    },
+  ],
+  type: [
+    {
+      required: true,
+      message: '生成类型不能为空',
+      trigger: 'change',
+    },
+  ],
+};
 const typeOptions = ref([
   {
     label: '页面',
-    value: 'file'
+    value: 'file',
   },
   {
     label: '弹窗',
-    value: 'dialog'
-  }
-])
+    value: 'dialog',
+  },
+]);
 function onOpen() {
   if (props.showFileName) {
-    formData.value.fileName = `${+new Date()}.vue`
+    formData.value.fileName = `${+new Date()}.vue`;
   }
 }
 function onClose() {
-  open.value = false
+  open.value = false;
 }
 function handelConfirm() {
-  codeTypeForm.value.validate(valid => {
-    if (!valid) return
-    emit('confirm', { ...formData.value })
-    onClose()
-  })
+  codeTypeForm.value.validate((valid) => {
+    if (!valid) return;
+    emit('confirm', { ...formData.value });
+    onClose();
+  });
 }
 </script>

@@ -1,7 +1,3 @@
-/** 
- * Copyright (c) 2018 RuoYi | Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
- *This project is licensed under the MIT License - see the LICENSE file in the project root for details.
-**/
 export default {
   /**
    * 网页标题
@@ -16,14 +12,14 @@ export default {
   /**
    * PC端访问地址
    */
-  // pcWeb: import.meta.env.VITE_ENV === 'intranet' ? '' : '',
-  pcWeb: 'http://spacemv.com',
+  pcWeb: import.meta.env.VITE_ENV === 'intranet' ? 'http://localhost:666' : 'http:/example.com',
+  // pcWeb: import.meta.env.VITE_ENV === 'intranet' ? 'http://localhost:5174' : 'http:/example.com',
 
   /**
    * 移动端访问地址
    */
-  // mobileWeb: import.meta.env.VITE_ENV === 'intranet' ? '' : '',
-  mobileWeb: 'http://spacemv.com',
+  mobileWeb: import.meta.env.VITE_ENV === 'intranet' ? 'http://localhost:667' : 'http:/example.com',
+  // mobileWeb: import.meta.env.VITE_ENV === 'intranet' ? 'http://localhost:5173' : 'http:/example.com',
 
   /**
    * 侧边栏主题 深色主题theme-dark，浅色主题theme-light
@@ -44,7 +40,7 @@ export default {
    * 是否显示 tagsView
    */
   tagsView: false,
-  
+
   /**
    * 显示页签图标
    */
@@ -73,6 +69,5 @@ export default {
   /**
    * 底部版权文本内容
    */
-  footerContent: ''
-}
-
+  footerContent: 'Copyright © 2020-2025 SpaceMV.com All Rights Reserved.',
+};

@@ -18,19 +18,20 @@
 
 ## **Table of Contents**
 
-* [Core Modules](#core-modules)
-* [Technical Architecture](#technical-architecture)
-* [Features](#features)
-* [Quick Start](#quick-start)
-* [Contribution Guide](#contribution-guide)
-* [License](#license)
-* [Contact](#contact)
-* [Contributors](#contributors)
-* [To-Do List](#to-do-list)
+- [Core Modules](#core-modules)
+- [Technical Architecture](#technical-architecture)
+- [Features](#features)
+- [Quick Start](#quick-start)
+- [Contribution Guide](#contribution-guide)
+- [License](#license)
+- [Contact](#contact)
+- [Contributors](#contributors)
+- [To-Do List](#to-do-list)
 
 ## Core Modules
-~~~
-SpaceMV-CoAI-Frontend 
+
+```
+SpaceMV-CoAI-Frontend
 ├── Core Framework Layer
 │   ├── Route Management        // Responsible for page route configuration and permission control
 │   ├── State Management        // Manage application global state using Pinia/Vuex
@@ -53,7 +54,7 @@ SpaceMV-CoAI-Frontend
 └── Resource Layer
     ├── Static Resources        // Static files such as images, icons, styles, etc.
     └── Configuration Files        // Environment configuration, system settings, etc.
-~~~
+```
 
 ## Technical Architecture
 
@@ -66,154 +67,155 @@ The editor of the article editor module is based on the dev-1.5.0 branch of [UEd
 ### Directory Structure
 
 SpaceMV-CoAI-Wp/Wc-Frontend/  
-├── bin/                      # Build and run scripts  
-│   ├── build.bat             # Build script  
-│   ├── package.bat           # Package script  
-│   └── run-web.bat           # Run script  
+├── bin/ # Build and run scripts  
+│ ├── build.bat # Build script  
+│ ├── package.bat # Package script  
+│ └── run-web.bat # Run script  
 │  
-├── html/                     # HTML related files  
-│   └── ie.html               # IE browser compatibility page  
+├── html/ # HTML related files  
+│ └── ie.html # IE browser compatibility page  
 │  
-├── public/                   # Public resources  
-│   ├── ueditor/              # Rich text editor  
-│   ├── favicon.ico           # Website icon  
-│   └── login-background.jpg  # Login background image  
+├── public/ # Public resources  
+│ ├── ueditor/ # Rich text editor  
+│ ├── favicon.ico # Website icon  
+│ └── login-background.jpg # Login background image  
 │  
-├── src/                      # Source code directory  
-│   ├── api/                  # API interfaces  
-│   │   ├── article/          # Article management interfaces  
-│   │   ├── content/          # Content management interfaces  
-│   │   ├── material/         # Material management interfaces  
-│   │   └── system/           # System management interfaces  
-│   │  
-│   ├── assets/               # Static resources  
-│   │   ├── icons/            # Icon resources  
-│   │   ├── images/           # Image resources  
-│   │   ├── logo/             # Logo resources  
-│   │   └── styles/           # Style files  
-│   │  
-│   ├── components/           # Common components  
-│   │   ├── Breadcrumb/       # Breadcrumb component  
-│   │   ├── Editor/           # Editor component  
-│   │   ├── FileUpload/       # File upload component  
-│   │   └── SvgIcon/          # SVG icon component  
-│   │  
-│   ├── directive/            # Custom directives  
-│   │   ├── common/           # Common directives  
-│   │   └── permission/       # Permission directives  
-│   │  
-│   ├── layout/               # Layout components  
-│   │   └── components/       # Layout subcomponents  
-│   │  
-│   ├── plugins/              # Plugins  
-│   ├── router/               # Route configuration  
-│   ├── store/                # State management  
-│   │   └── modules/          # State management modules  
-│   │  
-│   ├── utils/                # Tool functions  
-│   │   └── generator/        # Code generator  
-│   │  
-│   ├── views/                # Page views  
-│   │   ├── article/          # Article management pages  
-│   │   ├── content/          # Content management pages  
-│   │   ├── dashboard/        # Dashboard pages  
-│   │   ├── material/         # Material management pages  
-│   │   └── system/           # System management pages  
-│   │  
-│   ├── App.vue               # Root component  
-│   ├── main.js               # Entry file  
-│   ├── permission.js         # Permission management  
-│   └── settings.js           # System settings  
+├── src/ # Source code directory  
+│ ├── api/ # API interfaces  
+│ │ ├── article/ # Article management interfaces  
+│ │ ├── content/ # Content management interfaces  
+│ │ ├── material/ # Material management interfaces  
+│ │ └── system/ # System management interfaces  
+│ │  
+│ ├── assets/ # Static resources  
+│ │ ├── icons/ # Icon resources  
+│ │ ├── images/ # Image resources  
+│ │ ├── logo/ # Logo resources  
+│ │ └── styles/ # Style files  
+│ │  
+│ ├── components/ # Common components  
+│ │ ├── Breadcrumb/ # Breadcrumb component  
+│ │ ├── Editor/ # Editor component  
+│ │ ├── FileUpload/ # File upload component  
+│ │ └── SvgIcon/ # SVG icon component  
+│ │  
+│ ├── directive/ # Custom directives  
+│ │ ├── common/ # Common directives  
+│ │ └── permission/ # Permission directives  
+│ │  
+│ ├── layout/ # Layout components  
+│ │ └── components/ # Layout subcomponents  
+│ │  
+│ ├── plugins/ # Plugins  
+│ ├── router/ # Route configuration  
+│ ├── store/ # State management  
+│ │ └── modules/ # State management modules  
+│ │  
+│ ├── utils/ # Tool functions  
+│ │ └── generator/ # Code generator  
+│ │  
+│ ├── views/ # Page views  
+│ │ ├── article/ # Article management pages  
+│ │ ├── content/ # Content management pages  
+│ │ ├── dashboard/ # Dashboard pages  
+│ │ ├── material/ # Material management pages  
+│ │ └── system/ # System management pages  
+│ │  
+│ ├── App.vue # Root component  
+│ ├── main.js # Entry file  
+│ ├── permission.js # Permission management  
+│ └── settings.js # System settings  
 │  
-├── .env                      # Environment configuration  
-├── .env.development          # Development environment configuration  
-├── .env.production           # Production environment configuration  
-├── .gitignore                # Git ignore file  
-├── LICENSE                   # License file  
-├── README.md                 # Project description  
-├── index.html                # Entry HTML  
-└── package.json              # Project dependencies
+├── .env # Environment configuration  
+├── .env.development # Development environment configuration  
+├── .env.production # Production environment configuration  
+├── .gitignore # Git ignore file  
+├── LICENSE # License file  
+├── README.md # Project description  
+├── index.html # Entry HTML  
+└── package.json # Project dependencies
 
 ### Technology Stack
 
-| Domain | Technology Selection | Description |
-| :--- | :--- | :--- |
-| **Frontend Framework** | **Vue 3** | Progressive JavaScript framework |
-| | **Vite** | Fast frontend build tool |
-| | **Vue Router** | Official router manager |
-| | **Pinia** | Lightweight state management library |
-| **UI Component Library** | **Element Plus** | Component library based on Vue 3 |
-| **Style** | **SCSS/Sass** | CSS preprocessor |
-| | **CSS Variables** | Theme variable management |
-| **Network Request** | **Axios** | Promise-based HTTP client |
-| **Build Tool** | **Vite** | Fast frontend build tool |
-| | **ESLint** | Code quality checking tool |
-| | **Prettier** | Code formatting tool |
-| **Environment Management** | **dotenv** | Environment variable management |
+| Domain                     | Technology Selection | Description                          |
+| :------------------------- | :------------------- | :----------------------------------- |
+| **Frontend Framework**     | **Vue 3**            | Progressive JavaScript framework     |
+|                            | **Vite**             | Fast frontend build tool             |
+|                            | **Vue Router**       | Official router manager              |
+|                            | **Pinia**            | Lightweight state management library |
+| **UI Component Library**   | **Element Plus**     | Component library based on Vue 3     |
+| **Style**                  | **SCSS/Sass**        | CSS preprocessor                     |
+|                            | **CSS Variables**    | Theme variable management            |
+| **Network Request**        | **Axios**            | Promise-based HTTP client            |
+| **Build Tool**             | **Vite**             | Fast frontend build tool             |
+|                            | **ESLint**           | Code quality checking tool           |
+|                            | **Prettier**         | Code formatting tool                 |
+| **Environment Management** | **dotenv**           | Environment variable management      |
 
 ### Data Flow
 
 graph TD  
-    A[User Operation] ---|Trigger Event| B[Vue Component]  
-    B ---|Call API| C[API Interface Layer]  
-    C ---|Send Request| D[Backend Service]  
-    D ---|Return Data| C  
-    C ---|Response Data| B  
-    B ---|Update State| E[Pinia State Management]  
-    E ---|State Change| B  
-    B ---|Render Page| F[User Interface]
+ A[User Operation] ---|Trigger Event| B[Vue Component]  
+ B ---|Call API| C[API Interface Layer]  
+ C ---|Send Request| D[Backend Service]  
+ D ---|Return Data| C  
+ C ---|Response Data| B  
+ B ---|Update State| E[Pinia State Management]  
+ E ---|State Change| B  
+ B ---|Render Page| F[User Interface]
 
 ## Features
 
 ### 1. System Management Module
 
-* **Menu Management**: Support menu creation, editing, permission control and other functions.
-* **Department Management**: Support department hierarchy management.
-* **Position Management**: Support position creation, editing, allocation and other functions.
-* **User Management**: Support user CRUD, role assignment, password reset and other functions.
-* **Role Management**: Support role creation, permission allocation, user association and other functions.
-* **Dictionary Management**: Support management of various dictionary data in the system, such as predefined enumeration values like gender, status, etc.
-
+- **Menu Management**: Support menu creation, editing, permission control and other functions.
+- **Department Management**: Support department hierarchy management.
+- **Position Management**: Support position creation, editing, allocation and other functions.
+- **User Management**: Support user CRUD, role assignment, password reset and other functions.
+- **Role Management**: Support role creation, permission allocation, user association and other functions.
+- **Dictionary Management**: Support management of various dictionary data in the system, such as predefined enumeration values like gender, status, etc.
 
 ### 2. Content Management Module (SpaceMV-CoAI-Wp)
 
-* **Company Information**: Manage company basic information and display content.
-* **Homepage Content**: Manage website homepage display content.
-* **Product Management**: Manage company product information and display.
-* **Top Button**: Manage website top button configuration.
-
+- **Company Information**: Manage company basic information and display content.
+- **Homepage Content**: Manage website homepage display content.
+- **Product Management**: Manage company product information and display.
+- **Top Button**: Manage website top button configuration.
 
 ### 3. Article Management Module (SpaceMV-CoAI-Wc)
 
-* **Article List**: Manage all article lists and statuses.  
-* **Article Editing**: Support rich text editor for easy article content editing.  
+- **Article List**: Manage all article lists and statuses.
+- **Article Editing**: Support rich text editor for easy article content editing.
 
 ### 4. Material Management Module (SpaceMV-CoAI-Wc)
 
-* **Image-Text Materials**: Manage image-text combined material content.  
-* **Permanent Materials**: Manage reusable permanent materials.  
-* **Material Upload**: Support multiple format material uploads.  
+- **Image-Text Materials**: Manage image-text combined material content.
+- **Permanent Materials**: Manage reusable permanent materials.
+- **Material Upload**: Support multiple format material uploads.
 
 ## Quick Start
 
 ### Prerequisites
 
-* **Node.js** (v16.0 or higher)  
-* **npm** or **yarn** package manager  
-* **Git** version control tool
+- **Node.js** (v20.0 or higher)
+- **npm** or **yarn** package manager
+- **Git** version control tool
 
 ### 1. Environment Preparation
+
 ```bash
-# Clone the repository  
-git clone https://github.com/spacemv-lab/SpaceMV-CoAI-WpWc-Frontend.git   
+# Clone the repository
+git clone https://github.com/spacemv-lab/SpaceMV-CoAI-WpWc-Frontend.git
 cd SpaceMV-CoAI-WpWc-Frontend
 
-# Install dependencies  
+# Install dependencies
 npm install
-# or use yarn  
+# or use yarn
 yarn install
 ```
+
 ### 2. Environment Variable Configuration
+
 ```ini
 The project already includes the following environment configuration files:
 
@@ -223,11 +225,13 @@ The project already includes the following environment configuration files:
 
 To modify the configuration, edit the corresponding environment configuration file.
 ```
+
 ### 3. Start Development Server
+
 ```bash
-# Start development server  
+# Start development server
 npm run dev
-# or use yarn  
+# or use yarn
 yarn dev
 ```
 
@@ -236,20 +240,22 @@ After the development server starts, you can access `http://localhost:5173` thro
 ### 4. Build Version
 
 #### 4.1 Build Production Version
+
 ```bash
-# Build production version  
+# Build production version
 npm run build
-# or use yarn  
+# or use yarn
 yarn build
 ```
 
 After the build is completed, the production version files will be generated in the `dist` directory. Place the built dist package into the ruoyi-ui/dist-console directory of the code project.
 
 #### 4.2 Build Development Version
+
 ```bash
-# Build development version  
+# Build development version
 npm run build:dev
-# or use yarn  
+# or use yarn
 yarn build:dev
 ```
 
@@ -257,28 +263,30 @@ After the build is completed, the development version files will be generated in
 
 ## Contribution Guide
 
-We warmly welcome community developers to participate in the construction of the SpaceMV-CoAI-Wp/Wc-Frontend project! If you have any improvement suggestions or find bugs, please follow the following process:
+We warmly welcome community developers to participate in the construction of the SpaceMV-CoAI-Wp/Wc-Frontend project! All contributors must agree to the [Contributor License Agreement](CLA_EN.md) before participating in the contribution to SpaceMV-CoAI-Wp/Wc-Fronten.
 
-1. **Fork this repository**: Click the Fork button in the upper right corner to copy the project to your GitHub account.  
+If you have any improvement suggestions or find bugs, please follow the following process:
+
+1. **Fork this repository**: Click the Fork button in the upper right corner to copy the project to your GitHub account.
 2. **Create a branch**: Cut a new branch from the main branch for development.  
-   git checkout -b feature/AmazingFeature  
+   git checkout -b feature/AmazingFeature
 3. **Commit changes**: Ensure code style consistency and write clear Commit Messages.  
-   git commit -m 'feat: Add some AmazingFeature'  
+   git commit -m 'feat: Add some AmazingFeature'
 4. **Push branch**:  
-   git push origin feature/AmazingFeature  
+   git push origin feature/AmazingFeature
 5. **Submit Pull Request**: Initiate a PR on GitHub and describe your changes in detail.
 
 **Development Suggestions**:
 
-* **Code Style**: Follow the project's code style specifications to ensure code readability.
-* **Component Design**: When developing new components, ensure component reusability and maintainability.
-* **API Calls**: When adding new API calls, follow the existing modular organization method.
-* **Style Management**: Use SCSS variables and mixins to ensure style consistency and maintainability.
-* **Testing**: Add appropriate test cases for new features to ensure code quality.
+- **Code Style**: Follow the project's code style specifications to ensure code readability.
+- **Component Design**: When developing new components, ensure component reusability and maintainability.
+- **API Calls**: When adding new API calls, follow the existing modular organization method.
+- **Style Management**: Use SCSS variables and mixins to ensure style consistency and maintainability.
+- **Testing**: Add appropriate test cases for new features to ensure code quality.
 
 ## License
 
-This project is licensed under the MIT License. 
+This project is licensed under the MIT License.
 
 Copyright (c) 2018 RuoYi
 
@@ -303,13 +311,17 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+## Disclaimer
+
+**This software is provided "AS IS", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and non-infringement.** In no event shall the authors or copyright holders be liable for any direct, indirect, incidental, special, punitive or consequential damages arising from the use of this software, whether based on contract, tort or other legal theory, even if advised of the possibility of such damages.
+
 ## Contact
 
 For any questions, suggestions or business cooperation needs, please contact the project maintenance team.
 
-* **Email**: code@spacemv.com  
-* **Issues**: [GitHub Issues](https://github.com/spacemv-lab/SpaceMV-CoAI-WpWc-Frontend/issues)
-* **Discussions**: [GitHub Discussions](https://github.com/spacemv-lab/SpaceMV-CoAI-WpWc-Frontend/discussions)
+- **Email**: code@spacemv.com
+- **Issues**: [GitHub Issues](https://github.com/spacemv-lab/SpaceMV-CoAI-WpWc-Frontend/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/spacemv-lab/SpaceMV-CoAI-WpWc-Frontend/discussions)
 
 For more information, you can follow the company's WeChat official account:
 

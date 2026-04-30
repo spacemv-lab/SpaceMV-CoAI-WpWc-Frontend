@@ -1,16 +1,20 @@
-/** 
+/**
  * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
  *This project is licensed under the MIT License - see the LICENSE file in the project root for details.
-**/
-import request from '@/utils/request'
+ **/
+import request from '@/utils/request';
 
 // 获取已发布文章列表
 export function getPublishedList(params) {
   // 真实接口调用 - 分页查询已发布文章列表
   return request({
-    url: '/txwx-webchatcrm/article/publishedList',
-    method: 'get',
-    params: params // 传递分页参数和已发布状态
+    url: '/txwx-social-crm/article/publishedList',
+    method: 'post',
+    params: {
+      pageNum: params.pageNum,
+      pageSize: params.pageSize,
+    },
+    data: params.accountIds // 传递分页参数和已发布状态
   })
 }
 
@@ -18,9 +22,9 @@ export function getPublishedList(params) {
 export function getDraftList(params) {
   // 真实接口调用 - 分页查询草稿列表
   return request({
-    url: '/txwx-webchatcrm/article/draftList',
-    method: 'get',
-    params: params // 传递分页和过滤参数
+    url: '/txwx-social-crm/article/draftList',
+    method: 'post',
+    data: params,
   })
 }
 
@@ -28,19 +32,19 @@ export function getDraftList(params) {
 export function publishArticle(params) {
   // 真实接口调用 - 发布草稿
   return request({
-    url: `/txwx-webchatcrm/article/publishDraft?id=${params.id}`,
+    url: `/txwx-social-crm/article/publishDraft?id=${params.id}`,
     method: 'post',
     data: {
-      id: params.id
-    }
-  })
+      id: params.id,
+    },
+  });
 }
 
 // 删除已发布文章接口
 export function deletePublishedArticle(params) {
   // 真实接口调用 - 删除已发布文章
   return request({
-    url: `/txwx-webchatcrm/article/deletePublishedArticle/${params.id}`,
+    url: `/txwx-social-crm/article/deletePublishedArticle/${params.id}`,
     method: 'delete'
   })
 }
@@ -49,7 +53,7 @@ export function deletePublishedArticle(params) {
 export function deleteDraftArticle(params) {
   // 真实接口调用 - 删除草稿
   return request({
-    url: `/txwx-webchatcrm/article/deleteDraft/${params.id}`,
+    url: `/txwx-social-crm/article/deleteDraft/${params.id}`,
     method: 'delete'
   })
 }
@@ -58,27 +62,27 @@ export function deleteDraftArticle(params) {
 export function addDraft(data) {
   // 真实接口调用
   return request({
-    url: '/txwx-webchatcrm/article/addDraft',
+    url: '/txwx-social-crm/article/addDraft',
     method: 'post',
-    data: data
-  })
+    data: data,
+  });
 }
 
 // 更新草稿接口
 export function updateDraft(data) {
   // 真实接口调用
   return request({
-    url: '/txwx-webchatcrm/article/updateDraft',
+    url: '/txwx-social-crm/article/updateDraft',
     method: 'post',
-    data: data
-  })
+    data: data,
+  });
 }
 
 // // 提交审核接口
 export function submitAudit(id) {
   // 真实接口调用
   return request({
-    url: `/txwx-webchatcrm/article/submitForReview/${id}`,
+    url: `/txwx-social-crm/article/submitForReview/${id}`,
     method: 'post'
   })
 }
@@ -87,17 +91,17 @@ export function submitAudit(id) {
 export function reviewDraft(data) {
   // 真实接口调用
   return request({
-    url: `/txwx-webchatcrm/article/reviewDraft?id=${data.id}&reviewResult=${data.reviewResult}`,
+    url: `/txwx-social-crm/article/reviewDraft?id=${data.id}&reviewResult=${data.reviewResult}`,
     method: 'post',
-    data: data
-  })
+    data: data,
+  });
 }
 
 // 获取草稿详情接口
 export function getDraftDetail(id) {
   // 真实接口调用 - 获取草稿详情
   return request({
-    url: `/txwx-webchatcrm/article/draftDetail/${id}`,
+    url: `/txwx-social-crm/article/draftDetail/${id}`,
     method: 'get'
   })
 }
@@ -106,12 +110,7 @@ export function getDraftDetail(id) {
 export function getPublishStatus(id) {
   // 真实接口调用 - 查询发布状态
   return request({
-    url: `/txwx-webchatcrm/article/publishStatus/${id}`,
+    url: `/txwx-social-crm/article/publishStatus/${id}`,
     method: 'get'
   })
 }
-
-
-
-
-

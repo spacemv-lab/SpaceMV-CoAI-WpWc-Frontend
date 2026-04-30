@@ -4,65 +4,65 @@
  * 模拟 setTimeout
  */
 export const mockSetTimeout = () => {
-  vi.useFakeTimers()
+  vi.useFakeTimers();
   return {
     advanceTime: (ms) => vi.advanceTimersByTime(ms),
     runAll: () => vi.runAllTimers(),
-    restore: () => vi.useRealTimers()
-  }
-}
+    restore: () => vi.useRealTimers(),
+  };
+};
 
 /**
  * 模拟 localStorage
  */
 export const mockLocalStorage = () => {
-  const mockStorage = {}
+  const mockStorage = {};
   Object.defineProperty(window, 'localStorage', {
     value: {
-      getItem: vi.fn(key => mockStorage[key]),
+      getItem: vi.fn((key) => mockStorage[key]),
       setItem: vi.fn((key, value) => {
-        mockStorage[key] = value.toString()
+        mockStorage[key] = value.toString();
       }),
-      removeItem: vi.fn(key => {
-        delete mockStorage[key]
+      removeItem: vi.fn((key) => {
+        delete mockStorage[key];
       }),
       clear: vi.fn(() => {
-        Object.keys(mockStorage).forEach(key => {
-          delete mockStorage[key]
-        })
+        Object.keys(mockStorage).forEach((key) => {
+          delete mockStorage[key];
+        });
       }),
-      length: 0
+      length: 0,
     },
-    writable: true
-  })
-  return mockStorage
-}
+    writable: true,
+  });
+  return mockStorage;
+};
 
 /**
  * 模拟 sessionStorage
  */
 export const mockSessionStorage = () => {
-  const mockStorage = {}
+  const mockStorage = {};
   Object.defineProperty(window, 'sessionStorage', {
     value: {
-      getItem: vi.fn(key => mockStorage[key]),
+      getItem: vi.fn((key) => mockStorage[key]),
       setItem: vi.fn((key, value) => {
-        mockStorage[key] = value.toString()
+        mockStorage[key] = value.toString();
       }),
-      removeItem: vi.fn(key => {
-        delete mockStorage[key]
+      removeItem: vi.fn((key) => {
+        delete mockStorage[key];
       }),
       clear: vi.fn(() => {
-        Object.keys(mockStorage).forEach(key => {
-          delete mockStorage[key]
-        })
+        Object.keys(mockStorage).forEach((key) => {
+          delete mockStorage[key];
+        });
       }),
-      length: 0
+      length: 0,
     },
-    writable: true
-  })
-  return mockStorage
-}
+    writable: true,
+  });
+  return mockStorage;
+};
 
 /**
  * 模拟浏览器导航
@@ -76,11 +76,11 @@ export const mockNavigation = () => {
       hash: '',
       reload: vi.fn(),
       assign: vi.fn(),
-      replace: vi.fn()
+      replace: vi.fn(),
     },
-    writable: true
-  })
-}
+    writable: true,
+  });
+};
 
 /**
  * 模拟浏览器尺寸
@@ -88,60 +88,60 @@ export const mockNavigation = () => {
 export const mockWindowSize = (width = 1920, height = 1080) => {
   Object.defineProperty(window, 'innerWidth', {
     value: width,
-    writable: true
-  })
+    writable: true,
+  });
   Object.defineProperty(window, 'innerHeight', {
     value: height,
-    writable: true
-  })
+    writable: true,
+  });
   // 模拟 resize 事件
-  window.dispatchEvent(new Event('resize'))
-}
+  window.dispatchEvent(new Event('resize'));
+};
 
 /**
  * 生成随机字符串
  */
 export const generateRandomString = (length = 8) => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  let result = ''
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
   for (let i = 0; i < length; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length))
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-  return result
-}
+  return result;
+};
 
 /**
  * 等待 Promise 解析
  */
 export const waitFor = async (callback, options = {}) => {
-  const { timeout = 1000, interval = 16 } = options
-  const startTime = Date.now()
-  
+  const { timeout = 1000, interval = 16 } = options;
+  const startTime = Date.now();
+
   while (Date.now() - startTime < timeout) {
     try {
-      const result = callback()
+      const result = callback();
       if (result) {
-        return result
+        return result;
       }
     } catch (error) {
       // 忽略错误，继续尝试
     }
-    await new Promise(resolve => setTimeout(resolve, interval))
+    await new Promise((resolve) => setTimeout(resolve, interval));
   }
-  
-  throw new Error('waitFor timeout')
-}
+
+  throw new Error('waitFor timeout');
+};
 
 /**
  * 模拟网络请求
  */
 export const mockApi = (api, mockResponse) => {
-  return vi.spyOn(api, 'default').mockResolvedValue(mockResponse)
-}
+  return vi.spyOn(api, 'default').mockResolvedValue(mockResponse);
+};
 
 /**
  * 模拟错误网络请求
  */
 export const mockApiError = (api, errorMessage = 'Network error') => {
-  return vi.spyOn(api, 'default').mockRejectedValue(new Error(errorMessage))
-}
+  return vi.spyOn(api, 'default').mockRejectedValue(new Error(errorMessage));
+};

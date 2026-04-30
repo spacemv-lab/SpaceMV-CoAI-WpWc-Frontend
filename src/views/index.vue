@@ -1,13 +1,14 @@
+/** * Copyright (c) 2018 RuoYi | Copyright (c) 2026 成都天巡微小卫星科技有限责任公司 *This project
+is licensed under the MIT License - see the LICENSE file in the project root for details. **/
 <template>
-  <div class="app-container home">
-  </div>
+  <div class="app-container home"></div>
 </template>
 
 <script setup name="Index">
-const version = ref('3.6.6')
+const version = ref('3.6.6');
 
 function goTarget(url) {
-  window.open(url, '__blank')
+  window.open(url, '__blank');
 }
 </script>
 
@@ -34,7 +35,7 @@ function goTarget(url) {
     margin: 0;
   }
 
-  font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'open sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 13px;
   color: #676a6c;
   overflow-x: hidden;
@@ -74,4 +75,3 @@ function goTarget(url) {
   }
 }
 </style>
-

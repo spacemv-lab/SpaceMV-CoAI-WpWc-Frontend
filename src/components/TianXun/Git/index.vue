@@ -5,9 +5,9 @@
 </template>
 
 <script setup>
-const url = ref('https://github.com/spacemv-lab/SpaceMV-CoAI-WpWc-Frontend')
+const url = ref('https://github.com/spacemv-lab/SpaceMV-CoAI-Frontend');
 
 function goto() {
-  window.open(url.value)
+  window.open(url.value);
 }
 </script>

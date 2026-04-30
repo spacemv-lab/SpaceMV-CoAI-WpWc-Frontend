@@ -18,19 +18,20 @@
 
 ## **目录**
 
-* [核心模块](#核心模块)
-* [技术架构](#技术架构)
-* [功能特性](#功能特性)
-* [快速开始](#快速开始)
-* [贡献指南](#贡献指南)
-* [许可证](#许可证)
-* [联系方式](#联系方式)
-* [贡献者](#贡献者)
-* [待办事项](#待办事项)
+- [核心模块](#核心模块)
+- [技术架构](#技术架构)
+- [功能特性](#功能特性)
+- [快速开始](#快速开始)
+- [贡献指南](#贡献指南)
+- [许可证](#许可证)
+- [联系方式](#联系方式)
+- [贡献者](#贡献者)
+- [待办事项](#待办事项)
 
 ## 核心模块
-~~~
-SpaceMV-CoAI-Wp/Wc-Frontend 
+
+```
+SpaceMV-CoAI-Wp/Wc-Frontend
 ├── 核心框架层
 │   ├── 路由管理        // 负责页面路由配置和权限控制
 │   ├── 状态管理        // 管理应用全局状态，使用 Pinia/Vuex
@@ -53,7 +54,7 @@ SpaceMV-CoAI-Wp/Wc-Frontend
 └── 资源层
     ├── 静态资源        // 图片、图标、样式等静态文件
     └── 配置文件        // 环境配置、系统设置等
-~~~
+```
 
 ## 技术架构
 
@@ -66,154 +67,155 @@ SpaceMV-CoAI-Wp/Wc-Frontend
 ### 目录结构
 
 SpaceMV-CoAI-Frontend/  
-├── bin/                      \# 构建和运行脚本  
-│   ├── build.bat             \# 构建脚本  
-│   ├── package.bat           \# 打包脚本  
-│   └── run-web.bat           \# 运行脚本  
+├── bin/ \# 构建和运行脚本  
+│ ├── build.bat \# 构建脚本  
+│ ├── package.bat \# 打包脚本  
+│ └── run-web.bat \# 运行脚本  
 │  
-├── html/                     \# HTML 相关文件  
-│   └── ie.html               \# IE 浏览器兼容页面  
+├── html/ \# HTML 相关文件  
+│ └── ie.html \# IE 浏览器兼容页面  
 │  
-├── public/                   \# 公共资源  
-│   ├── ueditor/              \# 富文本编辑器  
-│   ├── favicon.ico           \# 网站图标  
-│   └── login-background.jpg  \# 登录背景图  
+├── public/ \# 公共资源  
+│ ├── ueditor/ \# 富文本编辑器  
+│ ├── favicon.ico \# 网站图标  
+│ └── login-background.jpg \# 登录背景图  
 │  
-├── src/                      \# 源代码目录  
-│   ├── api/                  \# API 接口  
-│   │   ├── article/          \# 文章管理接口  
-│   │   ├── content/          \# 内容管理接口  
-│   │   ├── material/         \# 素材管理接口  
-│   │   └── system/           \# 系统管理接口  
-│   │  
-│   ├── assets/               \# 静态资源  
-│   │   ├── icons/            \# 图标资源  
-│   │   ├── images/           \# 图片资源  
-│   │   ├── logo/             \# Logo 资源  
-│   │   └── styles/           \# 样式文件  
-│   │  
-│   ├── components/           \# 公共组件  
-│   │   ├── Breadcrumb/       \# 面包屑组件  
-│   │   ├── Editor/           \# 编辑器组件  
-│   │   ├── FileUpload/       \# 文件上传组件  
-│   │   └── SvgIcon/          \# SVG 图标组件  
-│   │  
-│   ├── directive/            \# 自定义指令  
-│   │   ├── common/           \# 通用指令  
-│   │   └── permission/       \# 权限指令  
-│   │  
-│   ├── layout/               \# 布局组件  
-│   │   └── components/       \# 布局子组件  
-│   │  
-│   ├── plugins/              \# 插件  
-│   ├── router/               \# 路由配置  
-│   ├── store/                \# 状态管理  
-│   │   └── modules/          \# 状态管理模块  
-│   │  
-│   ├── utils/                \# 工具函数  
-│   │   └── generator/        \# 代码生成器  
-│   │  
-│   ├── views/                \# 页面视图  
-│   │   ├── article/          \# 文章管理页面  
-│   │   ├── content/          \# 内容管理页面  
-│   │   ├── dashboard/        \# 仪表盘页面  
-│   │   ├── material/         \# 素材管理页面  
-│   │   └── system/           \# 系统管理页面  
-│   │  
-│   ├── App.vue               \# 根组件  
-│   ├── main.js               \# 入口文件  
-│   ├── permission.js         \# 权限管理  
-│   └── settings.js           \# 系统设置  
+├── src/ \# 源代码目录  
+│ ├── api/ \# API 接口  
+│ │ ├── article/ \# 文章管理接口  
+│ │ ├── content/ \# 内容管理接口  
+│ │ ├── material/ \# 素材管理接口  
+│ │ └── system/ \# 系统管理接口  
+│ │  
+│ ├── assets/ \# 静态资源  
+│ │ ├── icons/ \# 图标资源  
+│ │ ├── images/ \# 图片资源  
+│ │ ├── logo/ \# Logo 资源  
+│ │ └── styles/ \# 样式文件  
+│ │  
+│ ├── components/ \# 公共组件  
+│ │ ├── Breadcrumb/ \# 面包屑组件  
+│ │ ├── Editor/ \# 编辑器组件  
+│ │ ├── FileUpload/ \# 文件上传组件  
+│ │ └── SvgIcon/ \# SVG 图标组件  
+│ │  
+│ ├── directive/ \# 自定义指令  
+│ │ ├── common/ \# 通用指令  
+│ │ └── permission/ \# 权限指令  
+│ │  
+│ ├── layout/ \# 布局组件  
+│ │ └── components/ \# 布局子组件  
+│ │  
+│ ├── plugins/ \# 插件  
+│ ├── router/ \# 路由配置  
+│ ├── store/ \# 状态管理  
+│ │ └── modules/ \# 状态管理模块  
+│ │  
+│ ├── utils/ \# 工具函数  
+│ │ └── generator/ \# 代码生成器  
+│ │  
+│ ├── views/ \# 页面视图  
+│ │ ├── article/ \# 文章管理页面  
+│ │ ├── content/ \# 内容管理页面  
+│ │ ├── dashboard/ \# 仪表盘页面  
+│ │ ├── material/ \# 素材管理页面  
+│ │ └── system/ \# 系统管理页面  
+│ │  
+│ ├── App.vue \# 根组件  
+│ ├── main.js \# 入口文件  
+│ ├── permission.js \# 权限管理  
+│ └── settings.js \# 系统设置  
 │  
-├── .env                      \# 环境配置  
-├── .env.development          \# 开发环境配置  
-├── .env.production           \# 生产环境配置  
-├── .gitignore                \# Git 忽略文件  
-├── LICENSE                   \# 许可证文件  
-├── README.md                 \# 项目说明  
-├── index.html                \# 入口 HTML  
-└── package.json              \# 项目依赖
+├── .env \# 环境配置  
+├── .env.development \# 开发环境配置  
+├── .env.production \# 生产环境配置  
+├── .gitignore \# Git 忽略文件  
+├── LICENSE \# 许可证文件  
+├── README.md \# 项目说明  
+├── index.html \# 入口 HTML  
+└── package.json \# 项目依赖
 
 ### 技术栈
 
-| 领域 | 技术选型 | 说明 |
-| :--- | :--- | :--- |
-| **前端框架** | **Vue 3** | 渐进式 JavaScript 框架 |
-| | **Vite** | 快速的前端构建工具 |
-| | **Vue Router** | 官方路由管理器 |
-| | **Pinia** | 轻量级状态管理库 |
-| **UI 组件库** | **Element Plus** | 基于 Vue 3 的组件库 |
-| **样式** | **SCSS/Sass** | CSS 预处理器 |
-| | **CSS Variables** | 主题变量管理 |
-| **网络请求** | **Axios** | 基于 Promise 的 HTTP 客户端 |
-| **构建工具** | **Vite** | 快速的前端构建工具 |
-| | **ESLint** | 代码质量检查工具 |
-| | **Prettier** | 代码格式化工具 |
-| **环境管理** | **dotenv** | 环境变量管理 |
+| 领域          | 技术选型          | 说明                        |
+| :------------ | :---------------- | :-------------------------- |
+| **前端框架**  | **Vue 3**         | 渐进式 JavaScript 框架      |
+|               | **Vite**          | 快速的前端构建工具          |
+|               | **Vue Router**    | 官方路由管理器              |
+|               | **Pinia**         | 轻量级状态管理库            |
+| **UI 组件库** | **Element Plus**  | 基于 Vue 3 的组件库         |
+| **样式**      | **SCSS/Sass**     | CSS 预处理器                |
+|               | **CSS Variables** | 主题变量管理                |
+| **网络请求**  | **Axios**         | 基于 Promise 的 HTTP 客户端 |
+| **构建工具**  | **Vite**          | 快速的前端构建工具          |
+|               | **ESLint**        | 代码质量检查工具            |
+|               | **Prettier**      | 代码格式化工具              |
+| **环境管理**  | **dotenv**        | 环境变量管理                |
 
 ### 数据流向
 
 graph TD  
-    A\[用户操作\] \-\-\>|触发事件| B\[Vue 组件\]  
-    B \-\-\>|调用 API| C\[API 接口层\]  
-    C \-\-\>|发送请求| D\[后端服务\]  
-    D \-\-\>|返回数据| C  
-    C \-\-\>|响应数据| B  
-    B \-\-\>|更新状态| E\[Pinia 状态管理\]  
-    E \-\-\>|状态变化| B  
-    B \-\-\>|渲染页面| F\[用户界面\]
+ A\[用户操作\] \-\-\>|触发事件| B\[Vue 组件\]  
+ B \-\-\>|调用 API| C\[API 接口层\]  
+ C \-\-\>|发送请求| D\[后端服务\]  
+ D \-\-\>|返回数据| C  
+ C \-\-\>|响应数据| B  
+ B \-\-\>|更新状态| E\[Pinia 状态管理\]  
+ E \-\-\>|状态变化| B  
+ B \-\-\>|渲染页面| F\[用户界面\]
 
 ## 功能特性
 
 ### 1. 系统管理模块
 
-* **菜单管理**: 支持菜单的创建、编辑、权限控制等功能。
-* **部门管理**: 支持部门的层级结构管理。
-* **岗位管理**: 支持岗位的创建、编辑、分配等功能。
-* **用户管理**: 支持用户的增删改查、角色分配、密码重置等功能。
-* **角色管理**: 支持角色的创建、权限分配、用户关联等功能。
-* **字典管理**: 支持系统中各种字典数据的管理，如性别、状态等预定义枚举值。
-
+- **菜单管理**: 支持菜单的创建、编辑、权限控制等功能。
+- **部门管理**: 支持部门的层级结构管理。
+- **岗位管理**: 支持岗位的创建、编辑、分配等功能。
+- **用户管理**: 支持用户的增删改查、角色分配、密码重置等功能。
+- **角色管理**: 支持角色的创建、权限分配、用户关联等功能。
+- **字典管理**: 支持系统中各种字典数据的管理，如性别、状态等预定义枚举值。
 
 ### 2. 内容管理模块(SpaceMV-CoAI-Wp)
 
-* **公司信息**: 管理公司的基本信息和展示内容。
-* **主页内容**: 管理网站主页的展示内容。
-* **产品管理**: 管理公司产品的信息和展示。
-* **顶部按钮**: 管理网站顶部按钮的配置。
-
+- **公司信息**: 管理公司的基本信息和展示内容。
+- **主页内容**: 管理网站主页的展示内容。
+- **产品管理**: 管理公司产品的信息和展示。
+- **顶部按钮**: 管理网站顶部按钮的配置。
 
 ### 3. 文章管理模块(SpaceMV-CoAI-Wc)
 
-* **文章列表**: 管理所有文章的列表和状态。  
-* **文章编辑**: 支持富文本编辑器，方便文章内容的编辑。  
+- **文章列表**: 管理所有文章的列表和状态。
+- **文章编辑**: 支持富文本编辑器，方便文章内容的编辑。
 
 ### 4. 素材管理模块（SpaceMV-CoAI-Wc）
 
-* **图文素材**: 管理图文结合的素材内容。  
-* **永久素材**: 管理可重复使用的永久素材。  
-* **素材上传**: 支持多种格式的素材上传。  
+- **图文素材**: 管理图文结合的素材内容。
+- **永久素材**: 管理可重复使用的永久素材。
+- **素材上传**: 支持多种格式的素材上传。
 
 ## 快速开始
 
 ### 前置条件
 
-* **Node.js** (v16.0 或更高版本)  
-* **npm** 或 **yarn** 包管理器  
-* **Git** 版本控制工具
+- **Node.js** (v20.0 或更高版本)
+- **npm** 或 **yarn** 包管理器
+- **Git** 版本控制工具
 
 ### 1. 环境准备
+
 ```bash
-# 克隆仓库  
-git clone https://github.com/spacemv-lab/SpaceMV-CoAI-WpWc-Frontend.git  
+# 克隆仓库
+git clone https://github.com/spacemv-lab/SpaceMV-CoAI-WpWc-Frontend.git
 cd SpaceMV-CoAI-WpWc-Frontend
 
-# 安装依赖  
+# 安装依赖
 npm install
-# 或使用 yarn  
+# 或使用 yarn
 yarn install
 ```
+
 ### 2. 环境变量配置
+
 ```ini
 项目已包含以下环境配置文件：
 
@@ -223,11 +225,13 @@ yarn install
 
 如需修改配置，编辑对应环境的配置文件即可。
 ```
+
 ### 3. 启动开发服务器
+
 ```bash
-# 启动开发服务器  
+# 启动开发服务器
 npm run dev
-# 或使用 yarn  
+# 或使用 yarn
 yarn dev
 ```
 
@@ -236,20 +240,22 @@ yarn dev
 ### 4. 构建版本
 
 #### 4.1 构建生产版本
+
 ```bash
-# 构建生产版本  
+# 构建生产版本
 npm run build
-# 或使用 yarn  
+# 或使用 yarn
 yarn build
 ```
 
 构建完成后，生产版本的文件会生成在 `dist` 目录中， 并将构建的dist包放到代码工程中ruoyi-ui/dist-console目录下。
 
 #### 4.2 构建开发版本
+
 ```bash
-# 构建开发版本  
+# 构建开发版本
 npm run build:dev
-# 或使用 yarn  
+# 或使用 yarn
 yarn build:dev
 ```
 
@@ -257,24 +263,26 @@ yarn build:dev
 
 ## 贡献指南
 
-我们非常欢迎社区开发者参与 SpaceMV-CoAI-Wp/Wc-Frontend 前端项目的建设！如果您有任何改进建议或发现了 Bug，请遵循以下流程：
+我们非常欢迎社区开发者参与 SpaceMV-CoAI-Wp/Wc-Frontend 前端项目的建设！所有贡献者必须同意[贡献者许可协议](CLA.md)，才能参与对SpaceMV-CoAI-Wp/Wc-Fronten的贡献。
 
-1. **Fork 本仓库**：点击右上角的 Fork 按钮将项目复制到您的 GitHub 账户。  
+如果您有任何改进建议或发现了 Bug，请遵循以下流程：
+
+1. **Fork 本仓库**：点击右上角的 Fork 按钮将项目复制到您的 GitHub 账户。
 2. **创建分支**：从 main 分支切出一个新分支用于开发。  
-   git checkout -b feature/AmazingFeature  
+   git checkout -b feature/AmazingFeature
 3. **提交更改**：确保代码风格统一，并撰写清晰的 Commit Message。  
-   git commit -m 'feat: Add some AmazingFeature'  
+   git commit -m 'feat: Add some AmazingFeature'
 4. **推送分支**：  
-   git push origin feature/AmazingFeature  
+   git push origin feature/AmazingFeature
 5. **提交 Pull Request**：在 GitHub 上发起 PR，并详细描述您的更改内容。
 
 **开发建议**：
 
-* **代码风格**：遵循项目的代码风格规范，确保代码可读性。
-* **组件设计**：开发新组件时，确保组件的复用性和可维护性。
-* **API 调用**：添加新 API 调用时，遵循现有的模块化组织方式。
-* **样式管理**：使用 SCSS 变量和混合器，确保样式的一致性和可维护性。
-* **测试**：为新功能添加适当的测试用例，确保代码质量。
+- **代码风格**：遵循项目的代码风格规范，确保代码可读性。
+- **组件设计**：开发新组件时，确保组件的复用性和可维护性。
+- **API 调用**：添加新 API 调用时，遵循现有的模块化组织方式。
+- **样式管理**：使用 SCSS 变量和混合器，确保样式的一致性和可维护性。
+- **测试**：为新功能添加适当的测试用例，确保代码质量。
 
 ## 许可证
 
@@ -303,13 +311,17 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+## 免责声明
+
+**本软件按"原样"（AS IS）提供，不附带任何明示或暗示的担保，包括但不限于适销性、特定用途适用性和非侵权性的担保。** 在任何情况下，作者或版权持有人均不对因使用本软件而产生的任何直接、间接、附带、特殊、惩罚性或后果性损害承担责任，无论该损害是基于合同、侵权或其他法律理论，即使已被告知可能发生此类损害。
+
 ## 联系方式
 
 如有任何问题、建议或商务合作需求，请联系项目维护团队。
 
-* **Email**: code@spacemv.com  
-* **Issues**: [GitHub Issues](https://github.com/spacemv-lab/SpaceMV-CoAI-WpWc-Frontend/issues)
-* **Discussions**: [GitHub Discussions](https://github.com/spacemv-lab/SpaceMV-CoAI-WpWc-Frontend/discussions)
+- **Email**: code@spacemv.com
+- **Issues**: [GitHub Issues](https://github.com/spacemv-lab/SpaceMV-CoAI-WpWc-Frontend/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/spacemv-lab/SpaceMV-CoAI-WpWc-Frontend/discussions)
 
 更多信息可关注公司微信公众号：
 
@@ -320,7 +332,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 <div>
   <img src="./public/github.png" style="cursor: pointer;" width="50" height="50" alt="spacemvwnn" title="spacemvwnn" />
 </div>
-
 
 ## 待办事项
 

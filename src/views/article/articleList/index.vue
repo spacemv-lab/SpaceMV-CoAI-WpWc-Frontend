@@ -4,19 +4,58 @@
 **/
 <template>
     <div class="article-container" v-loading="loading">
-        <h3 class="page-title">文章列表</h3>
+        <h3 v-show="showTitle" class="page-title">文章列表</h3>
+ 
+        <template v-if="hasAvailableProductPlatform">
+            <!-- 产品和平台选择器 -->
+            <div v-if="showTitle" class="product-platform-selector">
+              <div class="selector-row">
+                  <div class="selector-label">
+                      <span class="label-text">自媒体产品</span>
+                  </div>
+                  <div class="product-options">
+                      <div 
+                          v-for="(product, index) in productList" 
+                          :key="index"
+                          class="product-option"
+                          :class="{ active: selectedProductIndex === index }"
+                          @click="selectProduct(index)"
+                      >
+                          <span class="option-text">{{ product.name }}</span>
+                      </div>
+                  </div>
+              </div>
+              
+              <div class="selector-row" v-if="selectedProduct">
+                  <div class="selector-label">
+                      <span class="label-text">绑定平台</span>
+                  </div>
+                  <div class="platform-options">
+                      <div 
+                          v-for="(platform, index) in currentPlatformList"
+                          :key="index"
+                          class="platform-option"
+                          :class="{ active: selectedPlatformIndex === index }"
+                          @click="selectPlatform(index)"
+                      >
+                          <span class="option-text">{{ platform.name }}</span>
+                          <span class="option-check" v-if="selectedPlatformIndex === index">✓</span>
+                      </div>
+                  </div>
+              </div>
+            </div>
 
-        <el-tabs v-model="activeTab" @tab-change="handleTabChange">
-            <el-tab-pane label="未发布" name="unPublish"></el-tab-pane>
-            <el-tab-pane label="已发布" name="published"></el-tab-pane>
-        </el-tabs>
+            <el-tabs v-model="activeTab" @tab-change="handleTabChange">
+                <el-tab-pane label="未发布" name="unPublish"></el-tab-pane>
+                <el-tab-pane label="已发布" name="published"></el-tab-pane>
+            </el-tabs>
 
-        <div class="article-header">
-            <el-button type="primary" v-if="auth.hasPermi('article:createEdit')" @click="handleCreateArticle">新建文章</el-button>
-        </div>
-        
-        <el-table :data="articleList" stripe style="width: 100%" row-height="80">
-            <el-table-column prop="id" label="文章id"></el-table-column>
+            <div class="article-header">
+                <el-button type="primary" v-if="auth.hasPermi('article:createEdit')" @click="handleCreateArticle">新建文章</el-button>
+            </div>
+            
+            <el-table :data="articleList" stripe style="width: 100%" row-height="80">
+                <el-table-column prop="id" label="文章id"></el-table-column>
             <!-- <el-table-column prop="coverImage" label="封面图片" width="100">
                 <template #default="scope">
                     <el-image 
@@ -75,25 +114,38 @@
                     <el-button v-if="showDeleteButton(scope.row)" type="danger" size="small" @click="handleDeleteArticle(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
-        </el-table>
+            </el-table>
 
-        <!-- 分页控件 -->
-        <div class="pagination-container" style="margin-top: 20px; text-align: right;">
-            <el-pagination v-model:current-page="pageParams.pageNum" v-model:page-size="pageParams.pageSize"
-                :page-sizes="[5, 10, 20, 50, 100]" layout="total, sizes, prev, pager, next, jumper" :total="pageData.total"
-                @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+            <!-- 分页控件 -->
+            <div class="pagination-container" style="margin-top: 20px; text-align: right;">
+                <el-pagination v-model:current-page="pageParams.pageNum" v-model:page-size="pageParams.pageSize"
+                    :page-sizes="[5, 10, 20, 50, 100]" layout="total, sizes, prev, pager, next, jumper" :total="pageData.total"
+                    @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+            </div>
+        </template>
+
+        <div v-else class="empty-state-wrapper">
+            <el-empty description="暂无数据，请绑定自媒体产品及平台" />
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElLoading, ElMessageBox } from 'element-plus'
 import { getPublishedList, getDraftList, publishArticle, deletePublishedArticle, deleteDraftArticle, submitAudit, reviewDraft, getDraftDetail, getPublishStatus } from '@/api/article'
+import { getMediaProductList } from '@/api/media/mediaProduct/index'
 import useUserStore from '@/store/modules/user'
 
 import auth from '@/plugins/auth'
+
+const props = defineProps({
+  showTitle: {
+    type: Boolean,
+    default: true
+  }
+})
 
 // 获取路由实例
 const router = useRouter()
@@ -152,6 +204,88 @@ const loading = ref(false)
 
 // 获取用户store
 const userStore = useUserStore()
+
+// 自媒体产品列表
+const productList = ref([])
+const hasAvailableProductPlatform = ref(true)
+
+// 获取自媒体产品列表
+const fetchProductList = () => {
+  getMediaProductList({
+		pageNum: 1,
+		pageSize: 1000000,
+		queryConfig: {
+			queryProduct: true,
+			queryChannels: true,
+			queryAccount: true,
+		}
+	}).then(response => {
+    if (response.code === 200) {
+      // 根据返回格式，转换数据结构
+      // rows 数组中每个元素代表一个产品
+      const rawProducts = response.rows || response.data?.rows || response.data || []
+      productList.value = rawProducts.map(item => ({
+        id: item.baseInfo?.id,
+        name: item.baseInfo?.productName,
+        platforms: (item.channelDTOList || [])
+          .filter(channel => Array.isArray(channel.accountDTOList) && channel.accountDTOList.length > 0)
+          .map(channel => ({
+            id: channel.id,
+            name: channel.channelName,
+            type: channel.channelType,
+            accountDTOList: channel.accountDTOList
+          }))
+      })).filter(item => item.platforms.length > 0)
+      
+      hasAvailableProductPlatform.value = productList.value.length > 0
+      selectedProductIndex.value = 0
+      selectedPlatformIndex.value = 0
+
+      // 如果有产品且有平台，自动获取文章列表
+      if (productList.value.length > 0 && productList.value[0].platforms.length > 0) {
+        fetchArticleList()
+      } else {
+        articleList.value = []
+        pageData.value.total = 0
+      }
+    }
+  }).catch(() => {
+    ElMessage.error('获取产品列表失败')
+  })
+}
+
+// 选中的产品索引（默认选中第一个）
+const selectedProductIndex = ref(0)
+
+// 选中的平台索引（默认选中第一个产品的第一个平台）
+const selectedPlatformIndex = ref(0)
+
+// 当前选中的产品
+const selectedProduct = computed(() => {
+    return productList.value[selectedProductIndex.value]
+})
+
+// 当前产品的平台列表
+const currentPlatformList = computed(() => {
+    return selectedProduct.value ? selectedProduct.value.platforms : []
+})
+
+// 选择产品
+const selectProduct = (index) => {
+    selectedProductIndex.value = index
+    selectedPlatformIndex.value = 0
+    // 如果选中的产品有平台，则获取文章列表
+    if (productList.value[index] && productList.value[index].platforms.length > 0) {
+      fetchArticleList()
+    }
+}
+
+// 选择平台
+const selectPlatform = (index) => {
+    selectedPlatformIndex.value = index
+    // 选择平台后获取文章列表
+    fetchArticleList()
+}
 
 // 显示查看列，只有发布中不可查看。
 const showViewButton = (row) => {
@@ -217,7 +351,7 @@ const showDeleteButton = (row) => {
   }
   
   // 如果是sub-admin角色，除了以下状态外都可删除：用户已删除、系统已封禁、发布中、常规失败、平台审核不通过
-  if (auth.hasRole('sub-admin')) {
+  if (auth.hasRole('sub-admin') || auth.hasRole('txwx_common')) {
     return ![STATUS_ENUM.USER_DELETED, STATUS_ENUM.SYSTEM_BANNED, STATUS_ENUM.PUBLISHING, STATUS_ENUM.REGULAR_FAILURE, STATUS_ENUM.PLATFORM_REJECTED].includes(row.status)
   }
   
@@ -234,24 +368,60 @@ const showDeleteButton = (row) => {
 
 // 页面加载时获取已发布文章列表
 onMounted(() => {
-  fetchArticleList()
+  fetchProductList()
 })
 
 // 获取文章列表
 const fetchArticleList = () => {
+  if (!hasAvailableProductPlatform.value) {
+    articleList.value = []
+    loading.value = false
+    return
+  }
+
+  // 检查是否已选择产品和平台
+  if (!selectedProduct.value) {
+    ElMessage.warning('请先选择自媒体产品')
+    loading.value = false
+    return
+  }
+  
+  if (!currentPlatformList.value[selectedPlatformIndex.value]) {
+    ElMessage.warning('请先选择绑定平台')
+    loading.value = false
+    return
+  }
+  
   // 显示局部loading遮罩
   loading.value = true
   
   // 先清空表格数据，避免数据突变导致的行高变化
   articleList.value = []
   
+  // 获取当前选中的产品ID和账号ID
+  const productId = selectedProduct.value.id
+  const selectedPlatform = currentPlatformList.value[selectedPlatformIndex.value]
+  const accountIds = (selectedPlatform?.accountDTOList || [])
+    .map(account => account.id)
+    .filter(id => id !== undefined && id !== null)
+  if (accountIds.length === 0) {
+    ElMessage.warning('当前平台未绑定账号，请先绑定后再操作')
+    loading.value = false
+    return
+  }
+  
   // 根据当前选中的tab调用对应的API接口
   const apiCall = activeTab.value === 'published' ? getPublishedList : getDraftList
   
-  // 准备API参数，包含分页信息
-  const apiParams = {
+  // 准备API参数，包含分页信息和产品平台信息
+  const apiParams = activeTab.value === 'published' ? {
     pageNum: pageParams.value.pageNum,
-    pageSize: pageParams.value.pageSize
+    pageSize: pageParams.value.pageSize,
+    accountIds:  accountIds,
+  } : {
+    pageNum: pageParams.value.pageNum,
+    pageSize: pageParams.value.pageSize,
+    accountIds: accountIds,
   }
   
   apiCall(apiParams)
@@ -303,18 +473,61 @@ const handleCurrentChange = (current) => {
 
 // 新建文章点击事件
 const handleCreateArticle = () => {
-  // 跳转到新建文章页面
-  router.push('/article/articleList/newArticle')
+  // 检查是否已选择产品和平台
+  if (!selectedProduct.value) {
+    ElMessage.warning('请先选择自媒体产品')
+    return
+  }
+  
+  if (!currentPlatformList.value[selectedPlatformIndex.value]) {
+    ElMessage.warning('请先选择绑定平台')
+    return
+  }
+  
+  // 跳转到新建文章页面，带上产品和平台信息
+  const selectedPlatform = currentPlatformList.value[selectedPlatformIndex.value]
+  const accountId = selectedPlatform?.accountDTOList?.[0]?.id
+  if (!accountId) {
+    ElMessage.warning('当前平台未绑定账号，请先绑定后再操作')
+    return
+  }
+
+  router.push({
+    path: '/article/articleList/newArticle',
+    query: {
+      productId: selectedProduct.value.id,
+      accountId: String(accountId)
+    }
+  })
 }
 
 // 编辑文章点击事件
 const handleEditArticle = (row) => {
-  // 跳转到新建文章页面，带上文章ID作为参数
-  router.push(`/article/articleList/newArticle?id=${row.id}`)
+  // 检查是否已选择产品和平台
+  if (!selectedProduct.value || !currentPlatformList.value[selectedPlatformIndex.value]) {
+    ElMessage.warning('请先选择自媒体产品和绑定平台')
+    return
+  }
+  
+  const selectedPlatform = currentPlatformList.value[selectedPlatformIndex.value]
+  const accountId = selectedPlatform?.accountDTOList?.[0]?.id
+  if (!accountId) {
+    ElMessage.warning('当前平台未绑定账号，请先绑定后再操作')
+    return
+  }
+
+  // 跳转到新建文章页面，带上文章ID和账号ID
+  router.push(`/article/articleList/newArticle?id=${row.id}&accountId=${accountId}`)
 }
 
 // 删除文章点击事件
 const handleDeleteArticle = (row) => {
+  // 检查是否已选择产品和平台
+  if (!selectedProduct.value || !currentPlatformList.value[selectedPlatformIndex.value]) {
+    ElMessage.warning('请先选择自媒体产品和绑定平台')
+    return
+  }
+  
   // 显示确认对话框
   ElMessageBox.confirm(`确定要删除标题为《${row.title}》的文章吗？`, '删除确认', {
     confirmButtonText: '确定',
@@ -322,10 +535,18 @@ const handleDeleteArticle = (row) => {
     type: 'warning'
   })
     .then(() => {
+      // 获取当前选中的产品ID和平台ID
+      const productId = selectedProduct.value.id
+      const platformId = currentPlatformList.value[selectedPlatformIndex.value].id
+      
       // 根据文章状态调用对应的删除接口
       const deleteApi = row.status === '4' ? deletePublishedArticle : deleteDraftArticle
       
-      deleteApi({ id: row.id })
+      deleteApi({ 
+        id: row.id,
+        productId: productId,
+        platformId: platformId
+      })
         .then(res => {
           if (res.code === 200) {
             ElMessage.success(res.message || '文章删除成功')
@@ -417,8 +638,14 @@ const handleViewArticle = (row) => {
 
 // 提交审核点击事件
 const handleSubmitAudit = (row) => {
+  // 检查是否已选择产品和平台
+  if (!selectedProduct.value || !currentPlatformList.value[selectedPlatformIndex.value]) {
+    ElMessage.warning('请先选择自媒体产品和绑定平台')
+    return
+  }
+  
   // 调用提交审核接口
-  submitAudit(row.id || '')
+  submitAudit(row.id)
     .then(res => {
       if (res.code === 200) {
         ElMessage.success(res.message || '文章提交审核成功')
@@ -435,6 +662,12 @@ const handleSubmitAudit = (row) => {
 
 // 审核文章点击事件
 const handleReview = (row, result) => {
+  // 检查是否已选择产品和平台
+  if (!selectedProduct.value || !currentPlatformList.value[selectedPlatformIndex.value]) {
+    ElMessage.warning('请先选择自媒体产品和绑定平台')
+    return
+  }
+  
   // 确认审核操作
   const action = result === 'pass' ? '通过' : '退回'
   ElMessageBox.confirm(`确定要${action}标题为《${row.title}》的文章吗？`, '审核确认', {
@@ -443,10 +676,16 @@ const handleReview = (row, result) => {
     type: 'warning'
   })
     .then(() => {
+      // 获取当前选中的产品ID和平台ID
+      const productId = selectedProduct.value.id
+      const platformId = currentPlatformList.value[selectedPlatformIndex.value].id
+      
       // 调用审核接口
       reviewDraft({
         id: row.id,
-        reviewResult: result
+        reviewResult: result,
+        productId: productId,
+        platformId: platformId
       })
         .then(res => {
           if (res.code === 200) {
@@ -465,6 +704,12 @@ const handleReview = (row, result) => {
 
 // 发布文章点击事件
 const handlePublishArticle = (row) => {
+  // 检查是否已选择产品和平台
+  if (!selectedProduct.value || !currentPlatformList.value[selectedPlatformIndex.value]) {
+    ElMessage.warning('请先选择自媒体产品和绑定平台')
+    return
+  }
+  
   // 调用发布接口前创建全屏loading遮罩
   const loadingMask = ElLoading.service({
     lock: true,
@@ -472,7 +717,15 @@ const handlePublishArticle = (row) => {
     background: 'rgba(0, 0, 0, 0.5)'
   })
   
-  publishArticle({ id: Number(row.id) })
+  // 获取当前选中的产品ID和平台ID
+  const productId = selectedProduct.value.id
+  const platformId = currentPlatformList.value[selectedPlatformIndex.value].id
+  
+  publishArticle({ 
+    id: Number(row.id),
+    productId: productId,
+    platformId: platformId
+  })
     .then(res => {
       if (res.code === 200) {
         ElMessage.success(res.message || '提交文章发布任务成功')
@@ -503,9 +756,198 @@ const handlePublishArticle = (row) => {
     }
 }
 
+.product-platform-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 24px;
+    padding: 24px;
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e4e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+
+    .selector-row {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+
+        .selector-label {
+            flex-shrink: 0;
+            width: 90px;
+
+            .label-text {
+                font-size: 14px;
+                font-weight: 600;
+                color: #303133;
+                letter-spacing: 0.3px;
+            }
+        }
+    }
+
+    .product-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        flex: 1;
+
+        .product-option {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 8px;
+            background: #f8f9fa;
+            border: 1px solid #e4e7eb;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 13px;
+            color: #606266;
+            position: relative;
+            overflow: hidden;
+
+            &::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, rgba(64, 158, 255, 0.05) 0%, rgba(64, 158, 255, 0.1) 100%);
+                opacity: 0;
+                transition: opacity 0.25s ease;
+            }
+
+            &:hover {
+                background: #ecf5ff;
+                border-color: #409EFF;
+                color: #303133;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(64, 158, 255, 0.15);
+
+                &::before {
+                    opacity: 1;
+                }
+            }
+
+            &.active {
+                background: linear-gradient(135deg, #409EFF 0%, #66b1ff 100%);
+                border-color: #409EFF;
+                color: #ffffff;
+                box-shadow: 0 4px 16px rgba(64, 158, 255, 0.3);
+                transform: translateY(-1px);
+
+                &::before {
+                    opacity: 0;
+                }
+            }
+
+            .option-text {
+                flex: 1;
+                position: relative;
+                z-index: 1;
+            }
+        }
+    }
+
+    .platform-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        flex: 1;
+
+        .platform-option {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 8px;
+            background: #f8f9fa;
+            border: 1px solid #e4e7eb;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 13px;
+            color: #606266;
+            position: relative;
+            overflow: hidden;
+
+            &::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, rgba(64, 158, 255, 0.05) 0%, rgba(64, 158, 255, 0.1) 100%);
+                opacity: 0;
+                transition: opacity 0.25s ease;
+            }
+
+            &:hover {
+                background: #ecf5ff;
+                border-color: #409EFF;
+                color: #303133;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(64, 158, 255, 0.15);
+
+                &::before {
+                    opacity: 1;
+                }
+            }
+
+            &.active {
+                background: linear-gradient(135deg, #409EFF 0%, #66b1ff 100%);
+                border-color: #409EFF;
+                color: #ffffff;
+                box-shadow: 0 4px 16px rgba(64, 158, 255, 0.3);
+                transform: translateY(-1px);
+
+                &::before {
+                    opacity: 0;
+                }
+            }
+
+            .option-text {
+                flex: 1;
+                position: relative;
+                z-index: 1;
+            }
+
+            .option-check {
+                font-size: 12px;
+                font-weight: bold;
+                position: relative;
+                z-index: 1;
+                animation: checkIn 0.3s ease;
+            }
+        }
+    }
+}
+
+@keyframes checkIn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
 .article-header {
   margin-bottom: 20px;
 }
+
+.empty-state-wrapper {
+  padding: 48px 0;
+  background: #fff;
+  border-radius: 8px;
+}
+
 .status-container {
   display: flex;
   align-items: center;

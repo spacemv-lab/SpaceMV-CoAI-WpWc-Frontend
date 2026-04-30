@@ -46,12 +46,12 @@ export default defineConfig(({ mode, command }) => {
       open: true,
       proxy: {
         '/dev-api': {
-          target: 'http://localhost:8080',
+          target: 'http://10.0.10.102:8080',
           changeOrigin: true,
           rewrite: (p) => p.replace(/^\/dev-api/, '')
         },
         '/prod-api': {
-          target: 'http://localhost:8080',
+          target: 'http://10.0.10.102:8080',
           changeOrigin: true
         }
       }

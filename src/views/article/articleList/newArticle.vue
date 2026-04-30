@@ -12,17 +12,23 @@
             </div>
         </div>
         <el-form ref="articleFormRef" :model="articleForm" :rules="rules" label-width="140px" class="article-form">
+            <el-form-item label="文章类型">
+                <el-radio-group v-model="articleForm.articleType" @change="handleArticleTypeChange">
+                    <el-radio label="news">文章</el-radio>
+                    <!-- <el-radio label="newspic">贴图</el-radio> -->
+                </el-radio-group>
+            </el-form-item>
             <!-- 文章标题 -->
             <el-form-item label="文章标题" prop="title" required>
                 <el-input 
                     v-model="articleForm.title" 
-                    placeholder="请输入文章标题" 
+                    placeholder="请输入文章标题"
                     style="width: 100%;"
                 />
             </el-form-item>
-            
-            <!-- 文章摘要 -->
-            <el-form-item label="摘要" prop="digest" required>
+
+            <!-- 文章类型为 news 时显示：摘要 -->
+            <el-form-item label="摘要" prop="digest" v-if="articleForm.articleType === 'news'">
                 <el-input
                     v-model="articleForm.digest"
                     type="textarea"
@@ -31,11 +37,11 @@
                     style="width: 100%;"
                 />
             </el-form-item>
-            
-            <!-- 作者和封面图片ID -->
-            <el-row :gutter="20">
+
+            <!-- 文章类型为 news 时显示：作者和封面图片ID -->
+            <el-row :gutter="20" v-if="articleForm.articleType === 'news'">
                 <el-col :span="12">
-                    <el-form-item label="作者" prop="author" required>
+                    <el-form-item label="作者" prop="author">
                         <el-input 
                             v-model="articleForm.author" 
                             placeholder="请输入文章作者" 
@@ -46,7 +52,7 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                    <el-form-item label="封面图片媒体ID" prop="thumbMediaId" required>
+                    <el-form-item label="封面图片媒体ID" prop="thumbMediaId" :required="articleForm.articleType === 'news'">
                         <el-input 
                             v-model="articleForm.thumbMediaId" 
                             placeholder="请输入封面图片ID" 
@@ -55,6 +61,31 @@
                     </el-form-item>
                 </el-col>
             </el-row>
+
+            <!-- 文章类型为 newspic 时显示：图片选择 -->
+            <el-form-item label="所选图片" v-if="articleForm.articleType === 'newspic'" required>
+                <div class="image-selection-container">
+                    <div v-if="!articleForm.imageInfo || articleForm.imageInfo.length === 0" class="no-image">
+                        <el-button type="primary" @click="openImageSelector">选择图片</el-button>
+                    </div>
+                    <div v-else class="selected-images">
+                        <div class="image-list">
+                            <div v-for="(img, index) in articleForm.imageInfo" :key="img.mediaId" class="image-item" :class="{ 'is-cover': index === 0 }">
+                                <el-image
+                                    :src="img.url"
+                                    fit="cover"
+                                    referrerpolicy="no-referrer"
+                                />
+                                <span v-if="index === 0" class="cover-tag">封面</span>
+                                <el-icon class="remove-icon" @click="removeImage(index)"><Close /></el-icon>
+                            </div>
+                        </div>
+                        <div class="image-actions">
+                            <el-button type="primary" size="small" @click="openImageSelector">修改所选图片</el-button>
+                        </div>
+                    </div>
+                </div>
+            </el-form-item>
             
             <!-- 评论设置 -->
             <el-row :gutter="20">
@@ -76,14 +107,65 @@
                 </el-col>
             </el-row>
             
-            <!-- 文章内容 -->
-            <el-form-item label="文章内容" prop="content" required class="content-form-item">
+            <!-- 文章类型为 news 时显示：富文本编辑器 -->
+            <el-form-item label="文章内容" prop="content" required class="content-form-item" v-if="articleForm.articleType === 'news'">
                 <div class="editor-container">
                     <iframe ref="ueIframe" src="/ueditor/index.html"></iframe>
+                </div>
+            </el-form-item>
+
+            <!-- 文章类型为 newspic 时显示：简单文本编辑器 -->
+            <el-form-item label="图片描述" prop="content" required v-if="articleForm.articleType === 'newspic'">
+                <div class="simple-editor-container">
+                    <el-input
+                        v-model="articleForm.content"
+                        type="textarea"
+                        :rows="10"
+                        placeholder="请输入图片描述（纯文本，最多1000字）"
+                        maxlength="1000"
+                        show-word-limit
+                        style="width: 100%;"
+                    />
                 </div>
             </el-form-item>        
             
         </el-form>
+
+        <!-- 图片选择弹窗 -->
+        <el-dialog v-model="imageSelectorVisible" title="选择图片" width="70%" destroy-on-close>
+            <div class="image-selector-toolbar">
+                <span>已选择 {{ selectedImages.length }} / 20 张图片</span>
+            </div>
+            <el-table :data="imageTableData" stripe style="width: 100%" @selection-change="handleImageSelectionChange" ref="imageTableRef">
+                <el-table-column type="selection" width="55" :selectable="(row, index) => selectedImages.length < 20 || isImageSelected(row.mediaId)" />
+                <el-table-column label="图片" width="100">
+                    <template #default="scope">
+                        <div class="image-container">
+                            <el-image
+                                :src="scope.row.url"
+                                fit="cover"
+                                referrerpolicy="no-referrer"
+                            />
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="mediaId" label="媒体ID" width="180">
+                    <template #default="scope">
+                        <span class="truncated-text">{{ scope.row.mediaId ? scope.row.mediaId.slice(0, 6) + '...' : '' }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="name" label="图片名称" width="180"></el-table-column>
+                <el-table-column prop="update_time" label="更新日期" width="180">
+                    <template #default="scope">
+                        {{ formatTimestamp(scope.row.update_time) }}
+                    </template>
+                </el-table-column>
+            </el-table>
+            <template #footer>
+                <el-button @click="imageSelectorVisible = false">取消</el-button>
+                <el-button type="primary" @click="confirmImageSelection">确定</el-button>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
@@ -91,10 +173,23 @@
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage, ElLoading } from 'element-plus'
+import { Close } from '@element-plus/icons-vue'
 
 // 获取路由实例
 const router = useRouter()
 const route = useRoute()
+
+const parseAccountIdFromQuery = (rawAccountId) => {
+    if (rawAccountId === undefined || rawAccountId === null || rawAccountId === '') return ''
+
+    if (Array.isArray(rawAccountId)) {
+        const firstId = Number(rawAccountId[0])
+        return Number.isNaN(firstId) ? '' : firstId
+    }
+
+    const parsedId = Number(rawAccountId)
+    return Number.isNaN(parsedId) ? '' : parsedId
+}
 
 // 表单数据
 const articleForm = ref({
@@ -103,11 +198,21 @@ const articleForm = ref({
     digest: '',
     author: '',
     thumbMediaId: '',
-    needOpenComment: '0', // 默认不打开评论
-    onlyFansCanComment: '0', // 默认所有人可评论
+    needOpenComment: '0',
+    onlyFansCanComment: '0',
     content: '',
     articleType: 'news',
+    imageInfo: [],
+    productId: route.query.productId || '',
+    platformId: route.query.platformId || '',
+    accountId: parseAccountIdFromQuery(route.query.accountId)
 })
+
+// 图片选择相关
+const imageSelectorVisible = ref(false)
+const imageTableData = ref([])
+const selectedImages = ref([])
+const imageTableRef = ref(null)
 
 // 表单引用
 const articleFormRef = ref()
@@ -118,16 +223,41 @@ const rules = ref({
         { required: true, message: '请输入文章标题', trigger: 'blur' }
     ],
     digest: [
-        { required: true, message: '请输入文章摘要', trigger: 'blur' }
+        { required: false }
     ],
     author: [
-        { required: true, message: '请输入作者', trigger: 'blur' }
+        { required: false }
     ],
     thumbMediaId: [
-        { required: true, message: '请输入封面图片ID', trigger: 'blur' }
+        {
+            validator: (rule, value, callback) => {
+                if (articleForm.value.articleType === 'news' && !value) {
+                    callback(new Error('请输入封面图片ID'))
+                } else {
+                    callback()
+                }
+            },
+            trigger: 'blur'
+        }
+    ],
+    imageInfo: [
+        {
+            validator: (rule, value, callback) => {
+                if (articleForm.value.articleType === 'newspic' && (!value || value.length === 0)) {
+                    callback(new Error('请选择至少一张图片'))
+                } else {
+                    callback()
+                }
+            },
+            trigger: 'change'
+        }
     ],
     content: [
-        { required: true, message: '请输入文章内容', trigger: 'blur' }
+        {
+            required: true,
+            message: '请输入内容',
+            trigger: 'blur'
+        }
     ]
 })
 
@@ -158,7 +288,10 @@ const loadArticleData = (articleId) => {
                 // 设置表单数据
                 articleForm.value = {
                     ...articleForm.value,
-                    ...articleData
+                    ...articleData,
+                    // // 保持从路由参数中获取的产品ID和平台ID
+                    // productId: route.query.productId || '',
+                    // platformId: route.query.platformId || ''
                 }
                 // 初始化编辑器内容
                 initEditor()
@@ -185,7 +318,6 @@ onMounted(() => {
         articleForm.value.id = articleId
         // 加载文章数据
         loadArticleData(articleId)
-        console.log('编辑文章ID:', articleId)
     } else {
         // 监听iframe加载完成事件
         if (ueIframe.value) {
@@ -227,15 +359,16 @@ const initEditor = () => {
 
 // 导入草稿相关API
 import { addDraft, updateDraft, getDraftDetail } from '@/api/article'
+// 导入永久素材API
+import { getPermanentMaterialsList } from '@/api/material/permanentMaterials'
+import { getMediaProductList } from '@/api/media/mediaProduct/index'
 // 导入Base64处理库
 import { Base64 } from 'js-base64'
 
 // 保存草稿
 const handleSaveDraft = () => {
     articleFormRef.value.validate(valid => {
-        if (valid) {
-            console.log('表单数据:', articleForm.value.content)
-            
+        if (valid) {            
             // 将content进行base64编码
             const encodedContent = Base64.encode(articleForm.value.content)
             
@@ -243,7 +376,8 @@ const handleSaveDraft = () => {
                 ...articleForm.value,
                 content: encodedContent,
                 needOpenComment: parseInt(articleForm.value.needOpenComment),
-                onlyFansCanComment: parseInt(articleForm.value.onlyFansCanComment)
+                onlyFansCanComment: parseInt(articleForm.value.onlyFansCanComment),
+                accountId: parseAccountIdFromQuery(route.query.accountId)
             }
             
             // 根据是否有id参数判断是新建还是编辑模式
@@ -305,7 +439,148 @@ const getIframeUEditorContent = () => {
     
     // 获取编辑器内容并赋值给表单字段
     articleForm.value.content = ueInstance.getContent()
-    console.log('iframe中UEditor的内容:', articleForm.value.content)
+}
+
+// 文章类型切换
+const handleArticleTypeChange = () => {
+    if (articleFormRef.value) {
+        articleFormRef.value.clearValidate('thumbMediaId')
+        articleFormRef.value.clearValidate('content')
+    }
+}
+
+// 打开图片选择弹窗
+const openImageSelector = async () => {
+    imageSelectorVisible.value = true
+    selectedImages.value = []
+    await loadImageList()
+}
+
+// 加载图片列表
+const loadImageList = async () => {
+    const loadingMask = ElLoading.service({
+        lock: true,
+        text: '正在加载图片...',
+        background: 'rgba(0, 0, 0, 0.5)'
+    })
+
+    try {
+        // 先获取产品列表，找到当前平台对应的accountId
+        const productRes = await getMediaProductList({
+            pageNum: 1,
+            pageSize: 1000000,
+            queryConfig: {
+                queryProduct: true,
+                queryChannels: true,
+                queryAccount: true,
+            }
+        })
+
+        if (productRes.code === 200) {
+            // 转换数据结构，与 permanentMaterials/index.vue 保持一致
+            const rawProducts = productRes.rows || productRes.data?.rows || productRes.data || []
+            const productList = rawProducts.map(item => ({
+                id: item.baseInfo?.id,
+                name: item.baseInfo?.productName,
+                platforms: (item.channelDTOList || [])
+                    .filter(channel => Array.isArray(channel.accountDTOList) && channel.accountDTOList.length > 0)
+                    .map(channel => ({
+                        id: channel.id,
+                        name: channel.channelName,
+                        type: channel.channelType,
+                        accountDTOList: channel.accountDTOList
+                    }))
+            })).filter(item => item.platforms.length > 0)
+
+            // 从产品列表中找到与当前平台ID匹配的平台
+            const platformId = articleForm.value.platformId
+            let targetAccountIds = []
+
+            for (const product of productList) {
+                const platform = product.platforms.find(p => String(p.id) === String(platformId))
+                if (platform && platform.accountDTOList.length > 0) {
+                    const accountIds = (platform.accountDTOList || [])
+                        .map(account => account.id)
+                        .filter(id => id !== undefined && id !== null)
+                    targetAccountIds = accountIds
+                    break
+                }
+            }
+
+            // 如果没找到，使用路由参数中的accountId
+            if (targetAccountIds.length === 0) {
+                const fallbackAccountId = parseAccountIdFromQuery(route.query.accountId)
+                if (fallbackAccountId) {
+                    targetAccountIds = [fallbackAccountId]
+                }
+            }
+
+            if (targetAccountIds.length === 0) {
+                ElMessage.warning('当前平台未绑定账号，请先绑定后再操作')
+                imageTableData.value = []
+                return
+            }
+
+            // 使用获取到的accountIds请求永久素材列表
+            const materialsRes = await getPermanentMaterialsList({
+                pageNum: 1,
+                pageSize: 1000000,
+                accountIds: targetAccountIds
+            })
+
+            if (materialsRes.code === 200) {
+                imageTableData.value = materialsRes.data?.list || materialsRes.data || []
+            } else {
+                ElMessage.error(materialsRes.message || '加载图片列表失败')
+            }
+        } else {
+            ElMessage.error(productRes.message || '获取产品列表失败')
+        }
+    } catch (error) {
+        ElMessage.error('加载图片列表失败')
+        console.error('加载图片列表失败:', error)
+    } finally {
+        loadingMask.close()
+    }
+}
+
+// 处理图片选择变化
+const handleImageSelectionChange = (selection) => {
+    selectedImages.value = selection
+}
+
+// 判断图片是否已选
+const isImageSelected = (mediaId) => {
+    return selectedImages.value.some(img => img.mediaId === mediaId)
+}
+
+// 确认图片选择
+const confirmImageSelection = () => {
+    if (selectedImages.value.length === 0) {
+        ElMessage.warning('请至少选择一张图片')
+        return
+    }
+    articleForm.value.imageInfo = [...selectedImages.value]
+    imageSelectorVisible.value = false
+    ElMessage.success(`已选择 ${selectedImages.value.length} 张图片，第一张为封面图`)
+}
+
+// 移除已选图片
+const removeImage = (index) => {
+    articleForm.value.imageInfo.splice(index, 1)
+}
+
+// 格式化时间戳
+const formatTimestamp = (timestamp) => {
+    if (!timestamp) return ''
+    const date = new Date(timestamp * 1000)
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    const hours = String(date.getHours()).padStart(2, '0')
+    const minutes = String(date.getMinutes()).padStart(2, '0')
+    const seconds = String(date.getSeconds()).padStart(2, '0')
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
 }
 
 // 返回按钮
@@ -356,5 +631,105 @@ const handleBack = () => {
     width: 100% !important;
     height: 580px;
     border: none;
+}
+
+.image-selection-container {
+    .no-image {
+        display: flex;
+        align-items: center;
+    }
+
+    .selected-images {
+        .image-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .image-item {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 2px solid transparent;
+
+            &.is-cover {
+                border-color: #409eff;
+            }
+
+            .el-image {
+                width: 100%;
+                height: 100%;
+            }
+
+            .cover-tag {
+                position: absolute;
+                top: 0;
+                left: 0;
+                background-color: #409eff;
+                color: white;
+                font-size: 12px;
+                padding: 2px 6px;
+            }
+
+            .remove-icon {
+                position: absolute;
+                top: 4px;
+                right: 4px;
+                background-color: rgba(0, 0, 0, 0.5);
+                color: white;
+                border-radius: 50%;
+                width: 20px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                opacity: 0;
+                transition: opacity 0.3s;
+
+                &:hover {
+                    background-color: rgba(0, 0, 0, 0.7);
+                }
+            }
+
+            &:hover .remove-icon {
+                opacity: 1;
+            }
+        }
+
+        .image-actions {
+            display: flex;
+            gap: 10px;
+        }
+    }
+}
+
+.simple-editor-container {
+    width: 100%;
+}
+
+.image-selector-toolbar {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f5f7fa;
+    border-radius: 4px;
+}
+
+.image-container {
+    width: 60px;
+    height: 60px;
+
+    .el-image {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.truncated-text {
+    font-size: 12px;
+    color: #999;
 }
 </style>
