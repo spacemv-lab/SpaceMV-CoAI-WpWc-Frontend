@@ -1,3 +1,7 @@
+<!--
+ * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
+ * This project is licensed under the MIT License - see the LICENSE file in the project root for details.
+-->
 <template>
    <el-form ref="pwdRef" :model="user" :rules="rules" label-width="80px">
       <el-form-item label="旧密码" prop="oldPassword">
@@ -48,8 +52,8 @@ const rules = ref({
 function submit() {
   proxy.$refs.pwdRef.validate(valid => {
     if (valid) {
-      updateUserPwd(user.oldPassword, user.newPassword).then(response => {
-      // updateUserPwd(encrypt(user.oldPassword), encrypt(user.newPassword)).then(response => {
+      // updateUserPwd(user.oldPassword, user.newPassword).then(response => {
+      updateUserPwd(encrypt(user.oldPassword), encrypt(user.newPassword)).then(response => {
         proxy.$modal.msgSuccess("修改密码成功，请重新登录")
         // 退出登录
         setTimeout(() => {

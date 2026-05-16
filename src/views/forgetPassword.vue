@@ -50,6 +50,7 @@
             type="password"
             auto-complete="off"
             placeholder="密码（8-20位，支持字母和数字组合）"
+            show-password 
           >
             <template #prefix><svg-icon icon-class="password" class="el-input__icon input-icon" /></template>
           </el-input>
@@ -61,6 +62,7 @@
             auto-complete="off"
             placeholder="确认密码"
             @keyup.enter="handleResetPassword"
+            show-password 
           >
             <template #prefix><svg-icon icon-class="password" class="el-input__icon input-icon" /></template>
           </el-input>
@@ -124,6 +126,7 @@ import { ElMessage } from 'element-plus'
 import { Refresh } from '@element-plus/icons-vue'
 import { sendSmsCode, sendEmailCode, getCodeImg, checkHuman } from '@/api/newRegister'
 import { verifyCode, checkUnique, resetPassword } from '@/api/forgetPassword'
+import { encrypt } from "@/utils/jsencrypt"
 import defaultSettings from '@/settings'
 
 const router = useRouter()
@@ -324,7 +327,8 @@ function handleResetPassword() {
       const contact = forgotForm.value.contact
       const resetData = {
         accountName: contact,
-        password: resetForm.value.password
+        // password: resetForm.value.password
+        password: encrypt(resetForm.value.password)
       }
 
       resetPassword(resetData).then(res => {

@@ -1,3 +1,7 @@
+<!--
+ * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
+ * This project is licensed under the MIT License - see the LICENSE file in the project root for details.
+-->
 <template>
 	<div class="media-product" v-loading="loading">
 		<h2 class="page-title">自媒体产品管理</h2>
@@ -367,8 +371,8 @@ const handleBindAccountSubmit = () => {
 			channelId: 1,
 			accountName: bindAccountForm.value.accountName,
 			appId: bindAccountForm.value.appId,
-			// secret: encrypt(bindAccountForm.value.secret)
-			secret: bindAccountForm.value.secret
+			secret: encrypt(bindAccountForm.value.secret)
+			// secret: bindAccountForm.value.secret
 		}
 		bindMediaPlatform(mediaPlatform).then(response => {
 			if (response.code === 200) {

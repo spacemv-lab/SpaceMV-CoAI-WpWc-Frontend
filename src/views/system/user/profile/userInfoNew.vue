@@ -1,3 +1,7 @@
+<!--
+ * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
+ * This project is licensed under the MIT License - see the LICENSE file in the project root for details.
+-->
 
 <template>
    <el-form ref="userRef" :model="form" :rules="rules" label-width="80px">
@@ -7,6 +11,7 @@
       <el-form-item label="手机号码">
         <div class="contact-container">
             <span>{{form.phonenumber || '未绑定'}}</span>
+            <!-- <el-input v-model="form.phonenumber" placeholder="请输入手机号" size="small" /> -->
             <el-button v-if="form.email && !form.phonenumber" class="bind-btn" type="primary" plain size="small" @click="openBindDialog('phone')">去绑定手机</el-button>
         </div>
         </el-form-item>
@@ -24,6 +29,9 @@
       </el-form-item> -->
       <el-form-item>
         <div class="form-btn-container">
+          <!-- <el-button type="primary" @click="submit">保存</el-button>
+          <el-button type="danger" @click="close">关闭</el-button> -->
+
           <el-button v-if="registerStatus === '0'" type="danger" plain @click="openDeleteAccountDialog">注销账号</el-button>
           <el-tag v-else-if="registerStatus === '1'" type="info" effect="plain">已停用</el-tag>
           <div v-else-if="registerStatus === '2'" class="cancel-status-wrapper">

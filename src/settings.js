@@ -69,5 +69,6 @@ export default {
   /**
    * 底部版权文本内容
    */
-  footerContent: 'Copyright © 2020-2025 SpaceMV.com All Rights Reserved.',
-};
+  footerContent: `Copyright © 2020-${new Date().getFullYear()} SpaceMV.com All Rights Reserved.`
+}
+

@@ -31,6 +31,12 @@ import Layout from '@/layout';
 // 公共路由
 export const constantRoutes = [
   {
+    path: '/',
+    component: () => import('@/views/portal/index.vue'),
+    hidden: true,
+    meta: { title: '首页' }
+  },
+  {
     path: '/redirect',
     component: Layout,
     hidden: true,

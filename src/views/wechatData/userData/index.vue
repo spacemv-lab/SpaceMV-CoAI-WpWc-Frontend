@@ -60,9 +60,9 @@ License - see the LICENSE file in the project root for details. **/
         <div class="button-wrapper">
           <el-button type="primary" @click="downloadTemplate">模板下载</el-button>
         </div>
-        <div class="button-wrapper">
+        <!-- <div class="button-wrapper">
           <el-button type="primary" @click="importData">数据导入</el-button>
-        </div>
+        </div> -->
         <div class="button-wrapper">
           <el-button type="primary" @click="exportData">数据导出</el-button>
         </div>

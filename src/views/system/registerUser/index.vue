@@ -1,3 +1,7 @@
+<!--
+ * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
+ * This project is licensed under the MIT License - see the LICENSE file in the project root for details.
+-->
 <template>
   <div class="register-user-list">
     <div class="card-header">
@@ -89,7 +93,7 @@
       <div class="search-container">
         <el-form :inline="true" :model="cancelledSearchForm" class="search-form">
           <el-form-item label="用户名">
-            <el-input v-model="cancelledSearchForm.createBy" placeholder="请输入用户名" clearable />
+            <el-input v-model="cancelledSearchForm.userName" placeholder="请输入用户名" clearable />
           </el-form-item>
           <el-form-item label="手机号">
             <el-input v-model="cancelledSearchForm.phonenumber" placeholder="请输入手机号" clearable />
@@ -107,7 +111,7 @@
       <el-table :data="cancelledUserList" style="width: 100%" stripe>
         <el-table-column prop="logoutId" label="注销ID" width="100" />
         <el-table-column prop="userId" label="用户ID" width="100" />
-        <el-table-column prop="createBy" label="用户名" min-width="120" />
+        <el-table-column prop="userName" label="用户名" min-width="120" />
         <el-table-column prop="bindPhone" label="手机" min-width="120">
           <template #default="scope">
             <span>{{ scope.row.bindPhone || '-' }}</span>
@@ -293,13 +297,11 @@ const handleCancelledCurrentChange = (current) => {
 const getStatusType = (status) => {
   switch (status) {
     case '0':
-      return 'success'
-    case '1':
-      return 'warning'
-    case '2':
-      return 'danger'
-    case '3':
       return 'info'
+    case '1':
+      return 'danger'
+    case '2':
+      return 'warning'
     default:
       return ''
   }
@@ -309,13 +311,11 @@ const getStatusType = (status) => {
 const getStatusText = (status) => {
   switch (status) {
     case '0':
-      return '正常'
+      return '冷却中'
     case '1':
-      return '停用'
-    case '2':
-      return '注销中'
-    case '3':
       return '已注销'
+    case '2':
+      return '已撤销'
     default:
       return ''
   }

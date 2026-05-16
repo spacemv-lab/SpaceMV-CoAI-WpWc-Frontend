@@ -1,3 +1,7 @@
+<!--
+ * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
+ * This project is licensed under the MIT License - see the LICENSE file in the project root for details.
+-->
 <template>
   <div class="register">
     <el-form ref="registerRef" :model="registerForm" :rules="registerRules" class="register-form">
@@ -9,6 +13,7 @@
           size="large"
           auto-complete="off"
           placeholder="请输入用户名"
+          @input="registerForm.username === '' && (showUsernameExistsError = false)"
         >
           <template #prefix><svg-icon icon-class="user" class="el-input__icon input-icon" /></template>
         </el-input>
@@ -24,6 +29,7 @@
           size="large"
           auto-complete="off"
           placeholder="密码（8-20位，支持字母和数字组合）"
+          show-password
           @keyup.enter="handleRegister"
         >
           <template #prefix><svg-icon icon-class="password" class="el-input__icon input-icon" /></template>
@@ -36,6 +42,7 @@
           size="large"
           auto-complete="off"
           placeholder="确认密码"
+          show-password
           @keyup.enter="handleRegister"
         >
           <template #prefix><svg-icon icon-class="password" class="el-input__icon input-icon" /></template>
@@ -51,6 +58,9 @@
         >
           <template #prefix><svg-icon icon-class="phone" class="el-input__icon input-icon" /></template>
         </el-input>
+        <div v-if="showContactExistsError" class="username-exists-error">
+          该联系方式已被注册
+        </div>
       </el-form-item>
       <el-form-item prop="code">
         <el-input
@@ -182,6 +192,7 @@ import { CircleCheckFilled, Refresh } from '@element-plus/icons-vue'
 import { checkUnique, register, checkHuman, sendSmsCode, sendEmailCode, getCodeImg } from "@/api/newRegister"
 import defaultSettings from '@/settings'
 import { useRouter } from 'vue-router'
+import { encrypt } from "@/utils/jsencrypt"
 
 const title = import.meta.env.VITE_APP_TITLE
 const footerContent = defaultSettings.footerContent
@@ -202,6 +213,7 @@ const registerForm = ref({
 
 const showBackupContact = ref(false)
 const showUsernameExistsError = ref(false)
+const showContactExistsError = ref(false)
 const codeUrl = ref("")
 const captchaEnabled = ref(true)
 const loading = ref(false)
@@ -406,7 +418,29 @@ const registerRules = {
     }
   ],
   contact: [
-    { required: true, trigger: "blur", validator: validateContact }
+    { required: true, trigger: "blur", validator: validateContact },
+    {
+      trigger: "blur",
+      validator: (rule, value, callback) => {
+        if (value && value.length > 0) {
+          const params = { accountName: value }
+          checkUnique(params).then(res => {
+            if (res.code === 200 && res.data === false) {
+              showContactExistsError.value = true
+            } else {
+              showContactExistsError.value = false
+              callback()
+            }
+          }).catch(() => {
+            showContactExistsError.value = false
+            callback()
+          })
+        } else {
+          showContactExistsError.value = false
+          callback()
+        }
+      }
+    }
   ],
   password: [
     { required: true, trigger: "blur", validator: validatePassword }
@@ -436,7 +470,8 @@ function handleRegister() {
         phonenumber: hasEmailCode ? registerForm.value.backupContact : (isEmail ? '' : registerForm.value.contact),
         email: hasPhoneCode ? registerForm.value.backupContact : (isEmail ? registerForm.value.contact : ''),
         username: registerForm.value.username,
-        password: registerForm.value.password,
+        // password: registerForm.value.password,
+        password: encrypt(registerForm.value.password),
         source: 'from-source',
         phoneVerifyCode: isEmail ? '' : registerForm.value.code,
         emailVerifyCode: isEmail ? registerForm.value.code : ''
