@@ -52,7 +52,13 @@
 | vuedraggable | 4.1.0 | MIT | https://github.com/SortableJS/vue.draggable.next | 拖拽组件 |
 | @vueup/vue-quill | 1.2.0 | MIT | https://github.com/vueup/vue-quill | 富文本编辑器 |
 | js-base64 | 3.7.8 | BSD-2-Clause | https://github.com/dankogai/js-base64 | Base64 编解码 |
-| @vueup/vue-quill | 1.2.0 | MIT | https://github.com/vueup/vue-quill | Vue 3 富文本编辑器 |
+| gsap | ^3.15.0 | GreenSock Standard License | https://github.com/greensock/GSAP | 高性能动画库（免费商用，禁止用于构建与 Webflow 竞争的可视化动画构建工具） |
+| lucide-vue-next | ^0.562.0 | ISC | https://github.com/lucide-icons/lucide | Vue 3 图标库 |
+| three | ^0.184.0 | MIT | https://github.com/mrdoob/three.js | 3D 图形渲染库 |
+| tailwindcss | ^3.4.19 | MIT | https://github.com/tailwindlabs/tailwindcss | CSS 原子化框架 |
+| tailwindcss-animate | ^1.0.7 | MIT | https://github.com/tailwindlabs/tailwindcss-animate | Tailwind CSS 动画插件 |
+| autoprefixer | ^10.4.23 | MIT | https://github.com/postcss/autoprefixer | CSS 自动添加浏览器前缀 |
+| jsdom | ^22.1.0 | MIT | https://github.com/jsdom/jsdom | JavaScript DOM 模拟环境（测试用） |
 
 ---
 
@@ -92,9 +98,11 @@ UEditor（位于 `public/ueditor/`）内置了以下第三方子组件，均随 
 - **MIT License** - https://opensource.org/licenses/MIT
 
 ### 依赖协议类型统计
-- **MIT 协议**: 35+ 个依赖 - ✅ 完全兼容
+- **MIT 协议**: 40+ 个依赖 - ✅ 完全兼容
 - **Apache-2.0 协议**: 3 个依赖 (echarts, typescript, video.js) - ✅ 兼容
 - **BSD-2-Clause 协议**: 1 个依赖 (js-base64) - ✅ 兼容
+- **ISC 协议**: 1 个依赖 (lucide-vue-next) - ✅ 兼容
+- **GreenSock Standard License**: 1 个依赖 (gsap) - ⚠️ 需关注（见下方说明）
 
 ### 兼容性结论
 ✅ **所有依赖协议与 MIT 主协议兼容**
@@ -102,11 +110,23 @@ UEditor（位于 `public/ueditor/`）内置了以下第三方子组件，均随 
 - MIT 协议是最宽松的开源协议之一，允许在闭源项目中使用
 - Apache-2.0 协议与 MIT 协议兼容，但需要保留原始版权声明
 - BSD 协议与 MIT 协议完全兼容
+- ISC 协议与 MIT 协议功能等价，完全兼容
+
+### ⚠️ GSAP 协议特别说明
+
+GSAP 使用 **GreenSock Standard License**（非 OSI 标准开源协议），需特别关注：
+
+- **免费商用**：本项目作为 CRM 后台管理系统，不构成"Prohibited Uses"（即非可视化动画构建工具），可免费使用
+- **禁止性条款**：不得将 GSAP 用于构建与 Webflow 竞争的可视化动画构建工具
+- **非传染性**：该协议不影响项目主协议（MIT）的选择，不会对项目其他代码产生传染性要求
+- **协议地址**：https://gsap.com/standard-license
+
+**结论**：本项目使用 GSAP 的方式属于 Permitted Uses，与 MIT 主协议不冲突。
 
 ### 传染性协议排查
 ✅ **未发现 GPL/AGPL/LGPL 等传染性协议依赖**
 
-项目所有依赖均采用宽松型开源协议，无传染性协议风险。
+项目所有依赖均采用宽松型开源协议或免费商用协议，无传染性协议风险。
 
 ---
 
@@ -128,6 +148,16 @@ UEditor（位于 `public/ueditor/`）内置了以下第三方子组件，均随 
    - 保留原始版权声明
    - 不使用作者姓名进行推广
 
+4. **ISC 协议依赖**
+   - 保留原始版权声明
+   - 在衍生作品中包含许可声明
+
+5. **GreenSock Standard License 依赖 (gsap)**
+   - 免费商用，无需付费
+   - 不得将 GSAP 用于构建与 Webflow 竞争的可视化动画构建工具
+   - 不得移除 GSAP 中的版权声明或品牌标识
+   - 完整协议见 https://gsap.com/standard-license
+
 ### 声明文件位置
 
 - **项目根目录**: `LICENSE` - 项目主协议
@@ -139,6 +169,7 @@ UEditor（位于 `public/ueditor/`）内置了以下第三方子组件，均随 
 | 版本 | 修改日期 | 修改内容 | 修改人 |
 |-----|---------|---------|-------|
 | v1.0.0 | 2026-03-31 | 初始版本 | AI Assistant |
+| v1.1.0 | 2026-05-16 | 补充新增依赖（gsap, lucide-vue-next, three, tailwindcss, tailwindcss-animate, autoprefixer, jsdom）；修正 GSAP 协议标注为 GreenSock Standard License；更新协议兼容性分析 | AI Assistant |
 
 ---
 
@@ -152,4 +183,4 @@ UEditor（位于 `public/ueditor/`）内置了以下第三方子组件，均随 
 
 ---
 
-**最后更新**: 2026-03-31
+**最后更新**: 2026-05-16

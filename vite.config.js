@@ -2,6 +2,8 @@ import { defineConfig, loadEnv } from 'vite'
 import path from 'path'
 import createVitePlugins from './vite/plugins'
 import postcssPxToViewport from 'postcss-px-to-viewport'
+import tailwindcss from 'tailwindcss'
+import autoprefixer from 'autoprefixer'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode, command }) => {
@@ -46,12 +48,12 @@ export default defineConfig(({ mode, command }) => {
       open: true,
       proxy: {
         '/dev-api': {
-          target: 'http://10.0.10.102:8080',
+          target: 'http://localhost:8080',
           changeOrigin: true,
           rewrite: (p) => p.replace(/^\/dev-api/, '')
         },
         '/prod-api': {
-          target: 'http://10.0.10.102:8080',
+          target: 'http://localhost:8080',
           changeOrigin: true
         }
       }
@@ -70,6 +72,8 @@ export default defineConfig(({ mode, command }) => {
               }
             }
           },
+          tailwindcss,
+          autoprefixer,
           postcssPxToViewport({
             viewportWidth: 1920,    // 设计稿宽度为1920px
             viewportHeight: 1080,   // 设计稿高度为1080px
