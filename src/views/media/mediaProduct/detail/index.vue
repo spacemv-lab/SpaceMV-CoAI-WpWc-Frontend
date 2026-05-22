@@ -1,5 +1,7 @@
-/** * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司 *This project is licensed under the MIT
-License - see the LICENSE file in the project root for details. **/
+/**
+ * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
+ * This project is licensed under the MIT License - see the LICENSE file in the project root for details.
+ **/
 <template>
 	<div class="product-detail">
 		<!-- 产品信息 -->
@@ -31,7 +33,15 @@ License - see the LICENSE file in the project root for details. **/
 
 			<div class="sync-container">
 				<el-button type="primary" class="sync-button" @click="showDateRange = !showDateRange" :loading="syncLoading" :disabled="syncDisabled">数据同步</el-button>
+				<el-tooltip v-if="syncStatus === 'syncing'" content="数据同步中，请稍后刷新页面查看同步结果。" placement="top">
+					<el-icon class="sync-tip-icon"><Warning /></el-icon>
+				</el-tooltip>
+				<el-tag v-if="syncStatus === 'completed'" type="success" class="sync-status">同步成功</el-tag>
+				<el-tag v-else-if="syncStatus === 'failed'" type="danger" class="sync-status">同步失败</el-tag>
 				<span v-if="lastSyncTime" class="sync-time">最近一次同步时间：{{ lastSyncTime  }}</span>
+				<el-tooltip v-if="syncStatus === 'failed' && syncNoticeContent" :content="syncNoticeContent" placement="top">
+					<el-icon class="sync-tip-icon"><Warning /></el-icon>
+				</el-tooltip>
 				
 				<!-- 时间范围选择器 -->
 				<div v-if="showDateRange" class="date-range-inline">
@@ -47,7 +57,7 @@ License - see the LICENSE file in the project root for details. **/
 						:disabled-date="disabledDate"
 						class="date-range-picker"
 					/>
-					<el-button type="primary" size="small" @click="confirmSyncData" :loading="syncLoading" :disabled="syncDisabled">确认同步</el-button>
+					<el-button v-if="syncStatus !== 'syncing'" type="primary" size="small" @click="confirmSyncData" :loading="syncLoading" :disabled="syncDisabled">确认同步</el-button>
 				</div>
 			</div>
 
@@ -91,45 +101,47 @@ License - see the LICENSE file in the project root for details. **/
 			</el-tabs>
 		</el-card>
 
-    <!-- 标签页 -->
-  </div>
+		<!-- 标签页 -->
+
+	</div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElTooltip, ElIcon } from 'element-plus'
+import { Warning } from '@element-plus/icons-vue'
 import ArticleListComponent from '@/views/article/articleList/index.vue'
 import TrafficDataComponent from '@/views/wechatData/trafficData/index.vue'
 import UserDataComponent from '@/views/wechatData/userData/index.vue'
 import ContentDataComponent from '@/views/wechatData/contentData/index.vue'
 import UserProfileComponent from '@/views/wechatData/userProfile/index.vue'
-import { getMediaProductDetail, syncMediaPlatformData, getChannelList } from '@/api/media/mediaProduct/index'
+import { getMediaProductDetail, syncMediaPlatformData, getChannelList, getSyncStatus } from '@/api/media/mediaProduct/index'
 import { formatDate } from '@/utils/index'
 import useMediaProductStore from '@/store/modules/mediaProduct'
   
 // 路由实例
-const route = useRoute();
+const route = useRoute()
 // 产品ID
-const productId = route.params.id;
+const productId = route.params.id
 
 // 使用媒体产品store
-const mediaProductStore = useMediaProductStore();
+const mediaProductStore = useMediaProductStore()
 
 // 产品详情
-const productDetail = ref(null);
+const productDetail = ref(null)
 
 // 当前选中的标签页
-const activeTab = ref('traffic');
+const activeTab = ref('traffic')
 
 // 是否已获取产品详情
-const isDetailLoaded = ref(false);
+const isDetailLoaded = ref(false)
 
 // 平台列表
 const platformList = ref([])
 
 // 选中的平台索引（默认选中第一个）
-const selectedPlatformIndex = ref(0);
+const selectedPlatformIndex = ref(0)
 
 // 选择平台
 const selectPlatform = (index) => {
@@ -147,13 +159,19 @@ const selectPlatform = (index) => {
 }
 
 // 最近同步时间
-const lastSyncTime = ref('');
+const lastSyncTime = ref('')
 
 // 同步按钮加载状态
 const syncLoading = ref(false)
 
 // 同步按钮禁用状态
 const syncDisabled = ref(false)
+
+// 同步状态：'completed' | 'syncing'
+const syncStatus = ref('completed')
+
+// 同步失败时的提示内容
+const syncNoticeContent = ref('')
 
 // 显示时间范围选择器
 const showDateRange = ref(false)
@@ -179,10 +197,62 @@ const fetchProductDetail = () => {
 				mediaProductStore.setProductId(productId)
 			}
 			isDetailLoaded.value = true
+			
+			// 查询数据同步状态
+			fetchSyncStatus()
 		} else {
 			ElMessage.error('获取产品详情失败')
 		}
 	})
+}
+
+// 查询数据同步状态
+const fetchSyncStatus = () => {
+  // 使用分页参数：第一页，100条
+  getSyncStatus({ pageNum: 1, pageSize: 100 }).then(response => {
+    if (response.code === 200 && response.rows && response.rows.length > 0) {
+      // 过滤出noticeType为3的数据同步相关通知
+      const syncNotices = response.rows.filter(item => item.noticeType === '3')
+      
+      if (syncNotices.length === 0) {
+        // 没有进行过数据同步，放开禁用按钮
+        syncDisabled.value = false
+        syncLoading.value = false
+      } else {
+        // 找到最近的一条数据同步通知（按createTime降序排序取第一条）
+        syncNotices.sort((a, b) => new Date(b.createTime) - new Date(a.createTime))
+        const latestSyncNotice = syncNotices[0]
+        
+        // 根据接口返回设置同步状态（status: 0=已同步成功，1=同步失败，2=同步中）
+        if (latestSyncNotice.status === '0') {
+          syncStatus.value = 'completed'
+        } else if (latestSyncNotice.status === '1') {
+          syncStatus.value = 'failed'
+        } else if (latestSyncNotice.status === '2') {
+          syncStatus.value = 'syncing'
+        }
+        // 设置最近同步时间（使用createTime）
+        if (latestSyncNotice.createTime) {
+          lastSyncTime.value = formatDate(latestSyncNotice.createTime)
+        }
+        // 保存noticeContent字段用于展示
+        if (latestSyncNotice.noticeContent) {
+          syncNoticeContent.value = latestSyncNotice.noticeContent
+        }
+        // 只有同步中的时候，禁用按钮并展示loading
+        if (syncStatus.value === 'syncing') {
+          syncDisabled.value = true
+          syncLoading.value = true
+        } else {
+          // 同步成功和失败均不禁用数据同步按钮
+          syncDisabled.value = false
+          syncLoading.value = false
+        }
+      }
+    }
+  }).catch(() => {
+    // 查询失败不影响页面展示
+  })
 }
 
 // 处理时间范围变化
@@ -248,24 +318,17 @@ const confirmSyncData = async () => {
   const response = await syncMediaPlatformData(accountId, params)
   
   if (response.code === 200) {
-    // 更新最近同步时间
-    lastSyncTime.value = new Date().toLocaleString('zh-CN')
-    // 显示接口返回的提示信息
-    ElMessage.success(response.msg || '数据同步已经触发，完成同步大约需要30分钟时间，请稍后刷新查看')
-    // 禁用按钮30分钟
+    // 设置同步状态为同步中
+    syncStatus.value = 'syncing'
     syncDisabled.value = true
-    // 30分钟后启用按钮
-    setTimeout(() => {
-      syncDisabled.value = false
-    }, 30 * 60 * 1000)
+    // 显示接口返回的提示信息
+    ElMessage.success(response.msg || '数据同步已经触发，请稍后刷新查看')
     // 关闭时间范围选择器
     showDateRange.value = false
   } else {
     ElMessage.error('数据同步失败：' + (response.message || '未知错误'))
+    syncLoading.value = false
   }
-  
-  // 隐藏加载状态
-  syncLoading.value = false
 }
 
 // 数据同步（保持原函数名，点击按钮时显示时间选择器）
@@ -275,76 +338,76 @@ const syncData = () => {
 
 // 组件挂载时获取产品详情
 onMounted(() => {
-  fetchProductDetail();
-});
+	fetchProductDetail()
+})
 
 // 组件卸载时清理store数据
 onUnmounted(() => {
-  mediaProductStore.clearProductInfo();
-});
+	mediaProductStore.clearProductInfo()
+})
 </script>
 
 <style scoped>
 .product-detail {
-  padding: 20px;
+	padding: 20px;
 }
 
 .product-info-card {
-  margin-bottom: 20px;
+	margin-bottom: 20px;
 }
 
 .product-name {
-  font-size: 24px;
-  font-weight: bold;
-  margin: 0 0 10px 0;
+	font-size: 24px;
+	font-weight: bold;
+	margin: 0 0 10px 0;
 }
 
 .product-meta {
-  display: flex;
-  gap: 30px;
-  font-size: 14px;
-  color: #606266;
+	display: flex;
+	gap: 30px;
+	font-size: 14px;
+	color: #606266;
 }
 
 .platform-card {
-  margin-bottom: 20px;
-  padding: 15px;
+	margin-bottom: 20px;
+	padding: 15px;
 }
 
 .platform-selector {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 15px;
+	display: flex;
+	gap: 8px;
+	margin-bottom: 15px;
 }
 
 .platform-tag {
-  cursor: pointer;
-  transition: all 0.3s;
-  color: #606266;
+	cursor: pointer;
+	transition: all 0.3s;
+	color: #606266;
 }
 
 .platform-tag:hover {
-  opacity: 0.8;
+	opacity: 0.8;
 }
 
 .platform-tag.active {
-  background-color: #409eff;
-  border-color: #409eff;
-  color: #ffffff;
+	background-color: #409eff;
+	border-color: #409eff;
+	color: #ffffff;
 }
 
 .platform-bind-time {
-  color: #909399;
-  font-size: 14px;
+	color: #909399;
+	font-size: 14px;
 }
 
 .platform-meta {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-top: 10px;
-  font-size: 14px;
-  color: #606266;
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	margin-top: 10px;
+	font-size: 14px;
+	color: #606266;
 }
 
 .sync-container {
@@ -356,12 +419,12 @@ onUnmounted(() => {
 }
 
 .sync-time {
-  font-size: 14px;
-  color: #909399;
+	font-size: 14px;
+	color: #909399;
 }
 
 .sync-button {
-  margin-bottom: 0;
+	margin-bottom: 0;
 }
 
 .date-range-container {
@@ -388,14 +451,14 @@ onUnmounted(() => {
 }
 
 .unbind-button {
-  color: #409eff;
+	color: #409EFF;
 }
 
 .product-tabs {
-  margin-top: 20px;
+	margin-top: 20px;
 }
 
 .tab-content {
-  padding: 0;
+	padding: 0;
 }
 </style>

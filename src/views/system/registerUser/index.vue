@@ -63,7 +63,7 @@
         </el-table-column>
         <el-table-column prop="status" label="状态" width="100">
           <template #default="scope">
-            <el-tag :type="getStatusType(scope.row.status)">{{ getStatusText(scope.row.status) }}</el-tag>
+            <el-tag :type="getUserStatusType(scope.row.status)">{{ getUserStatusText(scope.row.status) }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="120" fixed="right">
@@ -293,29 +293,57 @@ const handleCancelledCurrentChange = (current) => {
   fetchCancelledUserList()
 }
 
-// 获取状态标签类型
-const getStatusType = (status) => {
+// 注册用户状态标签类型（0=正常 1=停用 2=锁定）
+const getUserStatusType = (status) => {
   switch (status) {
     case '0':
-      return 'info'
+      return 'success'
     case '1':
-      return 'danger'
-    case '2':
       return 'warning'
+    case '2':
+      return 'danger'
     default:
       return ''
   }
 }
 
-// 获取状态文本
+// 注册用户状态文本
+const getUserStatusText = (status) => {
+  switch (status) {
+    case '0':
+      return '正常'
+    case '1':
+      return '停用'
+    case '2':
+      return '锁定'
+    default:
+      return ''
+  }
+}
+
+// 注销用户状态标签类型（0=正常 1=注销申请中 2=已注销）
+const getStatusType = (status) => {
+  switch (status) {
+    case '0':
+      return 'success'
+    case '1':
+      return 'warning'
+    case '2':
+      return 'danger'
+    default:
+      return ''
+  }
+}
+
+// 注销用户状态文本
 const getStatusText = (status) => {
   switch (status) {
     case '0':
-      return '冷却中'
+      return '正常'
     case '1':
-      return '已注销'
+      return '注销申请中'
     case '2':
-      return '已撤销'
+      return '已注销'
     default:
       return ''
   }

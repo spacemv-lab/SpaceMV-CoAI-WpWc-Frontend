@@ -92,7 +92,7 @@
       </div>
       <el-form-item v-if="showBackupContact" prop="backupContact">
         <el-input
-          v-model="registerForm.backupContact"
+          v-model="backupContactValue"
           type="text"
           size="large"
           auto-complete="off"
@@ -189,7 +189,7 @@
 import { ref, getCurrentInstance, computed } from "vue"
 import { ElMessageBox, ElMessage } from "element-plus"
 import { CircleCheckFilled, Refresh } from '@element-plus/icons-vue'
-import { checkUnique, register, checkHuman, sendSmsCode, sendEmailCode, getCodeImg } from "@/api/newRegister"
+import { checkUnique, register, checkHuman, sendSmsCode, sendEmailCode, sendCode, getCodeImg } from "@/api/newRegister"
 import defaultSettings from '@/settings'
 import { useRouter } from 'vue-router'
 import { encrypt } from "@/utils/jsencrypt"
@@ -208,10 +208,44 @@ const registerForm = ref({
   confirmPassword: "",
   code: "",
   backupContact: "",
+  bakPhone: "",
+  bakEmail: "",
   agree: false
 })
 
+const isPhoneRegister = computed(() => {
+  const contact = registerForm.value.contact
+  return contact && !contact.includes('@')
+})
+
+const isEmailRegister = computed(() => {
+  const contact = registerForm.value.contact
+  return contact && contact.includes('@')
+})
+
 const showBackupContact = ref(false)
+
+const backupContactPlaceholder = computed(() => {
+  const isEmail = registerForm.value.contact.includes('@')
+  if (!registerForm.value.contact) {
+    return '请输入备用联系方式'
+  }
+  return isEmail ? '请输入备用手机号' : '请输入备用邮箱'
+})
+
+const toggleBackupContact = () => {
+  showBackupContact.value = !showBackupContact.value
+}
+
+const backupContactValue = computed({
+  get: () => {
+    return registerForm.value.backupContact
+  },
+  set: (value) => {
+    registerForm.value.backupContact = value
+  }
+})
+
 const showUsernameExistsError = ref(false)
 const showContactExistsError = ref(false)
 const codeUrl = ref("")
@@ -249,18 +283,6 @@ const codePlaceholder = computed(() => {
   }
   return isEmail ? '邮箱验证码' : '手机验证码'
 })
-
-const backupContactPlaceholder = computed(() => {
-  const isEmail = registerForm.value.contact.includes('@')
-  if (!registerForm.value.contact) {
-    return '请输入备用联系方式'
-  }
-  return isEmail ? '请输入备用手机号' : '请输入备用邮箱'
-})
-
-const toggleBackupContact = () => {
-  showBackupContact.value = !showBackupContact.value
-}
 
 const validateUsername = (rule, value, callback) => {
   if (!value) {
@@ -317,6 +339,32 @@ const validateContact = (rule, value, callback) => {
   }
 }
 
+const validateBackupContact = (rule, value, callback) => {
+  if (!value) {
+    callback()
+    return
+  }
+  
+  const mainContact = registerForm.value.contact
+  const isEmailRegister = mainContact.includes('@')
+  
+  if (isEmailRegister) {
+    const phoneRegex = /^1[3-9]\d{9}$/
+    if (!phoneRegex.test(value)) {
+      callback(new Error("请输入正确的手机号格式"))
+    } else {
+      callback()
+    }
+  } else {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(value)) {
+      callback(new Error("请输入正确的邮箱格式"))
+    } else {
+      callback()
+    }
+  }
+}
+
 const validatePassword = (rule, value, callback) => {
   if (!value) {
     callback(new Error("请输入密码"))
@@ -361,29 +409,6 @@ const validateCode = (rule, value, callback) => {
   callback()
 }
 
-const validateBackupContact = (rule, value, callback) => {
-  if (!value) {
-    callback()
-    return
-  }
-  const isEmail = registerForm.value.contact.includes('@')
-  if (isEmail) {
-    const phoneRegex = /^1[3-9]\d{9}$/
-    if (!phoneRegex.test(value)) {
-      callback(new Error("请输入正确的手机号格式"))
-    } else {
-      callback()
-    }
-  } else {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(value)) {
-      callback(new Error("请输入正确的邮箱格式"))
-    } else {
-      callback()
-    }
-  }
-}
-
 const validateAgree = (rule, value, callback) => {
   if (!value) {
     callback(new Error("请阅读并勾选服务条款"))
@@ -399,7 +424,7 @@ const registerRules = {
       trigger: "blur",
       validator: (rule, value, callback) => {
         if (value && value.length > 0) {
-          checkUnique({ accountName: value }).then(res => {
+          checkUnique({ fieldType: 'username', fieldValue: value, productLine: 'spacemv-coai' }).then(res => {
             if (res.code === 200 && res.data === false) {
               showUsernameExistsError.value = true
             } else {
@@ -423,8 +448,8 @@ const registerRules = {
       trigger: "blur",
       validator: (rule, value, callback) => {
         if (value && value.length > 0) {
-          const params = { accountName: value }
-          checkUnique(params).then(res => {
+          const fieldType = value.includes('@') ? 'email' : 'phone'
+          checkUnique({ fieldType: fieldType, fieldValue: value, productLine: 'spacemv-coai' }).then(res => {
             if (res.code === 200 && res.data === false) {
               showContactExistsError.value = true
             } else {
@@ -466,15 +491,24 @@ function handleRegister() {
       const isEmail = registerForm.value.contact.includes('@')
       const hasEmailCode = isEmail && registerForm.value.code
       const hasPhoneCode = !isEmail && registerForm.value.code
+      // const registerData = {
+      //   phonenumber: hasEmailCode ? registerForm.value.backupContact : (isEmail ? '' : registerForm.value.contact),
+      //   email: hasPhoneCode ? registerForm.value.backupContact : (isEmail ? registerForm.value.contact : ''),
+      //   username: registerForm.value.username,
+      //   // password: registerForm.value.password,
+      //   password: encrypt(registerForm.value.password),
+      //   source: 'from-source',
+      //   phoneVerifyCode: isEmail ? '' : registerForm.value.code,
+      //   emailVerifyCode: isEmail ? registerForm.value.code : ''
+      // }
       const registerData = {
-        phonenumber: hasEmailCode ? registerForm.value.backupContact : (isEmail ? '' : registerForm.value.contact),
-        email: hasPhoneCode ? registerForm.value.backupContact : (isEmail ? registerForm.value.contact : ''),
-        username: registerForm.value.username,
-        // password: registerForm.value.password,
+        channelType: isEmail ? 'email' : 'phone',
+        channelAccount: registerForm.value.contact,
+        verifyCode: registerForm.value.code,
         password: encrypt(registerForm.value.password),
-        source: 'from-source',
-        phoneVerifyCode: isEmail ? '' : registerForm.value.code,
-        emailVerifyCode: isEmail ? registerForm.value.code : ''
+        username: registerForm.value.username,
+        bakPhone: isEmail ? registerForm.value.backupContact : '',
+        bakEmail: isEmail ? '' : registerForm.value.backupContact
       }
       register(registerData).then(res => {
         loading.value = false
@@ -501,10 +535,11 @@ function handleRegister() {
 
 function getCode() {
   getCodeImg().then(res => {
-    captchaEnabled.value = res.captchaEnabled === undefined ? true : res.captchaEnabled
+    const data = res.data || res
+    captchaEnabled.value = data.captchaEnabled === undefined ? true : data.captchaEnabled
     if (captchaEnabled.value) {
-      codeUrl.value = "data:image/gif;base64," + res.img
-      captchaUuid.value = res.uuid
+      codeUrl.value = "data:image/gif;base64," + data.img
+      captchaUuid.value = data.uuid
     }
   })
 }
@@ -530,7 +565,7 @@ function getVerificationCode() {
 
   const contact = registerForm.value.contact
   if (!contact) {
-    ElMessage.error('请输入手机号或邮箱')
+    ElMessage.error('请输入邮箱')
     return
   }
 
@@ -577,9 +612,12 @@ function verifyCaptcha() {
 function doSendVerificationCode() {
   const contact = registerForm.value.contact
   const isEmail = contact.includes('@')
-  const sendData = { [isEmail ? 'email' : 'phone']: contact }
+  const sendData = { 
+    channelType: isEmail ? 'email' : 'phone', 
+    channelAccount: contact 
+  }
 
-  const sendCodePromise = isEmail ? sendEmailCode(sendData) : sendSmsCode(sendData)
+  const sendCodePromise = sendCode(sendData)
 
   sendCodePromise.then(res => {
     if (res.code === 200) {

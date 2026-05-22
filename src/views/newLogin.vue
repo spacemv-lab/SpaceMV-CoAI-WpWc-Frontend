@@ -11,14 +11,14 @@
       <el-tabs v-model="activeTab" class="login-tabs">
         <el-tab-pane label="账号密码登录" name="password">
           <el-form ref="passwordLoginRef" :model="passwordLoginForm" :rules="passwordLoginRules" class="login-tab-form">
-            <el-form-item prop="username">
+            <el-form-item prop="channelAccount">
               <el-input
-                v-model="passwordLoginForm.username"
+                v-model="passwordLoginForm.channelAccount"
                 type="text"
                 size="large"
                 auto-complete="off"
                 placeholder="请输入手机号、邮箱或用户名"
-                @input="passwordLoginForm.username === '' && (showUserNotExistsError = false)"
+                @input="passwordLoginForm.channelAccount === '' && (showUserNotExistsError = false)"
               >
                 <template #prefix><svg-icon icon-class="user" class="el-input__icon input-icon" /></template>
               </el-input>
@@ -26,9 +26,9 @@
                 用户尚未注册，<span class="clickable-link" @click="router.push('/register')">去注册</span>
               </div>
             </el-form-item>
-            <el-form-item prop="password">
+            <el-form-item prop="credential">
               <el-input
-                v-model="passwordLoginForm.password"
+                v-model="passwordLoginForm.credential"
                 type="password"
                 size="large"
                 auto-complete="off"
@@ -69,9 +69,9 @@
         </el-tab-pane>
         <el-tab-pane label="手机验证码登录" name="phoneCode">
           <el-form ref="phoneLoginRef" :model="phoneLoginForm" :rules="phoneLoginRules" class="login-tab-form">
-            <el-form-item prop="phone">
+            <el-form-item prop="channelAccount">
               <el-input
-                v-model="phoneLoginForm.phone"
+                v-model="phoneLoginForm.channelAccount"
                 type="text"
                 size="large"
                 auto-complete="off"
@@ -79,10 +79,13 @@
               >
                 <template #prefix><svg-icon icon-class="phone" class="el-input__icon input-icon" /></template>
               </el-input>
+              <div v-if="showPhoneUserNotExistsError" class="user-not-exists-error">
+                用户尚未注册，<span class="clickable-link" @click="router.push('/register')">去注册</span>
+              </div>
             </el-form-item>
-            <el-form-item prop="phoneCode">
+            <el-form-item prop="credential">
               <el-input
-                v-model="phoneLoginForm.phoneCode"
+                v-model="phoneLoginForm.credential"
                 size="large"
                 auto-complete="off"
                 placeholder="请输入验证码"
@@ -166,7 +169,8 @@
 
 <script setup>
 import { getCodeImg } from "@/api/login"
-import { checkHuman, sendCode, phoneLogin } from "@/api/newLogin"
+import { checkHuman,  newLogin, } from "@/api/newLogin"
+import {  sendCode } from "@/api/newRegister"
 import { checkUnique } from "@/api/newRegister"
 import Cookies from "js-cookie"
 import { encrypt } from "@/utils/jsencrypt"
@@ -187,8 +191,8 @@ const activeTab = ref('password')
 
 // 账号密码登录表单
 const passwordLoginForm = ref({
-  username: "",
-  password: "",
+  channelAccount: "",
+  credential: "",
   rememberMe: false,
   code: "",
   uuid: ""
@@ -196,16 +200,23 @@ const passwordLoginForm = ref({
 const passwordLoginRef = ref(null)
 const passwordLoading = ref(false)
 const showUserNotExistsError = ref(false)
+const showPhoneUserNotExistsError = ref(false)
 
 // 账号密码登录验证规则
 const passwordLoginRules = {
-  username: [
-    { required: true, trigger: "blur", message: "请输入您的账号" },
+  channelAccount: [
+    { required: true, trigger: "blur", message: "请输入手机号、邮箱或用户名" },
     {
       trigger: "blur",
       validator: (rule, value, callback) => {
         if (value && value.length > 0) {
-          checkUnique({ accountName: value }).then(res => {
+          let fieldType = 'username'
+          if (value.includes('@')) {
+            fieldType = 'email'
+          } else if (/^1[3-9]\d{9}$/.test(value)) {
+            fieldType = 'phone'
+          }
+          checkUnique({ fieldType: fieldType, fieldValue: value, productLine: 'spacemv-coai' }).then(res => {
             if (res.code === 200 && res.data === true) {
               showUserNotExistsError.value = true
             } else {
@@ -223,22 +234,48 @@ const passwordLoginRules = {
       }
     }
   ],
-  password: [{ required: true, trigger: "blur", message: "请输入您的密码" }],
+  credential: [
+    { required: true, trigger: "blur", message: "请输入密码" }
+  ],
   code: [{ required: true, trigger: "change", message: "请输入验证码" }]
 }
 
 // 手机验证码登录表单
 const phoneLoginForm = ref({
-  phone: "",
-  phoneCode: ""
+  channelAccount: "",
+  credential: ""
 })
 const phoneLoginRef = ref(null)
 const phoneLoading = ref(false)
 
 // 手机验证码登录验证规则
 const phoneLoginRules = {
-  phone: [{ required: true, trigger: "blur", message: "请输入手机号" }, { pattern: /^1[3-9]\d{9}$/, trigger: "blur", message: "请输入正确的手机号" }],
-  phoneCode: [{ required: true, trigger: "blur", message: "请输入验证码" }, { length: 6, trigger: "blur", message: "验证码长度为6位" }]
+  channelAccount: [
+    { required: true, trigger: "blur", message: "请输入手机号" }, 
+    { pattern: /^1[3-9]\d{9}$/, trigger: "blur", message: "请输入正确的手机号" },
+    {
+      trigger: "blur",
+      validator: (rule, value, callback) => {
+        if (value && value.length > 0) {
+          checkUnique({ fieldType: 'phone', fieldValue: value, productLine: 'spacemv-coai' }).then(res => {
+            if (res.code === 200 && res.data === true) {
+              showPhoneUserNotExistsError.value = true
+            } else {
+              showPhoneUserNotExistsError.value = false
+              callback()
+            }
+          }).catch(() => {
+            showPhoneUserNotExistsError.value = false
+            callback()
+          })
+        } else {
+          showPhoneUserNotExistsError.value = false
+          callback()
+        }
+      }
+    }
+  ],
+  credential: [{ required: true, trigger: "blur", message: "请输入验证码" }, { length: 6, trigger: "blur", message: "验证码长度为6位" }]
 }
 
 // 验证码相关
@@ -269,29 +306,71 @@ watch(route, (newRoute) => {
 
 
 
+// function handlePasswordLogin() {
+//   passwordLoginRef.value.validate(valid => {
+//     if (valid) {
+//       passwordLoading.value = true
+//       // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码
+//       if (passwordLoginForm.value.rememberMe) {
+//         Cookies.set("channelAccount", passwordLoginForm.value.channelAccount, { expires: 30 })
+//         Cookies.set("credential", encrypt(passwordLoginForm.value.credential), { expires: 30 })
+//         Cookies.set("rememberMe", passwordLoginForm.value.rememberMe, { expires: 30 })
+//       } else {
+//         // 否则移除
+//         Cookies.remove("channelAccount")
+//         Cookies.remove("credential")
+//         Cookies.remove("rememberMe")
+//       }
+//       // 调用action的登录方法
+//       userStore.login({
+//         channelAccount: passwordLoginForm.value.channelAccount,
+//         credential: encrypt(passwordLoginForm.value.credential),
+//         loginType: "password",
+//         code: passwordLoginForm.value.code,
+//         uuid: captchaUuid.value
+//       }).then(() => {
+//         const query = route.query
+//         const otherQueryParams = Object.keys(query).reduce((acc, cur) => {
+//           if (cur !== "redirect") {
+//             acc[cur] = query[cur]
+//           }
+//           return acc
+//         }, {})
+//         router.push({ path: redirect.value || "/", query: otherQueryParams })
+//       }).catch(() => {
+//         passwordLoading.value = false
+//         // 重新获取验证码
+//         if (captchaEnabled.value) {
+//           getCode()
+//         }
+//       })
+//     }
+//   })
+// }
+
 function handlePasswordLogin() {
   passwordLoginRef.value.validate(valid => {
     if (valid) {
       passwordLoading.value = true
       // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码
-      if (passwordLoginForm.value.rememberMe) {
-        Cookies.set("username", passwordLoginForm.value.username, { expires: 30 })
-        Cookies.set("rememberMe", passwordLoginForm.value.rememberMe, { expires: 30 })
-        Cookies.remove("password")
-      } else {
-        // 否则移除
-        Cookies.remove("username")
-        Cookies.remove("password")
-        Cookies.remove("rememberMe")
-      }
-      // 调用action的登录方法
-      userStore.login({
-        username: passwordLoginForm.value.username,
-        // password: passwordLoginForm.value.password,
-        password: encrypt(passwordLoginForm.value.password),
+      // if (passwordLoginForm.value.rememberMe) {
+      //   Cookies.set("username", passwordLoginForm.value.username, { expires: 30 })
+      //   Cookies.set("password", encrypt(passwordLoginForm.value.password), { expires: 30 })
+      //   Cookies.set("rememberMe", passwordLoginForm.value.rememberMe, { expires: 30 })
+      // } else {
+      //   // 否则移除
+      //   Cookies.remove("username")
+      //   Cookies.remove("password")
+      //   Cookies.remove("rememberMe")
+      // }
+      const loginData = {
+        channelAccount: passwordLoginForm.value.channelAccount,
+        credential: encrypt(passwordLoginForm.value.credential),
+        channelType: "password",
         code: passwordLoginForm.value.code,
         uuid: captchaUuid.value
-      }).then(() => {
+      }
+      userStore.login(loginData).then(() => {
         const query = route.query
         const otherQueryParams = Object.keys(query).reduce((acc, cur) => {
           if (cur !== "redirect") {
@@ -302,7 +381,6 @@ function handlePasswordLogin() {
         router.push({ path: redirect.value || "/", query: otherQueryParams })
       }).catch(() => {
         passwordLoading.value = false
-        // 重新获取验证码
         if (captchaEnabled.value) {
           getCode()
         }
@@ -313,10 +391,11 @@ function handlePasswordLogin() {
 
 function getCode() {
   getCodeImg().then(res => {
-    captchaEnabled.value = res.captchaEnabled === undefined ? true : res.captchaEnabled
+    const data = res.data || res
+    captchaEnabled.value = data.captchaEnabled === undefined ? true : data.captchaEnabled
     if (captchaEnabled.value) {
-      codeUrl.value = "data:image/gif;base64," + res.img
-      captchaUuid.value = res.uuid
+      codeUrl.value = "data:image/gif;base64," + data.img
+      captchaUuid.value = data.uuid
     }
   })
 }
@@ -326,11 +405,16 @@ function handlePhoneLogin() {
   phoneLoginRef.value.validate((valid) => {
     if (valid) {
       phoneLoading.value = true
+      // const loginData = {
+      //   phone: phoneLoginForm.value.phone,
+      //   code: phoneLoginForm.value.phoneCode
+      // }
       const loginData = {
-        phone: phoneLoginForm.value.phone,
-        code: phoneLoginForm.value.phoneCode
+        channelAccount: phoneLoginForm.value.channelAccount,
+        credential: phoneLoginForm.value.credential,
+        loginType: "sms"
       }
-      phoneLogin(loginData).then(() => {
+      userStore.login(loginData).then(() => {
         phoneLoading.value = false
         const query = route.query
         const otherQueryParams = Object.keys(query).reduce((acc, cur) => {
@@ -349,7 +433,7 @@ function handlePhoneLogin() {
 
 // 获取手机验证码
 function getPhoneCode() {
-  const phone = phoneLoginForm.value.phone
+  const phone = phoneLoginForm.value.channelAccount
   if (!phone) {
     ElMessage.error('请输入手机号')
     return
@@ -385,8 +469,12 @@ function verifyCaptcha() {
 
 // 发送手机验证码
 function sendPhoneCode() {
-  const phone = phoneLoginForm.value.phone
-  sendCode({ phone }).then(() => {
+  const phone = phoneLoginForm.value.channelAccount
+   const sendData = { 
+    channelType: 'phone', 
+    channelAccount: phone, 
+  }
+  sendCode(sendData).then(() => {
     ElMessage.success('验证码发送成功')
     startCountdown()
   }).catch(error => {

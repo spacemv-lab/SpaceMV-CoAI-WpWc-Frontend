@@ -88,3 +88,20 @@ export function getChannelList(productId) {
     data: productId,
   })
 }
+
+// 查询数据同步状态
+export function getSyncStatus(query) {
+  return request({
+    url: '/system/notice/list',
+    method: 'get',
+    params: query
+  })
+}
+
+// export function listNotice(query) {
+//   return request({
+//     url: '/system/notice/list',
+//     method: 'get',
+//     params: query
+//   })
+// }

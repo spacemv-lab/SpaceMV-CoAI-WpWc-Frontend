@@ -1,7 +1,12 @@
+/**
+ * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
+ * This project is licensed under the MIT License - see the LICENSE file in the project root for details.
+ **/
 import router from './router'
 import { ElMessage } from 'element-plus'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+// import { getToken, getRefreshToken } from '@/utils/auth'
 import { getToken } from '@/utils/auth'
 import { isHttp, isPathMatch } from '@/utils/validate'
 import { isRelogin } from '@/utils/request'
@@ -19,6 +24,7 @@ const isWhiteList = (path) => {
 
 router.beforeEach((to, from, next) => {
   NProgress.start()
+  // if (getToken() || getRefreshToken()) {
   if (getToken()) {
     to.meta.title && useSettingsStore().setTitle(to.meta.title)
     if (to.path === '/login') {

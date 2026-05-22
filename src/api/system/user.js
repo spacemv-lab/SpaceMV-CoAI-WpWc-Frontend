@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
+ * This project is licensed under the MIT License - see the LICENSE file in the project root for details.
+ **/
 import request from '@/utils/request';
 import { parseStrEmpty } from '@/utils/tianxun';
 
@@ -88,13 +92,25 @@ export function updateUserProfile(data) {
 }
 
 // 用户密码重置
+// export function updateUserPwd(oldPassword, newPassword) {
+//   const data = {
+//     oldPassword,
+//     newPassword
+//   }
+//   return request({
+//     url: '/system/user/profile/updatePwd',
+//     method: 'put',
+//     data: data
+//   })
+// }
+
 export function updateUserPwd(oldPassword, newPassword) {
   const data = {
     oldPassword,
     newPassword,
   };
   return request({
-    url: '/system/user/profile/updatePwd',
+    url: '/txwx-iam/auth/v1/user/password',
     method: 'put',
     data: data,
   });

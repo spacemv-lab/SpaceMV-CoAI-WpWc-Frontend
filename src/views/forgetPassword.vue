@@ -7,7 +7,7 @@
     <div class="forget-password-form">
       <h3 class="title">找回密码</h3>
 
-      <el-form ref="forgotRef" :model="forgotForm" :rules="forgotRules" v-if="step === 1">
+      <el-form ref="forgotRef" :model="forgotForm" :rules="forgotRules">
         <p class="forgot-tip">请输入您已经绑定的手机号或邮箱</p>
         <el-form-item prop="contact">
           <el-input
@@ -36,20 +36,16 @@
               @click="getCode"
               :disabled="countdown > 0"
             >
-              {{ countdown > 0 ? `${countdown}s后重试` : '获取验证码' }}
+              {{ countdown > 0 ? `${countdown}s 后重试` : '获取验证码' }}
             </el-button>
           </div>
         </el-form-item>
-      </el-form>
-
-      <el-form ref="resetRef" :model="resetForm" :rules="resetRules" v-else-if="step === 2">
-        <p class="forgot-tip">请设置新密码</p>
         <el-form-item prop="password">
           <el-input
-            v-model="resetForm.password"
+            v-model="forgotForm.password"
             type="password"
             auto-complete="off"
-            placeholder="密码（8-20位，支持字母和数字组合）"
+            placeholder="密码（8-20 位，支持字母和数字组合）"
             show-password 
           >
             <template #prefix><svg-icon icon-class="password" class="el-input__icon input-icon" /></template>
@@ -57,11 +53,11 @@
         </el-form-item>
         <el-form-item prop="confirmPassword">
           <el-input
-            v-model="resetForm.confirmPassword"
+            v-model="forgotForm.confirmPassword"
             type="password"
             auto-complete="off"
             placeholder="确认密码"
-            @keyup.enter="handleResetPassword"
+            @keyup.enter="toResetPwd"
             show-password 
           >
             <template #prefix><svg-icon icon-class="password" class="el-input__icon input-icon" /></template>
@@ -71,9 +67,7 @@
 
       <div class="form-footer">
         <el-button @click="goBack">返回登录</el-button>
-        <el-button type="primary" @click="step === 1 ? toResetPwd() : handleResetPassword()">
-          {{ step === 1 ? '重置密码' : '确定' }}
-        </el-button>
+        <el-button type="primary" @click="toResetPwd">重置密码</el-button>
       </div>
 
     </div>
@@ -124,8 +118,9 @@ import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Refresh } from '@element-plus/icons-vue'
-import { sendSmsCode, sendEmailCode, getCodeImg, checkHuman } from '@/api/newRegister'
+import { sendSmsCode, sendEmailCode, sendCode, getCodeImg, checkHuman } from '@/api/newRegister'
 import { verifyCode, checkUnique, resetPassword } from '@/api/forgetPassword'
+// import { sendCode } from '@/api/newLogin'
 import { encrypt } from "@/utils/jsencrypt"
 import defaultSettings from '@/settings'
 
@@ -134,10 +129,8 @@ const router = useRouter()
 
 const footerContent = defaultSettings.footerContent
 
-const step = ref(1)
 const countdown = ref(0)
 const forgotRef = ref(null)
-const resetRef = ref(null)
 
 // Captcha related variables
 const showCaptchaDialog = ref(false)
@@ -157,30 +150,52 @@ const captchaLockCountdown = ref(0)
 
 const forgotForm = ref({
   contact: '',
-  code: ''
-})
-
-const resetForm = ref({
+  code: '',
   password: '',
   confirmPassword: ''
 })
 
-const forgotRules = {
-  contact: [{ required: true, trigger: 'blur', message: '请输入手机号或邮箱' }],
-  code: [{ required: true, trigger: 'blur', message: '请输入验证码' }]
-}
+const showContactNotExistsError = ref(false)
 
-const resetRules = {
+const forgotRules = {
+  contact: [
+    { required: true, trigger: 'blur', message: '请输入手机号或邮箱' },
+    {
+      validator: (rule, value, callback) => {
+        if (value && value.length > 0) {
+          const isEmail = value.includes('@')
+          checkUnique({ fieldType: isEmail ? 'email' : 'phone', fieldValue: value, productLine: 'spacemv-coai' }).then(res => {
+            if (res.code === 200 && res.data === true) {
+              // checkUnique返回true表示用户不存在
+              showContactNotExistsError.value = true
+              callback(new Error('该账号不存在'))
+            } else {
+              showContactNotExistsError.value = false
+              callback()
+            }
+          }).catch(() => {
+            showContactNotExistsError.value = false
+            callback()
+          })
+        } else {
+          showContactNotExistsError.value = false
+          callback()
+        }
+      },
+      trigger: 'blur'
+    }
+  ],
+  code: [{ required: true, trigger: 'blur', message: '请输入验证码' }],
   password: [
     { required: true, trigger: 'blur', message: '请输入密码' },
-    { min: 8, max: 20, trigger: 'blur', message: '密码长度为8-20位' },
+    { min: 8, max: 20, trigger: 'blur', message: '密码长度为 8-20 位' },
     { pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$/, trigger: 'blur', message: '密码必须包含字母和数字' }
   ],
   confirmPassword: [
     { required: true, trigger: 'blur', message: '请确认密码' },
     {
       validator: (rule, value, callback) => {
-        if (value !== resetForm.value.password) {
+        if (value !== forgotForm.value.password) {
           callback(new Error('两次输入密码不一致'))
         } else {
           callback()
@@ -224,10 +239,11 @@ function getCode() {
 
 function getCaptcha() {
   getCodeImg().then(res => {
-    captchaEnabled.value = res.captchaEnabled === undefined ? true : res.captchaEnabled
+    const data = res.data || res
+    captchaEnabled.value = data.captchaEnabled === undefined ? true : data.captchaEnabled
     if (captchaEnabled.value) {
-      codeUrl.value = "data:image/gif;base64," + res.img
-      captchaUuid.value = res.uuid
+      codeUrl.value = "data:image/gif;base64," + data.img
+      captchaUuid.value = data.uuid
     }
   })
 }
@@ -275,9 +291,12 @@ function verifyCaptcha() {
 function doSendVerificationCode() {
   const contact = forgotForm.value.contact
   const isEmail = contact.includes('@')
-  const sendData = { [isEmail ? 'email' : 'phone']: contact }
+  const sendData = { 
+    channelType: isEmail ? 'email' : 'phone', 
+    channelAccount: contact 
+  }
 
-  const sendCodePromise = isEmail ? sendEmailCode(sendData) : sendSmsCode(sendData)
+  const sendCodePromise = sendCode(sendData)
 
   sendCodePromise.then(res => {
     if (res.code === 200) {
@@ -305,56 +324,38 @@ function toResetPwd() {
   forgotRef.value.validate((valid) => {
     if (valid) {
       const contact = forgotForm.value.contact
-      const code = forgotForm.value.code
+      const password = forgotForm.value.password
 
-      Promise.all([
-        verifyCode({account: contact, code: code}),
-        checkUnique({accountName: contact})
-      ]).then(([verifyRes, checkRes]) => {
-        if (verifyRes.code === 200 && verifyRes.data === true && checkRes.code === 200 && checkRes.data === false) {
-          step.value = 2
-        } else {
-          ElMessage.error('账号验证失败')
-        }
-      })
+      handleResetPassword(password)
     }
   })
 }
 
-function handleResetPassword() {
-  resetRef.value.validate((valid) => {
-    if (valid) {
-      const contact = forgotForm.value.contact
-      const resetData = {
-        accountName: contact,
-        // password: resetForm.value.password
-        password: encrypt(resetForm.value.password)
-      }
+function handleResetPassword(password) {
+  const contact = forgotForm.value.contact
+  const resetData = {
+    channelAccount: contact,
+    newPassword: encrypt(password),
+    verifyCode: forgotForm.value.code
+  }
 
-      resetPassword(resetData).then(res => {
-        if (res.code === 200 && res.data === true) {
-          ElMessage.success('密码重置成功')
-          router.push('/login')
-        } else {
-          ElMessage.error(res.msg || '密码重置失败')
-        }
-      }).catch(error => {
-        ElMessage.error(error.response?.data?.msg || '密码重置失败')
-      })
+  resetPassword(resetData).then(res => {
+    if (res.code === 200) {
+      ElMessage.success('密码重置成功')
+      router.push('/login')
+    } else {
+      ElMessage.error(res.msg || '密码重置失败')
     }
+  }).catch(error => {
+    ElMessage.error(error.response?.data?.msg || '密码重置失败')
   })
 }
 
 function resetFormFn() {
-  step.value = 1
-  forgotForm.value = { contact: '', code: '' }
-  resetForm.value = { password: '', confirmPassword: '' }
+  forgotForm.value = { contact: '', code: '', password: '', confirmPassword: '' }
   countdown.value = 0
   if (forgotRef.value) {
     forgotRef.value.resetFields()
-  }
-  if (resetRef.value) {
-    resetRef.value.resetFields()
   }
 }
 
