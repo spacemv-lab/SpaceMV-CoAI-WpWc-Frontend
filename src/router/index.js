@@ -1,10 +1,11 @@
-/**
+/** 
  * Copyright (c) 2018 RuoYi | Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
  *This project is licensed under the MIT License - see the LICENSE file in the project root for details.
- **/
-import { createWebHistory, createRouter } from 'vue-router';
+**/
+import { createWebHistory, createRouter } from 'vue-router'
+import { isMobile } from '@/utils/validate'
 /* Layout */
-import Layout from '@/layout';
+import Layout from '@/layout'
 
 /**
  * Note: 路由配置项
@@ -43,23 +44,23 @@ export const constantRoutes = [
     children: [
       {
         path: '/redirect/:path(.*)',
-        component: () => import('@/views/redirect/index.vue'),
-      },
-    ],
+        component: () => import('@/views/redirect/index.vue')
+      }
+    ]
   },
   {
     path: '/login',
-    component: () => import('@/views/newLogin'),
+    component: () => isMobile() ? import('@/views/mobileLogin') : import('@/views/newLogin'),
     hidden: true
   },
   {
     path: '/register',
-    component: () => import('@/views/newRegister'),
+    component: () => isMobile() ? import('@/views/mobileRegister') : import('@/views/newRegister'),
     hidden: true
   },
   {
     path: '/forgetPassword',
-    component: () => import('@/views/forgetPassword'),
+    component: () => isMobile() ? import('@/views/mobileForgetPassword') : import('@/views/forgetPassword'),
     hidden: true
   },
   {
@@ -73,15 +74,24 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/:pathMatch(.*)*',
+    path: "/:pathMatch(.*)*",
     component: () => import('@/views/error/404'),
-    hidden: true,
+    hidden: true
   },
   {
     path: '/401',
     component: () => import('@/views/error/401'),
-    hidden: true,
+    hidden: true
   },
+  // // 移动端自媒体产品详情页（不使用Layout）
+  // {
+  //   path: '/media/mediaProduct/:id',
+  //   component: () => import('@/views/media/mobileMediaProduct/detail/index.vue'),
+  //   name: 'MobileMediaProductDetail',
+  //   meta: { title: '自媒体产品详情', activeMenu: '/media/mediaProduct' },
+  //   hidden: true
+  // },
+
   // {
   //   path: '',
   //   component: Layout,
@@ -103,13 +113,13 @@ export const constantRoutes = [
     children: [
       {
         path: 'profile/:activeTab?',
-        component: () => import('@/views/system/user/profile/indexNew'),
+        component: () => isMobile() ? import('@/views/system/user/profile/mobileIndexNew.vue') : import('@/views/system/user/profile/indexNew'),
         name: 'Profile',
-        meta: { title: '个人中心', icon: 'user' },
-      },
-    ],
-  },
-];
+        meta: { title: '个人中心', icon: 'user' }
+      }
+    ]
+  }
+]
 
 // 动态路由，基于用户权限动态去加载
 export const dynamicRoutes = [
@@ -120,12 +130,12 @@ export const dynamicRoutes = [
     children: [
       {
         path: 'articleList/newArticle',
-        component: () => import('@/views/article/articleList/newArticle.vue'),
+        component: () => isMobile() ? import('@/views/article/mobileArticleList/newArticle.vue') : import('@/views/article/articleList/newArticle.vue'),
         name: 'NewArticle',
         meta: { title: '新建文章', activeMenu: '/article/articleList' },
-        hidden: true,
-      },
-    ],
+        hidden: true
+      }
+    ]
   },
   {
     path: '/system/user-auth',
@@ -137,9 +147,9 @@ export const dynamicRoutes = [
         path: 'role/:userId(\\d+)',
         component: () => import('@/views/system/user/authRole'),
         name: 'AuthRole',
-        meta: { title: '分配角色', activeMenu: '/system/user' },
-      },
-    ],
+        meta: { title: '分配角色', activeMenu: '/system/user' }
+      }
+    ]
   },
   {
     path: '/system/role-auth',
@@ -151,9 +161,9 @@ export const dynamicRoutes = [
         path: 'user/:roleId(\\d+)',
         component: () => import('@/views/system/role/authUser'),
         name: 'AuthUser',
-        meta: { title: '分配用户', activeMenu: '/system/role' },
-      },
-    ],
+        meta: { title: '分配用户', activeMenu: '/system/role' }
+      }
+    ]
   },
   {
     path: '/system/dict-data',
@@ -165,9 +175,9 @@ export const dynamicRoutes = [
         path: 'index/:dictId(\\d+)',
         component: () => import('@/views/system/dict/data'),
         name: 'Data',
-        meta: { title: '字典数据', activeMenu: '/system/dict' },
-      },
-    ],
+        meta: { title: '字典数据', activeMenu: '/system/dict' }
+      }
+    ]
   },
   {
     path: '/monitor/job-log',
@@ -179,9 +189,9 @@ export const dynamicRoutes = [
         path: 'index/:jobId(\\d+)',
         component: () => import('@/views/monitor/job/log'),
         name: 'JobLog',
-        meta: { title: '调度日志', activeMenu: '/monitor/job' },
-      },
-    ],
+        meta: { title: '调度日志', activeMenu: '/monitor/job' }
+      }
+    ]
   },
   {
     path: '/tool/gen-edit',
@@ -193,9 +203,9 @@ export const dynamicRoutes = [
         path: 'index/:tableId(\\d+)',
         component: () => import('@/views/tool/gen/editTable'),
         name: 'GenEdit',
-        meta: { title: '修改生成配置', activeMenu: '/tool/gen' },
-      },
-    ],
+        meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
+      }
+    ]
   },
   {
     path: '/media',
@@ -205,23 +215,23 @@ export const dynamicRoutes = [
     children: [
       {
         path: 'mediaProduct/:id',
-        component: () => import('@/views/media/mediaProduct/detail/index.vue'),
+        component: () => isMobile() ? import('@/views/media/mobileMediaProduct/detail/index.vue') :  import('@/views/media/mediaProduct/detail/index.vue'),
         name: 'MediaProductDetail',
-        meta: { title: '自媒体产品详情', activeMenu: '/media/mediaProduct' },
-      },
-    ],
-  },
-];
+        meta: { title: '自媒体产品详情', activeMenu: '/media/mediaProduct' }
+      }
+    ]
+  }
+]
 
 const router = createRouter({
   history: createWebHistory(),
   routes: constantRoutes,
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
-      return savedPosition;
+      return savedPosition
     }
-    return { top: 0 };
+    return { top: 0 }
   },
-});
+})
 
-export default router;
+export default router

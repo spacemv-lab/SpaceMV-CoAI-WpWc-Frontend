@@ -75,16 +75,16 @@ export default defineConfig(({ mode, command }) => {
           tailwindcss,
           autoprefixer,
           postcssPxToViewport({
-            viewportWidth: 1920,    // 设计稿宽度为1920px
-            viewportHeight: 1080,   // 设计稿高度为1080px
-            unitPrecision: 5,       // 保留5位小数，更精确
-            viewportUnit: 'vw',     // 转换为vw单位
-            minPixelValue: 1,       // 最小转换值为1px
-            selectorBlackList: ['.ignore-vw'], // 忽略某些选择器
-            exclude: [/node_modules/], // 排除node_modules
-            landscape: false,       // 不处理横屏
-            landscapeUnit: 'vw',  // 横屏单位
-            landscapeWidth: 1920  // 横屏宽度
+            viewportWidth: 1920,
+            viewportHeight: 1080,
+            unitPrecision: 5,
+            viewportUnit: 'vw',
+            minPixelValue: 1,
+            selectorBlackList: ['.ignore-vw'],
+            exclude: [/node_modules/],
+            landscape: false,
+            landscapeUnit: 'vw',
+            landscapeWidth: 1920
           })
         ]
       }

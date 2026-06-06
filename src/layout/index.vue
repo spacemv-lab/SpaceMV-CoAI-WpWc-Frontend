@@ -1,10 +1,7 @@
 <template>
-  <div :class="classObj" class="app-wrapper" :style="{ '--current-color': theme }">
-    <div
-      v-if="device === 'mobile' && sidebar.opened"
-      class="drawer-bg"
-      @click="handleClickOutside"
-    />
+  <mobile-layout v-if="isMobileLayout" />
+  <div v-else :class="classObj" class="app-wrapper" :style="{ '--current-color': theme }">
+    <div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside"/>
     <sidebar v-if="!sidebar.hide" class="sidebar-container" />
     <div :class="{ hasTagsView: needTagsView, sidebarHide: sidebar.hide }" class="main-container">
       <div :class="{ 'fixed-header': fixedHeader }">
@@ -18,61 +15,60 @@
 </template>
 
 <script setup>
-import { useWindowSize } from '@vueuse/core';
-import Sidebar from './components/Sidebar/index.vue';
-import { AppMain, Navbar, Settings, TagsView } from './components';
-import useAppStore from '@/store/modules/app';
-import useSettingsStore from '@/store/modules/settings';
+import { useWindowSize } from '@vueuse/core'
+import Sidebar from './components/Sidebar/index.vue'
+import MobileLayout from './mobile/index.vue'
+import { AppMain, Navbar, Settings, TagsView } from './components'
+import useAppStore from '@/store/modules/app'
+import useSettingsStore from '@/store/modules/settings'
 
-const settingsStore = useSettingsStore();
-const theme = computed(() => settingsStore.theme);
-const sideTheme = computed(() => settingsStore.sideTheme);
-const sidebar = computed(() => useAppStore().sidebar);
-const device = computed(() => useAppStore().device);
-const needTagsView = computed(() => settingsStore.tagsView);
-const fixedHeader = computed(() => settingsStore.fixedHeader);
+const settingsStore = useSettingsStore()
+const theme = computed(() => settingsStore.theme)
+const sideTheme = computed(() => settingsStore.sideTheme)
+const sidebar = computed(() => useAppStore().sidebar)
+const device = computed(() => useAppStore().device)
+const needTagsView = computed(() => settingsStore.tagsView)
+const fixedHeader = computed(() => settingsStore.fixedHeader)
+const isMobileLayout = computed(() => device.value === 'mobile')
 
 const classObj = computed(() => ({
   hideSidebar: !sidebar.value.opened,
   openSidebar: sidebar.value.opened,
   withoutAnimation: sidebar.value.withoutAnimation,
-  mobile: device.value === 'mobile',
-}));
+  mobile: device.value === 'mobile'
+}))
 
-const { width, height } = useWindowSize();
-const WIDTH = 992; // refer to Bootstrap's responsive design
+const { width, height } = useWindowSize()
+const WIDTH = 768
 
-watch(
-  () => device.value,
-  () => {
-    if (device.value === 'mobile' && sidebar.value.opened) {
-      useAppStore().closeSideBar({ withoutAnimation: false });
-    }
+watch(() => device.value, () => {
+  if (device.value === 'mobile' && sidebar.value.opened) {
+    useAppStore().closeSideBar({ withoutAnimation: false })
   }
-);
+})
 
 watchEffect(() => {
   if (width.value - 1 < WIDTH) {
-    useAppStore().toggleDevice('mobile');
-    useAppStore().closeSideBar({ withoutAnimation: true });
+    useAppStore().toggleDevice('mobile')
+    useAppStore().closeSideBar({ withoutAnimation: true })
   } else {
-    useAppStore().toggleDevice('desktop');
+    useAppStore().toggleDevice('desktop')
   }
-});
+})
 
 function handleClickOutside() {
-  useAppStore().closeSideBar({ withoutAnimation: false });
+  useAppStore().closeSideBar({ withoutAnimation: false })
 }
 
-const settingRef = ref(null);
+const settingRef = ref(null)
 function setLayout() {
-  settingRef.value.openSetting();
+  settingRef.value.openSetting()
 }
 </script>
 
 <style lang="scss" scoped>
-@use '@/assets/styles/mixin.scss' as mix;
-@use '@/assets/styles/variables.module.scss' as vars;
+@use "@/assets/styles/mixin.scss" as mix;
+@use "@/assets/styles/variables.module.scss" as vars;
 
 .app-wrapper {
   @include mix.clearfix;

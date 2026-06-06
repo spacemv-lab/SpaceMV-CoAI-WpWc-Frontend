@@ -76,7 +76,7 @@ watch(
 
           <div class="inline-flex items-center gap-2 rounded-full border border-orbit-cyan/30 bg-orbit-cyan/10 px-3 py-1.5 font-mono text-xs text-orbit-cyan">
             <Sparkles class="h-3 w-3" />
-            v1.2.0 现已发布
+            v2026.06.02 现已发布
           </div>
 
           <div class="space-y-2">

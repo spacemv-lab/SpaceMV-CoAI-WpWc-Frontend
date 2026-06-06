@@ -59,6 +59,7 @@
 | tailwindcss-animate | ^1.0.7 | MIT | https://github.com/tailwindlabs/tailwindcss-animate | Tailwind CSS 动画插件 |
 | autoprefixer | ^10.4.23 | MIT | https://github.com/postcss/autoprefixer | CSS 自动添加浏览器前缀 |
 | jsdom | ^22.1.0 | MIT | https://github.com/jsdom/jsdom | JavaScript DOM 模拟环境（测试用） |
+| vant | ^4.9.24 | MIT | https://github.com/youzan/vant | Vue 3 移动端 UI 组件库，用于移动端页面适配 |
 
 ---
 
@@ -98,7 +99,7 @@ UEditor（位于 `public/ueditor/`）内置了以下第三方子组件，均随 
 - **MIT License** - https://opensource.org/licenses/MIT
 
 ### 依赖协议类型统计
-- **MIT 协议**: 40+ 个依赖 - ✅ 完全兼容
+- **MIT 协议**: 41+ 个依赖 - ✅ 完全兼容
 - **Apache-2.0 协议**: 3 个依赖 (echarts, typescript, video.js) - ✅ 兼容
 - **BSD-2-Clause 协议**: 1 个依赖 (js-base64) - ✅ 兼容
 - **ISC 协议**: 1 个依赖 (lucide-vue-next) - ✅ 兼容
@@ -170,6 +171,7 @@ GSAP 使用 **GreenSock Standard License**（非 OSI 标准开源协议），需
 |-----|---------|---------|-------|
 | v1.0.0 | 2026-03-31 | 初始版本 | AI Assistant |
 | v1.1.0 | 2026-05-16 | 补充新增依赖（gsap, lucide-vue-next, three, tailwindcss, tailwindcss-animate, autoprefixer, jsdom）；修正 GSAP 协议标注为 GreenSock Standard License；更新协议兼容性分析 | AI Assistant |
+| v1.1.1 | 2026-06-02 | 补充新增依赖 vant（v4.9.24）的协议、来源与用途记录，更新 MIT 协议依赖统计 | AI Assistant |
 
 ---
 
@@ -183,4 +185,4 @@ GSAP 使用 **GreenSock Standard License**（非 OSI 标准开源协议），需
 
 ---
 
-**最后更新**: 2026-05-16
+**最后更新**: 2026-06-02

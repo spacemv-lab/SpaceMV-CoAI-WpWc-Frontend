@@ -2,9 +2,10 @@
   <section class="app-main">
     <router-view v-slot="{ Component, route }">
       <transition name="fade-transform" mode="out-in">
-        <keep-alive :include="tagsViewStore.cachedViews">
-          <component v-if="!route.meta.link" :is="Component" :key="route.path" />
+        <keep-alive v-if="!isMobileDevice" :include="tagsViewStore.cachedViews">
+          <component v-if="!route.meta.link" :is="Component" :key="route.fullPath"/>
         </keep-alive>
+        <component v-else-if="!route.meta.link" :is="Component" :key="route.fullPath"/>
       </transition>
     </router-view>
     <iframe-toggle />
@@ -13,24 +14,27 @@
 </template>
 
 <script setup>
-import copyright from './Copyright/index';
-import iframeToggle from './IframeToggle/index';
-import useTagsViewStore from '@/store/modules/tagsView';
+import copyright from "./Copyright/index"
+import iframeToggle from "./IframeToggle/index"
+import useAppStore from '@/store/modules/app'
+import useTagsViewStore from '@/store/modules/tagsView'
 
-const route = useRoute();
-const tagsViewStore = useTagsViewStore();
+const route = useRoute()
+const tagsViewStore = useTagsViewStore()
+const appStore = useAppStore()
+const isMobileDevice = computed(() => appStore.device === 'mobile')
 
 onMounted(() => {
-  addIframe();
-});
+  addIframe()
+})
 
 watchEffect(() => {
-  addIframe();
-});
+  addIframe()
+})
 
 function addIframe() {
   if (route.meta.link) {
-    useTagsViewStore().addIframeView(route);
+    useTagsViewStore().addIframeView(route)
   }
 }
 </script>
