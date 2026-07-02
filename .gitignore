@@ -11,6 +11,23 @@ tests/**/coverage/
 tests/e2e/reports
 selenium-debug.log
 
+# Playwright
+playwright-report/
+test-results/
+playwright/.cache/
+.playwright-mcp/
+
+# Local environment files
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+.env.*
+!.env.example
+!.env.development.example
+!.env.production.example
+
 # Editor directories and files
 .idea
 .vscode

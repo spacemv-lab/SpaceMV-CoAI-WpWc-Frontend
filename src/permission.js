@@ -37,7 +37,7 @@ router.beforeEach((to, from, next) => {
           isRelogin.show = false
           usePermissionStore().generateRoutes().then(accessRoutes => {
             accessRoutes.forEach(route => {
-              if (!isHttp(route.path)) {
+              if (!isHttp(route.path) && route.path !== '/article') {
                 router.addRoute(route)
               }
             })
@@ -98,7 +98,7 @@ router.beforeEach((to, from, next) => {
           isRelogin.show = false
           usePermissionStore().generateRoutes().then(accessRoutes => {
             accessRoutes.forEach(route => {
-              if (!isHttp(route.path)) {
+              if (!isHttp(route.path) && route.path !== '/article') {
                 router.addRoute(route)
               }
             })

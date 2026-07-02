@@ -1,5 +1,7 @@
-/** * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司 *This project is licensed under the MIT
-License - see the LICENSE file in the project root for details. **/
+/** 
+ * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
+ *This project is licensed under the MIT License - see the LICENSE file in the project root for details.
+**/
 <template>
   <div class="stat-card">
     <div class="stat-label">{{ label }}</div>
@@ -9,22 +11,22 @@ License - see the LICENSE file in the project root for details. **/
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
+import { defineProps } from 'vue'
 
 const props = defineProps({
   label: {
     type: String,
-    default: '',
+    default: ''
   },
   value: {
     type: String,
-    default: '',
+    default: ''
   },
   name: {
     type: String,
-    default: '',
-  },
-});
+    default: ''
+  }
+})
 </script>
 
 <style scoped lang="scss">
@@ -63,11 +65,11 @@ const props = defineProps({
 @media (max-width: 768px) {
   .stat-card {
     flex: 0 0 100%;
-
+    
     .stat-value {
       font-size: 36px;
     }
-
+    
     .stat-label,
     .stat-name {
       font-size: 14px;

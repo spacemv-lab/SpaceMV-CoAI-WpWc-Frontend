@@ -5,9 +5,12 @@
 </template>
 
 <script setup>
-const url = ref('http:/example.com/');
+import { ref } from 'vue'
+import settings from '@/settings'
+
+const url = ref(settings.docsUrl)
 
 function goto() {
-  window.open(url.value);
+  window.open(url.value)
 }
 </script>

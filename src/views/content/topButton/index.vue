@@ -1,14 +1,12 @@
-/** * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司 *This project is licensed under the MIT
-License - see the LICENSE file in the project root for details. **/
+/** 
+ * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
+ *This project is licensed under the MIT License - see the LICENSE file in the project root for details.
+**/
 <template>
   <div class="top-button-container">
     <div class="title-container">
-      <h3 class="page-title">
-        按钮设置
-        <el-tooltip content="最多可添加5个按钮" placement="top"
-          ><el-icon class="info-icon"><question-filled /></el-icon
-        ></el-tooltip>
-      </h3>
+      <h3 class="page-title">按钮设置 <el-tooltip content="最多可添加5个按钮" placement="top"><el-icon
+            class="info-icon"><question-filled /></el-icon></el-tooltip></h3>
       <div class="action-buttons">
         <!-- 发布信息 -->
         <div class="publish-info">
@@ -16,11 +14,9 @@ License - see the LICENSE file in the project root for details. **/
           <span v-if="publishedBy" class="info-item">发布人：{{ publishedBy }}</span>
         </div>
         <div class="status-container">
-          <el-tag
-            :type="hasUnsavedChanges() ? 'warning' : publishStatus === 1 ? 'success' : 'info'"
-            class="publish-status"
-          >
-            {{ hasUnsavedChanges() ? '未保存' : publishStatus === 1 ? '已发布' : '未发布' }}
+          <el-tag :type="hasUnsavedChanges() ? 'warning' : (publishStatus === 1 ? 'success' : 'info')"
+            class="publish-status">
+            {{ hasUnsavedChanges() ? '未保存' : (publishStatus === 1 ? '已发布' : '未发布') }}
           </el-tag>
         </div>
 
@@ -45,9 +41,7 @@ License - see the LICENSE file in the project root for details. **/
               <qrcode-vue :value="mobilePreviewUrl" :size="200" level="H" />
             </div>
             <div class="preview-hint">请用移动设备扫描二维码查看</div>
-            <div v-if="settings.env === 'intranet'" class="intranet-hint">
-              当前系统为内网环境，移动设备扫描二维码查看前，需确保已连接内网环境。
-            </div>
+            <div v-if="settings.env === 'intranet'" class="intranet-hint">当前系统为内网环境，移动设备扫描二维码查看前，需确保已连接内网环境。</div>
           </div>
         </el-dialog>
         <!-- 移动端查看弹窗 -->
@@ -57,9 +51,7 @@ License - see the LICENSE file in the project root for details. **/
               <qrcode-vue :value="mobileViewUrl" :size="200" level="H" />
             </div>
             <div class="preview-hint">请用移动设备扫描二维码查看</div>
-            <div v-if="settings.env === 'intranet'" class="intranet-hint">
-              当前系统为内网环境，移动设备扫描二维码查看前，需确保已连接内网环境。
-            </div>
+            <div v-if="settings.env === 'intranet'" class="intranet-hint">当前系统为内网环境，移动设备扫描二维码查看前，需确保已连接内网环境。</div>
           </div>
         </el-dialog>
         <el-dropdown trigger="hover">
@@ -83,14 +75,9 @@ License - see the LICENSE file in the project root for details. **/
       <div v-for="(button, index) in buttons" :key="index" class="button-item">
         <el-card shadow="hover">
           <div class="button-form">
-            <el-form :model="button" label-width="120px" :ref="(el) => (formRefs[index] = el)">
-              <el-form-item
-                label="按钮类型"
-                prop="buttonType"
-                :rules="[
-                  { required: true, message: '请选择按钮类型', trigger: ['blur', 'change'] },
-                ]"
-              >
+            <el-form :model="button" label-width="120px" :ref="el => formRefs[index] = el">
+              <el-form-item label="按钮类型" prop="buttonType"
+                :rules="[{ required: true, message: '请选择按钮类型', trigger: ['blur', 'change'] }]">
                 <el-radio-group v-model="button.buttonType">
                   <el-radio label="1">文字按钮</el-radio>
                   <el-radio label="2">图片按钮</el-radio>
@@ -100,88 +87,42 @@ License - see the LICENSE file in the project root for details. **/
 
               <el-row :gutter="20">
                 <el-col :span="12">
-                  <el-form-item
-                    label="按钮文案"
-                    prop="buttonText"
-                    :rules="[{ required: true, message: '请输入按钮文案', trigger: 'blur' }]"
-                  >
-                    <el-input
-                      v-model="button.buttonText"
-                      placeholder="请输入按钮文案"
-                      show-word-limit
-                      maxlength="20"
-                    ></el-input>
+                  <el-form-item label="按钮文案" prop="buttonText"
+                    :rules="[{ required: true, message: '请输入按钮文案', trigger: 'blur' }]">
+                    <el-input v-model="button.buttonText" placeholder="请输入按钮文案" show-word-limit
+                      maxlength="20"></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item
-                    v-if="button.buttonType === '1'"
-                    label="背景色"
-                    prop="backgroundColor"
-                    :rules="[
-                      { required: true, message: '请选择按钮背景色', trigger: ['blur', 'change'] },
-                    ]"
-                  >
+                  <el-form-item v-if="button.buttonType === '1'" label="背景色" prop="backgroundColor"
+                    :rules="[{ required: true, message: '请选择按钮背景色', trigger: ['blur', 'change'] }]">
                     <div class="color-picker-container">
-                      <el-input
-                        v-model="button.backgroundColor"
-                        placeholder="点击右侧按钮，选择按钮背景色"
-                        class="color-input"
-                        readonly
-                      />
-                      <el-color-picker
-                        :model-value="button.backgroundColor"
-                        @update:model-value="
-                          (color) => {
-                            button.backgroundColor = convertToHex(color);
-                          }
-                        "
-                        show-alpha
-                        class="color-picker-btn"
-                        :predefine="predefineColors"
-                        color-format="hex"
-                      />
+                      <el-input v-model="button.backgroundColor" placeholder="点击右侧按钮，选择按钮背景色" class="color-input"
+                        readonly />
+                      <el-color-picker :model-value="button.backgroundColor"
+                        @update:model-value="(color) => { button.backgroundColor = convertToHex(color) }" show-alpha
+                        class="color-picker-btn" :predefine="predefineColors" color-format="hex" />
                     </div>
                   </el-form-item>
                 </el-col>
               </el-row>
               <template v-if="button.buttonType === '1' || button.buttonType === '2'">
-                <el-form-item
-                  v-if="button.buttonType === '2'"
-                  label="图片地址"
-                  prop="imageUrl"
-                  :rules="[{ required: true, message: '请选择图片', trigger: ['blur', 'change'] }]"
-                >
+                <el-form-item v-if="button.buttonType === '2'" label="图片地址" prop="imageUrl"
+                  :rules="[{ required: true, message: '请选择图片', trigger: ['blur', 'change'] }]">
                   <div class="image-upload-container">
-                    <el-input
-                      v-model="button.imageUrl"
-                      type="textarea"
-                      placeholder="请选择图片"
-                      readonly
-                      class="image-url-input"
-                    />
-                    <el-upload
-                      class="image-upload-btn"
-                      :http-request="(params) => handleHttpRequest(params, button)"
-                      :before-upload="handleBeforeUpload"
-                      :file-list="button.imageFileList"
-                      :limit="1"
-                      :on-exceed="handleExceed"
-                      :on-remove="(file, fileList) => handleRemove(file, fileList, button)"
-                      list-type="text"
-                    >
+                    <el-input v-model="button.imageUrl" type="textarea" placeholder="请选择图片" readonly
+                      class="image-url-input" />
+                    <el-upload class="image-upload-btn" :http-request="(params) => handleHttpRequest(params, button)"
+                      :before-upload="handleBeforeUpload" :file-list="button.imageFileList" :limit="1"
+                      :on-exceed="handleExceed" :on-remove="(file, fileList) => handleRemove(file, fileList, button)"
+                      list-type="text">
                       <el-button type="primary">选择图片</el-button>
                     </el-upload>
                   </div>
                 </el-form-item>
 
-                <el-form-item
-                  label="按钮形态"
-                  prop="state"
-                  :rules="[
-                    { required: true, message: '请选择按钮形态', trigger: ['blur', 'change'] },
-                  ]"
-                >
+                <el-form-item label="按钮形态" prop="state"
+                  :rules="[{ required: true, message: '请选择按钮形态', trigger: ['blur', 'change'] }]">
                   <el-radio-group v-model="button.state">
                     <!-- 1：complete，新窗口打开链接
                                       2：completeSelf，当前窗口打开链接
@@ -195,24 +136,10 @@ License - see the LICENSE file in the project root for details. **/
                   </el-radio-group>
                 </el-form-item>
 
-                <el-form-item
-                  label="跳转地址"
-                  prop="jumpUrl"
-                  :rules="[
-                    {
-                      required: button.state !== '4',
-                      message: '请输入跳转地址',
-                      trigger: ['blur', 'change'],
-                    },
-                  ]"
-                >
-                  <el-input
-                    v-model="button.jumpUrl"
-                    type="textarea"
-                    placeholder="请输入跳转地址"
-                    show-word-limit
-                    maxlength="500"
-                  >
+                <el-form-item label="跳转地址" prop="jumpUrl"
+                  :rules="[{ required: button.state !== '4', message: '请输入跳转地址', trigger: ['blur', 'change'] }]">
+                  <el-input v-model="button.jumpUrl" type="textarea" placeholder="请输入跳转地址" show-word-limit
+                        maxlength="500">
                   </el-input>
                 </el-form-item>
               </template>
@@ -228,70 +155,31 @@ License - see the LICENSE file in the project root for details. **/
                       添加选项
                     </el-button>
                   </div>
-                  <div
-                    v-if="button.dropButtonList && button.dropButtonList.length > 0"
-                    class="dropdown-options-list"
-                  >
-                    <div
-                      v-for="(option, optionIndex) in button.dropButtonList"
-                      :key="optionIndex"
-                      class="dropdown-option-item"
-                    >
-                      <el-form
-                        :model="option"
-                        label-width="100px"
-                        :ref="(el) => (dropdownFormRefs[`${index}-${optionIndex}`] = el)"
-                      >
+                  <div v-if="button.dropButtonList && button.dropButtonList.length > 0" class="dropdown-options-list">
+                    <div v-for="(option, optionIndex) in button.dropButtonList" :key="optionIndex" class="dropdown-option-item">
+                      <el-form :model="option" label-width="100px" :ref="el => dropdownFormRefs[`${index}-${optionIndex}`] = el">
                         <el-row :gutter="10">
                           <el-col :span="12">
-                            <el-form-item
-                              label="下拉文案"
-                              prop="text"
-                              :rules="[
-                                { required: true, message: '请输入下拉文案', trigger: 'blur' },
-                              ]"
-                            >
-                              <el-input
-                                v-model="option.text"
-                                placeholder="请输入下拉文案"
-                                show-word-limit
-                                maxlength="20"
-                              ></el-input>
+                            <el-form-item label="下拉文案" prop="text"
+                              :rules="[{ required: true, message: '请输入下拉文案', trigger: 'blur' }]">
+                              <el-input v-model="option.text" placeholder="请输入下拉文案" show-word-limit
+                                maxlength="20"></el-input>
                             </el-form-item>
                           </el-col>
                         </el-row>
                         <el-row :gutter="10">
                           <el-col :span="24">
-                            <el-form-item
-                              label="链接地址"
-                              prop="link"
-                              :rules="[
-                                { required: true, message: '请输入链接地址', trigger: 'blur' },
-                              ]"
-                            >
-                              <el-input
-                                v-model="option.link"
-                                type="textarea"
-                                placeholder="请输入链接地址"
-                                show-word-limit
-                                maxlength="500"
-                              ></el-input>
+                            <el-form-item label="链接地址" prop="link"
+                              :rules="[{ required: true, message: '请输入链接地址', trigger: 'blur' }]">
+                              <el-input v-model="option.link" type="textarea" placeholder="请输入链接地址" show-word-limit
+                                maxlength="500"></el-input>
                             </el-form-item>
                           </el-col>
                         </el-row>
                         <el-row :gutter="10">
                           <el-col :span="12">
-                            <el-form-item
-                              label="按钮形态"
-                              prop="state"
-                              :rules="[
-                                {
-                                  required: true,
-                                  message: '请选择按钮形态',
-                                  trigger: ['blur', 'change'],
-                                },
-                              ]"
-                            >
+                            <el-form-item label="按钮形态" prop="state"
+                              :rules="[{ required: true, message: '请选择按钮形态', trigger: ['blur', 'change'] }]">
                               <el-radio-group v-model="option.state">
                                 <el-radio label="1">新窗口打开链接</el-radio>
                                 <el-radio label="2">当前窗口打开链接</el-radio>
@@ -304,11 +192,7 @@ License - see the LICENSE file in the project root for details. **/
                         <el-row>
                           <el-col :span="24" class="operation-center">
                             <el-form-item>
-                              <el-button
-                                type="danger"
-                                size="small"
-                                @click="removeDropdownOption(button, optionIndex)"
-                              >
+                              <el-button type="danger" size="small" @click="removeDropdownOption(button, optionIndex)">
                                 删除
                               </el-button>
                             </el-form-item>
@@ -320,13 +204,8 @@ License - see the LICENSE file in the project root for details. **/
                 </div>
               </template>
 
-              <el-form-item
-                label="是否对外展示"
-                prop="isShow"
-                :rules="[
-                  { required: true, message: '请设置是否对外展示', trigger: ['blur', 'change'] },
-                ]"
-              >
+              <el-form-item label="是否对外展示" prop="isShow"
+                :rules="[{ required: true, message: '请设置是否对外展示', trigger: ['blur', 'change'] }]">
                 <el-switch v-model="button.isShow"></el-switch>
               </el-form-item>
             </el-form>
@@ -354,24 +233,18 @@ License - see the LICENSE file in the project root for details. **/
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { ElMessage, ElLoading } from 'element-plus';
-import { Plus, Delete, QuestionFilled, ArrowDown } from '@element-plus/icons-vue';
-import QrcodeVue from 'qrcode.vue';
-import { convertToHex } from '@/utils/tianxun.js';
-import {
-  saveTopButtons,
-  publishTopButtons,
-  getTopButtons,
-  getPreviewButtons,
-  getDisplayButtons,
-} from '@/api/content/topButton';
-import { uploadImage } from '@/api';
-import settings from '@/settings';
+import { ref } from 'vue'
+import { ElMessage, ElLoading } from 'element-plus'
+import { Plus, Delete, QuestionFilled, ArrowDown } from '@element-plus/icons-vue'
+import QrcodeVue from 'qrcode.vue'
+import { convertToHex } from '@/utils/tianxun.js'
+import { saveTopButtons, publishTopButtons, getTopButtons, getPreviewButtons, getDisplayButtons } from '@/api/content/topButton'
+import { uploadImage } from '@/api'
+import settings from '@/settings'
 
 // 表单引用数组，用于表单校验
-const formRefs = ref([]);
-const dropdownFormRefs = ref({});
+const formRefs = ref([])
+const dropdownFormRefs = ref({})
 
 // 按钮列表数据
 const buttons = ref([
@@ -385,29 +258,29 @@ const buttons = ref([
     state: '1',
     isPublish: '0', // 默认未发布
     type: '1', // 用于区分不同按钮类型
-    dropButtonList: [], // 下拉按钮的选项列表
-  },
-]);
+    dropButtonList: [] // 下拉按钮的选项列表
+  }
+])
 
 // 保存原始数据用于比较
-const originalButtons = ref([]);
+const originalButtons = ref([])
 
 // 发布状态：0-已保存未发布，1-已发布
-const publishStatus = ref(0);
+const publishStatus = ref(0)
 
 // 发布信息
-const publishedTime = ref('');
-const publishedBy = ref('');
+const publishedTime = ref('')
+const publishedBy = ref('')
 
 // 预览相关变量
-const mobilePreviewVisible = ref(false);
-const mobilePreviewUrl = ref(`${settings.mobileWeb}/preview?type=topButton`);
-const pcPreviewUrl = ref(`${settings.pcWeb}/preview?type=topButton`);
+const mobilePreviewVisible = ref(false)
+const mobilePreviewUrl = ref(`${settings.mobileWeb}/preview?type=topButton`)
+const pcPreviewUrl = ref(`${settings.pcWeb}/preview?type=topButton`)
 
 // 查看相关变量
-const mobileViewVisible = ref(false);
-const mobileViewUrl = ref(settings.mobileWeb);
-const pcViewUrl = ref(settings.pcWeb);
+const mobileViewVisible = ref(false)
+const mobileViewUrl = ref(settings.mobileWeb)
+const pcViewUrl = ref(settings.pcWeb)
 
 // 预定义颜色
 const predefineColors = ref([
@@ -420,164 +293,167 @@ const predefineColors = ref([
   '#c71585',
   '#ff1493',
   '#000000',
-  '#ffffff',
-]);
+  '#ffffff'
+])
 // 检测是否有未保存的修改
 const hasUnsavedChanges = () => {
   // 如果长度不同，肯定有变化
   if (buttons.value.length !== originalButtons.value.length) {
-    return true;
+    return true
   }
 
   // 比较每一个按钮的属性（忽略imageFileList临时字段）
   for (let i = 0; i < buttons.value.length; i++) {
-    const current = { ...buttons.value[i] };
-    const original = { ...originalButtons.value[i] };
+    const current = { ...buttons.value[i] }
+    const original = { ...originalButtons.value[i] }
 
     // 删除临时字段
-    delete current.imageFileList;
-    delete original.imageFileList;
+    delete current.imageFileList
+    delete original.imageFileList
 
     // 比较JSON字符串
     if (JSON.stringify(current) !== JSON.stringify(original)) {
-      return true;
+      return true
     }
 
     // 如果是下拉按钮，检查选项列表是否有变化
     if (current.buttonType === '3') {
-      const currentOptions = current.dropButtonList || [];
-      const originalOptions = original.dropButtonList || [];
-
+      const currentOptions = current.dropButtonList || []
+      const originalOptions = original.dropButtonList || []
+      
       if (currentOptions.length !== originalOptions.length) {
-        return true;
+        return true
       }
-
+      
       for (let j = 0; j < currentOptions.length; j++) {
         if (JSON.stringify(currentOptions[j]) !== JSON.stringify(originalOptions[j])) {
-          return true;
+          return true
         }
       }
     }
   }
 
-  return false;
-};
+  return false
+}
 
 // 初始化函数，获取顶部按钮配置
 const initTopButtons = () => {
   const loading = ElLoading.service({
     lock: true,
     text: '加载中...',
-    background: 'rgba(0, 0, 0, 0.7)',
-  });
+    background: 'rgba(0, 0, 0, 0.7)'
+  })
 
   // 并行调用三个接口
-  Promise.all([getTopButtons(), getPreviewButtons(), getDisplayButtons()])
-    .then(([topButtonsRes, previewRes, displayRes]) => {
-      // 处理按钮列表数据
-      if (topButtonsRes.code === 200) {
-        if (topButtonsRes.data && topButtonsRes.data.length > 0) {
-          // 将后端返回的isShow字段从字符串'0'或'1'转换为布尔值
-          buttons.value = topButtonsRes.data.map((button) => ({
-            ...button,
-            isShow: button.isShow === '1',
-            type: button.buttonType, // 用于区分不同按钮类型
-            dropButtonList: button.dropButtonList || [], // 下拉按钮的选项列表
-          }));
-          // 保存原始数据副本用于比较
-          originalButtons.value = JSON.parse(JSON.stringify(buttons.value));
-        } else {
-          // 如果没有数据，使用默认数据并保存为原始数据
-          originalButtons.value = JSON.parse(JSON.stringify(buttons.value));
-        }
-      }
-
-      // 处理发布状态
-      const previewData = previewRes.code === 200 ? previewRes.data || [] : [];
-      const displayData = displayRes.code === 200 ? displayRes.data || [] : [];
-
-      if (displayData.length > 0) {
-        // 获取发布信息
-        publishedTime.value = displayData[0].publishedTime || '';
-        publishedBy.value = displayData[0].publishedBy || '';
-      }
-      // 根据新规则判断发布状态
-      if (previewData.length === 0 && displayData.length > 0) {
-        publishStatus.value = 1; // 已发布
+  Promise.all([
+    getTopButtons(),
+    getPreviewButtons(),
+    getDisplayButtons()
+  ]).then(([topButtonsRes, previewRes, displayRes]) => {
+    // 处理按钮列表数据
+    if (topButtonsRes.code === 200) {
+      if (topButtonsRes.data && topButtonsRes.data.length > 0) {
+        // 将后端返回的isShow字段从字符串'0'或'1'转换为布尔值
+        buttons.value = topButtonsRes.data.map(button => ({
+          ...button,
+          isShow: button.isShow === '1',
+          type: button.buttonType, // 用于区分不同按钮类型
+          dropButtonList: button.dropButtonList || [] // 下拉按钮的选项列表
+        }))
+        // 保存原始数据副本用于比较
+        originalButtons.value = JSON.parse(JSON.stringify(buttons.value))
       } else {
-        publishStatus.value = 0; // 未发布
+        // 如果没有数据，使用默认数据并保存为原始数据
+        originalButtons.value = JSON.parse(JSON.stringify(buttons.value))
       }
-    })
+    }
+
+    // 处理发布状态
+    const previewData = previewRes.code === 200 ? previewRes.data || [] : []
+    const displayData = displayRes.code === 200 ? displayRes.data || [] : []
+
+    if (displayData.length > 0) {
+      // 获取发布信息
+      publishedTime.value = displayData[0].publishedTime || ''
+      publishedBy.value = displayData[0].publishedBy || ''
+    }
+    // 根据新规则判断发布状态
+    if (previewData.length === 0 && displayData.length > 0) {
+      publishStatus.value = 1 // 已发布
+    } else {
+      publishStatus.value = 0 // 未发布
+    }
+  })
     .finally(() => {
-      loading.close();
-    });
-};
+      loading.close()
+    })
+}
 
 // 保存成功后更新原始数据
 const updateOriginalData = () => {
-  originalButtons.value = JSON.parse(JSON.stringify(buttons.value));
-};
+  originalButtons.value = JSON.parse(JSON.stringify(buttons.value))
+}
 
 // 页面加载时调用初始化函数
-initTopButtons();
+initTopButtons()
 
 // 图片上传前处理
 const handleBeforeUpload = (file) => {
   // 验证文件类型
-  const isImage = file.type.indexOf('image/') === 0;
+  const isImage = file.type.indexOf('image/') === 0
   if (!isImage) {
-    ElMessage.error('只能上传图片文件!');
-    return false;
+    ElMessage.error('只能上传图片文件!')
+    return false
   }
 
   // 验证文件大小（30MB以内）
-  const isLt30M = file.size / 1024 / 1024 < 30;
+  const isLt30M = file.size / 1024 / 1024 < 30
   if (!isLt30M) {
-    ElMessage.error('图片大小不能超过30MB!');
-    return false;
+    ElMessage.error('图片大小不能超过30MB!')
+    return false
   }
 
-  return true;
-};
+  return true
+}
 
 // 图片上传超过限制时的处理
 const handleExceed = (files, fileList) => {
-  ElMessage.warning('每个按钮只能上传一个图片，请删除旧图片再上传新图片');
-};
+  ElMessage.warning('每个按钮只能上传一个图片，请删除旧图片再上传新图片')
+}
 
 // 处理文件移除事件
 const handleRemove = (file, fileList, button) => {
-  button.imageUrl = ''; // 清空图片地址字段
-};
+  button.imageUrl = '' // 清空图片地址字段
+}
 
 // 自定义上传方法
 const handleHttpRequest = (params, button) => {
-  const formData = new FormData();
-  formData.append('file', params.file);
+  const formData = new FormData()
+  formData.append('file', params.file)
 
   uploadImage(formData)
-    .then((res) => {
+    .then(res => {
       if (res.code === 200) {
-        button.imageUrl = res.url || '';
-        ElMessage.success('图片上传成功!');
+        button.imageUrl = res.url || ''
+        ElMessage.success('图片上传成功!')
 
-        params.onSuccess(res); // 通知上传组件上传成功
+        params.onSuccess(res) // 通知上传组件上传成功
       } else {
         // 接口返回错误码，清空选择的图片
-        button.imageFileList = [];
-        params.onError(res); // 通知上传组件上传失败
+        button.imageFileList = []
+        params.onError(res) // 通知上传组件上传失败
       }
     })
-    .catch((error) => {
+    .catch(error => {
       // 网络错误或其他异常，清空选择的图片
-      button.imageFileList = [];
-      params.onError(error); // 通知上传组件上传失败
-    });
-};
+      button.imageFileList = []
+      params.onError(error) // 通知上传组件上传失败
+    })
+}
 
 // 处理按钮数据，用于API请求（将isShow布尔值转换为字符串'0'或'1'）
 const processButtonsForAPI = (buttons) => {
-  return buttons.map((button) => {
+  return buttons.map(button => {
     const processedButton = {
       buttonType: String(button.buttonType),
       buttonText: button.buttonText,
@@ -586,24 +462,24 @@ const processButtonsForAPI = (buttons) => {
       jumpUrl: button.jumpUrl,
       isShow: button.isShow ? '1' : '0',
       state: button.state,
-      isPublish: button.isPublish || '0',
-    };
-
+      isPublish: button.isPublish || '0'
+    }
+    
     // 确保添加下拉选项列表（即使是空数组）
     if (button.dropButtonList !== undefined) {
-      processedButton.dropButtonList = button.dropButtonList;
+      processedButton.dropButtonList = button.dropButtonList
     } else {
-      processedButton.dropButtonList = [];
+      processedButton.dropButtonList = []
     }
-
-    return processedButton;
-  });
-};
+    
+    return processedButton
+  })
+}
 
 const addButton = () => {
   if (buttons.value.length >= 5) {
-    ElMessage.warning('最多只能添加5个按钮');
-    return;
+    ElMessage.warning('最多只能添加5个按钮')
+    return
   }
   buttons.value.push({
     buttonType: '1',
@@ -616,100 +492,100 @@ const addButton = () => {
     state: '1',
     isPublish: '0', // 默认未发布
     type: '1', // 用于区分不同按钮类型
-    dropButtonList: [], // 下拉按钮的选项列表
-  });
-};
+    dropButtonList: [] // 下拉按钮的选项列表
+  })
+}
 
 // 添加下拉选项
 const addDropdownOption = (button) => {
   if (!button.dropButtonList) {
-    button.dropButtonList = [];
+    button.dropButtonList = []
   }
   if (button.dropButtonList.length >= 10) {
-    ElMessage.warning('每个下拉按钮最多只能添加10个选项');
-    return;
+    ElMessage.warning('每个下拉按钮最多只能添加10个选项')
+    return
   }
   button.dropButtonList.push({
     text: '',
     link: '',
-    state: '1',
-  });
-};
+    state: '1'
+  })
+}
 
 // 删除下拉选项
 const removeDropdownOption = (button, optionIndex) => {
-  button.dropButtonList.splice(optionIndex, 1);
-};
+  button.dropButtonList.splice(optionIndex, 1)
+}
 
 const removeButton = (index) => {
-  buttons.value.splice(index, 1);
-};
+  buttons.value.splice(index, 1)
+}
 
 const goBack = () => {
   // 这里可以添加返回逻辑
-  window.history.back();
-};
+  window.history.back()
+}
 
 // PC端预览按钮点击事件
 const handlePcPreview = () => {
   if (hasUnsavedChanges()) {
-    ElMessage.warning('请先保存当前修改');
-    return;
+    ElMessage.warning('请先保存当前修改')
+    return
   }
 
   // 打开PC端预览链接
-  window.open(pcPreviewUrl.value, '_blank');
-};
+  window.open(pcPreviewUrl.value, '_blank')
+}
 
 // 移动端预览按钮点击事件
 const handleMobilePreview = () => {
   if (hasUnsavedChanges()) {
-    ElMessage.warning('请先保存当前修改');
-    return;
+    ElMessage.warning('请先保存当前修改')
+    return
   }
 
   // 显示移动端预览弹窗
-  mobilePreviewVisible.value = true;
-};
+  mobilePreviewVisible.value = true
+}
 
 // PC端查看按钮点击事件（跳转到企业官网）
 const handlePcView = () => {
-  window.open(pcViewUrl.value, '_blank');
-};
+  window.open(pcViewUrl.value, '_blank')
+}
 
 // 移动端查看按钮点击事件
 const handleMobileView = () => {
   // 显示移动端查看弹窗
-  mobileViewVisible.value = true;
-};
+  mobileViewVisible.value = true
+}
 
 // 保存按钮点击事件，包含表单校验
 const handleSave = async () => {
-  let isValid = true;
+  let isValid = true
 
   // 遍历所有表单进行校验
   for (let i = 0; i < formRefs.value.length; i++) {
-    const formRef = formRefs.value[i];
+    const formRef = formRefs.value[i]
     if (formRef) {
       try {
-        await formRef.validate();
+        await formRef.validate()
       } catch (error) {
-        isValid = false;
+        isValid = false
         // 找到第一个错误的表单后，不再继续校验其他表单
-        ElMessage.error('请检查表单填写是否完整!');
-        break;
+        ElMessage.error('请检查表单填写是否完整!')
+        break
       }
     }
   }
 
   // 校验下拉按钮的选项列表
   for (let i = 0; i < buttons.value.length; i++) {
-    const button = buttons.value[i];
+    const button = buttons.value[i]
     if (button.buttonType === '3') {
       if (!button.dropButtonList || button.dropButtonList.length === 0) {
-        ElMessage.error(`第${i + 1}个下拉按钮至少需要填写一个选项!`);
-        isValid = false;
-        break;
+        ElMessage.error(`第${i + 1}个下拉按钮至少需要填写一个选项!`)
+        isValid = false
+        break
       }
     }
   }
@@ -717,14 +593,14 @@ const handleSave = async () => {
   // 校验下拉选项的表单数据
   if (isValid) {
     for (const key in dropdownFormRefs.value) {
-      const formRef = dropdownFormRefs.value[key];
+      const formRef = dropdownFormRefs.value[key]
       if (formRef) {
         try {
-          await formRef.validate();
+          await formRef.validate()
         } catch (error) {
-          isValid = false;
-          ElMessage.error('请检查下拉选项填写是否完整!');
-          break;
+          isValid = false
+          ElMessage.error('请检查下拉选项填写是否完整!')
+          break
         }
       }
     }
@@ -735,49 +611,46 @@ const handleSave = async () => {
     const loading = ElLoading.service({
       lock: true,
       text: '保存中...',
-      background: 'rgba(0, 0, 0, 0.7)',
-    });
+      background: 'rgba(0, 0, 0, 0.7)'
+    })
 
     // 处理按钮数据，将isShow布尔值转换为字符串'0'或'1'
-    const processedButtons = processButtonsForAPI(buttons.value);
+    const processedButtons = processButtonsForAPI(buttons.value)
 
     // 调用API保存顶部按钮数据
-    return saveTopButtons(processedButtons)
-      .then((res) => {
-        if (res.code === 200) {
-          ElMessage.success('保存成功!');
-          // 先更新原始数据，再重新初始化
-          updateOriginalData();
-          initTopButtons();
-        }
-      })
-      .catch((error) => {
-        ElMessage.error('保存失败，请稍后重试!');
-        return Promise.reject(error);
-      })
-      .finally(() => {
-        // 关闭loading
-        loading.close();
-      });
-  }
-};
+    return saveTopButtons(processedButtons).then((res) => {
+      if (res.code === 200) {
+        ElMessage.success('保存成功!')
+        // 先更新原始数据，再重新初始化
+        updateOriginalData()
+        initTopButtons()
+      }
+    }).catch((error) => {
+      ElMessage.error('保存失败，请稍后重试!')
+      return Promise.reject(error)
+    }).finally(() => {
+      // 关闭loading
+      loading.close()
+    })
+  } 
+}
 
 // 发布按钮点击事件
 const handlePublish = async () => {
   if (hasUnsavedChanges()) {
-    ElMessage.warning('请先保存当前修改');
-    return;
+    ElMessage.warning('请先保存当前修改')
+    return
   }
 
   // 校验下拉按钮的选项列表
-  let isValid = true;
+  let isValid = true
   for (let i = 0; i < buttons.value.length; i++) {
-    const button = buttons.value[i];
+    const button = buttons.value[i]
     if (button.buttonType === '3') {
       if (!button.dropButtonList || button.dropButtonList.length === 0) {
-        ElMessage.error(`第${i + 1}个下拉按钮至少需要填写一个选项!`);
-        isValid = false;
-        break;
+        ElMessage.error(`第${i + 1}个下拉按钮至少需要填写一个选项!`)
+        isValid = false
+        break
       }
     }
   }
@@ -785,48 +658,45 @@ const handlePublish = async () => {
   // 校验下拉选项的表单数据
   if (isValid) {
     for (const key in dropdownFormRefs.value) {
-      const formRef = dropdownFormRefs.value[key];
+      const formRef = dropdownFormRefs.value[key]
       if (formRef) {
         try {
-          await formRef.validate();
+          await formRef.validate()
         } catch (error) {
-          isValid = false;
-          ElMessage.error('请检查下拉选项填写是否完整!');
-          break;
+          isValid = false
+          ElMessage.error('请检查下拉选项填写是否完整!')
+          break
         }
       }
     }
   }
 
   if (!isValid) {
-    return;
+    return
   }
 
   // 执行发布操作
   const loading = ElLoading.service({
     lock: true,
     text: '发布中...',
-    background: 'rgba(0, 0, 0, 0.7)',
-  });
+    background: 'rgba(0, 0, 0, 0.7)'
+  })
 
   // 处理按钮数据，将isShow布尔值转换为字符串'0'或'1'
-  const processedButtons = processButtonsForAPI(buttons.value);
+  const processedButtons = processButtonsForAPI(buttons.value)
 
   // 调用API发布顶部按钮数据
-  publishTopButtons(processedButtons)
-    .then((res) => {
-      ElMessage.success('发布成功!');
-      // 发布成功后，刷新页面获取最新数据
-      initTopButtons();
-    })
-    .catch((error) => {
-      ElMessage.error('发布失败，请稍后重试!');
-    })
-    .finally(() => {
-      // 关闭loading
-      loading.close();
-    });
-};
+  publishTopButtons(processedButtons).then((res) => {
+    ElMessage.success('发布成功!')
+    // 发布成功后，刷新页面获取最新数据
+    initTopButtons()
+  }).catch((error) => {
+    ElMessage.error('发布失败，请稍后重试!')
+  }).finally(() => {
+    // 关闭loading
+    loading.close()
+  })
+}
 </script>
 
 <style scoped lang="scss">
@@ -881,6 +751,8 @@ const handlePublish = async () => {
         font-size: 16px;
         cursor: help;
       }
+
+
     }
 
     .el-button {
@@ -1053,7 +925,7 @@ const handlePublish = async () => {
     color: #606266;
     font-size: 14px;
   }
-
+  
   .intranet-hint {
     text-align: center;
     color: #f56c6c;

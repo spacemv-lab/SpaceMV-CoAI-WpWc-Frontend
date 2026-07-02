@@ -126,8 +126,15 @@ export const dynamicRoutes = [
   {
     path: '/article',
     component: Layout,
+    hidden: true,
     permissions: ['article:createEdit'],
     children: [
+      {
+        path: 'articleList',
+        component: () => isMobile() ? import('@/views/article/mobileArticleList/index.vue') : import('@/views/article/articleList/index.vue'),
+        name: 'ArticleList',
+        meta: { title: '文章列表', icon: 'article' }
+      },
       {
         path: 'articleList/newArticle',
         component: () => isMobile() ? import('@/views/article/mobileArticleList/newArticle.vue') : import('@/views/article/articleList/newArticle.vue'),

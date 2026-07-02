@@ -7,10 +7,10 @@ import Cookies from 'js-cookie';
 const TokenKey = 'Admin-Token'
 const NewTokenKey = 'New-Admin-Token'
 
-const ExpiresInKey = 'Admin-Expires-In';
+const ExpiresInKey = 'Admin-Expires-In'
 
 export function getToken() {
-  return Cookies.get(TokenKey);
+  return Cookies.get(TokenKey)
 }
 
 export function getNewToken() {
@@ -18,7 +18,7 @@ export function getNewToken() {
 }
 
 export function setToken(token) {
-  return Cookies.set(TokenKey, token);
+  return Cookies.set(TokenKey, token)
 }
 
 export function setNewToken(token) {
@@ -26,17 +26,17 @@ export function setNewToken(token) {
 }
 
 export function removeToken() {
-  return Cookies.remove(TokenKey);
+  return Cookies.remove(TokenKey)
 }
 
 export function getExpiresIn() {
-  return Cookies.get(ExpiresInKey) || -1;
+  return Cookies.get(ExpiresInKey) || -1
 }
 
 export function setExpiresIn(time) {
-  return Cookies.set(ExpiresInKey, time);
+  return Cookies.set(ExpiresInKey, time)
 }
 
 export function removeExpiresIn() {
-  return Cookies.remove(ExpiresInKey);
+  return Cookies.remove(ExpiresInKey)
 }

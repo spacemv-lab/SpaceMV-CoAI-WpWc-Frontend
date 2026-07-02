@@ -1,5 +1,3 @@
-/** * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司 *This project is licensed under the MIT
-License - see the LICENSE file in the project root for details. **/
 <template>
   <div class="traffic-summary">
     <!-- 筛选区域 -->
@@ -94,10 +92,10 @@ import { saveAs } from 'file-saver'
 import { blobValidate } from '@/utils/tianxun'
 import useMediaProductStore from '@/store/modules/mediaProduct'
 
-const router = useRouter();
+const router = useRouter()
 
 // 使用媒体产品store
-const mediaProductStore = useMediaProductStore();
+const mediaProductStore = useMediaProductStore()
 
 // 接收 props
 const props = defineProps({
@@ -108,17 +106,17 @@ const props = defineProps({
 })
 
 // 文件输入引用
-const fileInput = ref(null);
+const fileInput = ref(null)
 
 const isIntranet = computed(() => {
-  return settings.env === 'intranet';
-});
+  return settings.env === 'intranet'
+})
 
 // 流量数据列表
-const trafficList = ref([]);
-const total = ref(0);
-const currentPage = ref(1);
-const pageSize = ref(10);
+const trafficList = ref([])
+const total = ref(0)
+const currentPage = ref(1)
+const pageSize = ref(10)
 
 const dateRange = ref([])
 
@@ -135,21 +133,21 @@ const fetchTrafficDataList = async () => {
     if (mediaProductStore.accountId) {
       data.accountId = mediaProductStore.accountId
     }
-
+    
     // 添加时间范围参数
     if (dateRange.value && dateRange.value.length === 2) {
-      data.startTime = dateRange.value[0];
-      data.endTime = dateRange.value[1];
+      data.startTime = dateRange.value[0]
+      data.endTime = dateRange.value[1]
     }
     
     // 构建查询参数（分页）
     const params = {
       pageNum: currentPage.value,
-      pageSize: pageSize.value,
-    };
-
-    const response = await getTrafficDataList(data, params);
-
+      pageSize: pageSize.value
+    }
+    
+    const response = await getTrafficDataList(data, params)
+    
     if (response.code === 200) {
       const data = response.rows
       trafficList.value = data.map(item => ({
@@ -167,23 +165,22 @@ const fetchTrafficDataList = async () => {
       }))
       total.value = response.total
     } else {
-      ElMessage.error('获取数据失败');
+      ElMessage.error('获取数据失败')
     }
   } catch (error) {
     console.error('获取流量数据失败:', error)
   }
-};
+}
 
 // 生命周期
 onMounted(() => {
-  fetchTrafficDataList();
-});
+  fetchTrafficDataList()
+})
 
 const search = () => {
-  // 重置到第一页
-  currentPage.value = 1;
-  fetchTrafficDataList();
-};
+  currentPage.value = 1
+  fetchTrafficDataList()
+}
 
 const reset = () => {
   dateRange.value = []
@@ -209,12 +206,12 @@ const downloadTemplate = () => {
 // 数据导入
 const importData = () => {
   // 触发文件选择
-  fileInput.value.click();
-};
+  fileInput.value.click()
+}
 
 // 处理文件选择
 const handleFileChange = (event) => {
-  const file = event.target.files[0];
+  const file = event.target.files[0]
   if (file) {
     const formData = new FormData()
     formData.append('file', file)
@@ -232,9 +229,12 @@ const handleFileChange = (event) => {
       console.error('导入数据失败:', error)
     })
     // 重置文件输入，以便可以选择同一个文件
-    event.target.value = '';
+    event.target.value = ''
   }
-};
+}
+
+const uploadData = () => {
+}
 
 const exportData = () => {
   // 构建请求体
@@ -244,11 +244,11 @@ const exportData = () => {
   if (mediaProductStore.accountId) {
     data.accountId = mediaProductStore.accountId
   }
-
+  
   // 添加时间范围参数
   if (dateRange.value && dateRange.value.length === 2) {
-    data.startTime = dateRange.value[0];
-    data.endTime = dateRange.value[1];
+    data.startTime = dateRange.value[0]
+    data.endTime = dateRange.value[1]
   }
   
   // 调用导出接口
@@ -272,19 +272,23 @@ const exportData = () => {
 }
 
 const viewChart = () => {
-  router.push('/dashboard/wechatBoard');
-};
+  router.push('/dashboard/wechatBoard')
+}
 
 const createChart = () => {
-  window.open('http://localhost:7777', '_blank');
-};
+  if (!settings.chartStudioUrl) {
+    ElMessage.warning('未配置图表制作地址')
+    return
+  }
+  window.open(settings.chartStudioUrl, '_blank')
+}
 
 // 分页相关
 const handleSizeChange = (val) => {
-  pageSize.value = val;
-  currentPage.value = 1;
-  fetchTrafficDataList();
-};
+  pageSize.value = val
+  currentPage.value = 1
+  fetchTrafficDataList()
+}
 
 const handleCurrentChange = (val) => {
   currentPage.value = val

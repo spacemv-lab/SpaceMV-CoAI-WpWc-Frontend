@@ -79,7 +79,7 @@
     </template>
 
     <div v-else class="mobile-empty-state">
-      <el-empty description="暂无数据，请绑定自媒体产品及平台" />
+      <el-empty description="暂无数据，需先于自媒体产品管理菜单中绑定自媒体产品及平台" />
     </div>
   </div>
 </template>
@@ -279,27 +279,17 @@ const shareTrendChart = ref(null)
 const readSourceChart = ref(null)
 const newFollowChart = ref(null)
 const totalFollowChart = ref(null)
-// const regionChart = ref(null)
-// const ageChart = ref(null)
-// const genderChart = ref(null)
-// const channelChart = ref(null)
 // 图表实例
 let readTrendChartInstance = null
 let shareTrendChartInstance = null
 let readSourceChartInstance = null
 let newFollowChartInstance = null
 let totalFollowChartInstance = null
-// let regionChartInstance = null
-// let ageChartInstance = null
-// let genderChartInstance = null
-// let channelChartInstance = null
 
 // 初始数据
 const dateData = ref([])
 const newFollowData = ref([])
 const totalFollowData = ref([])
-// const originalReadSourceData = []
-// const readSourceLabels = []
 
 // 图表数据
 const readTrendData = ref({
@@ -833,68 +823,6 @@ const initCharts = () => {
       })
     }
   }
-  // // 地域分布
-  // regionChartInstance = echarts.init(regionChart.value)
-  // regionChartInstance.setOption({
-  //   tooltip: {
-  //     trigger: 'axis',
-  //     axisPointer: {
-  //       type: 'shadow'
-  //     }
-  //   },
-  //   grid: {
-  //     left: '3%',
-  //     right: '4%',
-  //     bottom: '3%',
-  //     containLabel: true
-  //   },
-  //   xAxis: [
-  //     {
-  //       type: 'category',
-  //       data: regionData.map(item => item.name),
-  //       axisLine: {
-  //         lineStyle: {
-  //           color: '#333'
-  //         }
-  //       },
-  //       axisLabel: {
-  //         color: '#999',
-  //         rotate: 45
-  //       }
-  //     }
-  //   ],
-  //   yAxis: [
-  //     {
-  //       type: 'value',
-  //       axisLine: {
-  //         lineStyle: {
-  //           color: '#333'
-  //         }
-  //       },
-  //       axisLabel: {
-  //         color: '#999'
-  //       },
-  //       splitLine: {
-  //         lineStyle: {
-  //           color: '#222'
-  //         }
-  //       }
-  //     }
-  //   ],
-  //   series: [
-  //     {
-  //       name: '地域分布',
-  //       type: 'bar',
-  //       data: regionData.map(item => item.value),
-  //       itemStyle: {
-  //         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-  //           { offset: 0, color: '#36a2eb' },
-  //           { offset: 1, color: '#1890ff' }
-  //         ])
-  //       }
-  //     }
-  //   ]
-  // })
 }
 
 // 响应式调整
@@ -904,10 +832,6 @@ const handleResize = () => {
   readSourceChartInstance && readSourceChartInstance.resize()
   newFollowChartInstance && newFollowChartInstance.resize()
   totalFollowChartInstance && totalFollowChartInstance.resize()
-  // regionChartInstance && regionChartInstance.resize()
-  // ageChartInstance && ageChartInstance.resize()
-  // genderChartInstance && genderChartInstance.resize()
-  // channelChartInstance && channelChartInstance.resize()
 }
 
 // 生命周期钩子
@@ -925,11 +849,8 @@ const fetchProductList = () => {
       queryAccount: true,
     }
   }).then(response => {
-    console.log('getMediaProductList response:', response)
     if (response.code === 200) {
-      // 根据返回格式，转换数据结构
       const rawProducts = response.rows || response.data?.rows || response.data?.list || []
-      console.log('rawProducts:', rawProducts)
       productList.value = rawProducts.map(product => {
         const channelDTOList = product.channelDTOList || []
         return {
@@ -942,8 +863,6 @@ const fetchProductList = () => {
           }))
         }
       })
-      console.log('productList:', productList.value)
-
       // 构建级联选择器选项
       cascaderOptions.value = productList.value
         .filter(product => product.platforms && product.platforms.some(platform =>
@@ -966,8 +885,6 @@ const fetchProductList = () => {
           platform.accountDTOList && platform.accountDTOList.length > 0
         )
       )
-      console.log('hasAvailableProductPlatform:', hasAvailableProductPlatform.value)
-
       // 默认选择第一个产品和第一个平台，获取数据
       if (hasAvailableProductPlatform.value) {
         // 设置默认选中的级联值

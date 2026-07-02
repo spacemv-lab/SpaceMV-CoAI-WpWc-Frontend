@@ -368,7 +368,7 @@ import { Base64 } from 'js-base64'
 // 保存草稿
 const handleSaveDraft = () => {
     articleFormRef.value.validate(valid => {
-        if (valid) {            
+        if (valid) {
             // 将content进行base64编码
             const encodedContent = Base64.encode(articleForm.value.content)
             

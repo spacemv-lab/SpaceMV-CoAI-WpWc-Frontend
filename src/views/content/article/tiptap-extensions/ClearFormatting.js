@@ -1,0 +1,15 @@
+import { Extension } from '@tiptap/core'
+
+export const ClearFormatting = Extension.create({
+  name: 'clearFormatting',
+
+  addCommands() {
+    return {
+      clearFormatting: () => ({ commands }) => {
+        commands.unsetAllMarks()
+        commands.clearNodes()
+        return true
+      }
+    }
+  }
+})

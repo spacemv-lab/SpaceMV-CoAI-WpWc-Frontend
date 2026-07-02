@@ -1,8 +1,8 @@
-/**
+/** 
  * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
  * This project is licensed under the MIT License - see the LICENSE file in the project root for details.
- **/
-import request from '@/utils/request';
+**/
+import request from '@/utils/request'
 
 // 下载数据模板
 export function downloadTemplate() {
@@ -20,9 +20,9 @@ export function importExcel(formData) {
     method: 'post',
     data: formData,
     headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+      'Content-Type': 'multipart/form-data'
+    }
+  })
 }
 
 // 获取用户数据列表
@@ -31,8 +31,8 @@ export function getUserDataList(data, params) {
     url: '/txwx-social-dashboard/userData/list',
     method: 'post',
     data: data,
-    params: params,
-  });
+    params: params
+  })
 }
 
 // 导出用户数据
@@ -41,6 +41,9 @@ export function exportUserDataExcel(data) {
     url: '/txwx-social-dashboard/userData/exportExcel',
     method: 'post',
     data: data,
-    responseType: 'blob',
-  });
+    responseType: 'blob'
+  })
 }
+
+
+

@@ -125,6 +125,9 @@ const mobileViewMap = {
   'material/permanentMaterials/index': 'material/mobilePermanentMaterials/index',
   'material/imageText/index': 'material/mobileImageText/index',
   'system/notice/index': 'system/notice/mobileIndex',
+  'content/article/index': 'content/mobileArticle/index',
+  'content/article/edit': 'content/mobileArticle/edit',
+  'content/publish/index': 'content/mobilePublish/index',
 }
 
 export const loadView = (view) => {

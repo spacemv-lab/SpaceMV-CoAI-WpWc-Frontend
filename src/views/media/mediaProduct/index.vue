@@ -250,28 +250,6 @@ const deleteProduct = (productId) => {
 	})
 }
 
-// // 绑定平台账号后，需要更新产品列表中的userPlatformList
-// const updateUserPlatformList = (productId, newAccount) => {
-// 	const product = products.value.find(p => p.id === productId)
-// 	if (product) {
-// 		// 将新绑定的账号添加到userPlatformList
-// 		const existing = product.userPlatformList.find(p => p.id === newAccount.id)
-// 		if (!existing) {
-// 			product.userPlatformList.push({
-// 				id: newAccount.id,
-// 				mediaPlatform: {
-// 					id: newAccount.channelId,
-// 					accountName: newAccount.accountName,
-// 					accountId: newAccount.id,
-// 					channelName: newAccount.channelName,
-// 					appId: newAccount.appId,
-// 					channelType: newAccount.channelType || 'wechat'
-// 				}
-// 			})
-// 		}
-// 	}
-// }
-
 // 组件挂载时获取产品列表
 onMounted(() => {
 	fetchProductList()

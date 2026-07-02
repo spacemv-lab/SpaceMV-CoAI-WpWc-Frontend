@@ -1,8 +1,8 @@
-/**
+/** 
  * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
  * This project is licensed under the MIT License - see the LICENSE file in the project root for details.
- **/
-import request from '@/utils/request';
+**/
+import request from '@/utils/request'
 
 // 获取自媒体产品列表
 export function getMediaProductList(params) {
@@ -47,9 +47,9 @@ export function addMediaProduct(mediaProduct) {
     method: 'post',
     data: { productDTO: mediaProduct },
     headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+      'Content-Type': 'application/json'
+    }
+  })
 }
 
 // 绑定平台账号

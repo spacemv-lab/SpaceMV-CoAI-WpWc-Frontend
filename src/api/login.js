@@ -10,11 +10,11 @@ export function login(username, password, code, uuid) {
     url: '/auth/login',
     headers: {
       isToken: false,
-      repeatSubmit: false,
+      repeatSubmit: false
     },
     method: 'post',
-    data: { username, password, code, uuid },
-  });
+    data: { username, password, code, uuid }
+  })
 }
 
 // export function login(data) {
@@ -34,27 +34,27 @@ export function register(data) {
   return request({
     url: '/auth/register',
     headers: {
-      isToken: false,
+      isToken: false
     },
     method: 'post',
-    data: data,
-  });
+    data: data
+  })
 }
 
 // 刷新方法
 export function refreshToken() {
   return request({
     url: '/auth/refresh',
-    method: 'post',
-  });
+    method: 'post'
+  })
 }
 
 // 获取用户详细信息
 export function getInfo() {
   return request({
     url: '/system/user/getInfo',
-    method: 'get',
-  });
+    method: 'get'
+  })
 }
 
 // 退出方法
@@ -72,9 +72,9 @@ export function getCodeImg() {
     // url: '/code',
     url: '/txwx-iam/auth/v1/code',
     headers: {
-      isToken: false,
+      isToken: false
     },
     method: 'get',
-    timeout: 20000,
-  });
+    timeout: 20000
+  })
 }

@@ -1,5 +1,7 @@
-/** * Copyright (c) 2018 RuoYi | Copyright (c) 2026 成都天巡微小卫星科技有限责任公司 *This project
-is licensed under the MIT License - see the LICENSE file in the project root for details. **/
+/** 
+ * Copyright (c) 2018 RuoYi | Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
+ *This project is licensed under the MIT License - see the LICENSE file in the project root for details.
+**/
 <template>
   <div class="login">
     <el-form ref="loginRef" :model="loginForm" :rules="loginRules" class="login-form">
@@ -12,9 +14,7 @@ is licensed under the MIT License - see the LICENSE file in the project root for
           auto-complete="off"
           placeholder="账号"
         >
-          <template #prefix
-            ><svg-icon icon-class="user" class="el-input__icon input-icon"
-          /></template>
+          <template #prefix><svg-icon icon-class="user" class="el-input__icon input-icon" /></template>
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
@@ -26,9 +26,7 @@ is licensed under the MIT License - see the LICENSE file in the project root for
           placeholder="密码"
           @keyup.enter="handleLogin"
         >
-          <template #prefix
-            ><svg-icon icon-class="password" class="el-input__icon input-icon"
-          /></template>
+          <template #prefix><svg-icon icon-class="password" class="el-input__icon input-icon" /></template>
         </el-input>
       </el-form-item>
       <el-form-item prop="code" v-if="captchaEnabled">
@@ -40,12 +38,10 @@ is licensed under the MIT License - see the LICENSE file in the project root for
           style="width: 63%"
           @keyup.enter="handleLogin"
         >
-          <template #prefix
-            ><svg-icon icon-class="validCode" class="el-input__icon input-icon"
-          /></template>
+          <template #prefix><svg-icon icon-class="validCode" class="el-input__icon input-icon" /></template>
         </el-input>
         <div class="login-code">
-          <img :src="codeUrl" @click="getCode" class="login-code-img" />
+          <img :src="codeUrl" @click="getCode" class="login-code-img"/>
         </div>
       </el-form-item>
       <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
@@ -54,7 +50,7 @@ is licensed under the MIT License - see the LICENSE file in the project root for
           :loading="loading"
           size="large"
           type="primary"
-          style="width: 100%"
+          style="width:100%;"
           @click.prevent="handleLogin"
         >
           <span v-if="!loading">登 录11111</span>
@@ -79,47 +75,43 @@ import { encrypt } from '@/utils/jsencrypt';
 import useUserStore from '@/store/modules/user';
 import defaultSettings from '@/settings';
 
-const title = import.meta.env.VITE_APP_TITLE;
-const footerContent = defaultSettings.footerContent;
-const userStore = useUserStore();
-const route = useRoute();
-const router = useRouter();
-const { proxy } = getCurrentInstance();
+const title = import.meta.env.VITE_APP_TITLE
+const footerContent = defaultSettings.footerContent
+const userStore = useUserStore()
+const route = useRoute()
+const router = useRouter()
+const { proxy } = getCurrentInstance()
 
 const loginForm = ref({
-  username: '',
-  password: '',
+  username: "",
+  password: "",
   rememberMe: false,
-  code: '',
-  uuid: '',
-});
+  code: "",
+  uuid: ""
+})
 
 const loginRules = {
-  username: [{ required: true, trigger: 'blur', message: '请输入您的账号' }],
-  password: [{ required: true, trigger: 'blur', message: '请输入您的密码' }],
-  code: [{ required: true, trigger: 'change', message: '请输入验证码' }],
-};
+  username: [{ required: true, trigger: "blur", message: "请输入您的账号" }],
+  password: [{ required: true, trigger: "blur", message: "请输入您的密码" }],
+  code: [{ required: true, trigger: "change", message: "请输入验证码" }]
+}
 
-const codeUrl = ref('');
-const loading = ref(false);
+const codeUrl = ref("")
+const loading = ref(false)
 // 验证码开关
-const captchaEnabled = ref(true);
+const captchaEnabled = ref(true)
 // 注册开关
 const register = ref(true)
 const redirect = ref(undefined)
 
-watch(
-  route,
-  (newRoute) => {
-    redirect.value = newRoute.query && newRoute.query.redirect;
-  },
-  { immediate: true }
-);
+watch(route, (newRoute) => {
+    redirect.value = newRoute.query && newRoute.query.redirect
+}, { immediate: true })
 
 function handleLogin() {
-  proxy.$refs.loginRef.validate((valid) => {
+  proxy.$refs.loginRef.validate(valid => {
     if (valid) {
-      loading.value = true;
+      loading.value = true
       // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码
       if (loginForm.value.rememberMe) {
         Cookies.set('username', loginForm.value.username, { expires: 30 });
@@ -127,42 +119,39 @@ function handleLogin() {
         Cookies.remove('password');
       } else {
         // 否则移除
-        Cookies.remove('username');
-        Cookies.remove('password');
-        Cookies.remove('rememberMe');
+        Cookies.remove("username")
+        Cookies.remove("password")
+        Cookies.remove("rememberMe")
       }
       // 调用action的登录方法
-      userStore
-        .login(loginForm.value)
-        .then(() => {
-          const query = route.query;
-          const otherQueryParams = Object.keys(query).reduce((acc, cur) => {
-            if (cur !== 'redirect') {
-              acc[cur] = query[cur];
-            }
-            return acc;
-          }, {});
-          router.push({ path: redirect.value || '/', query: otherQueryParams });
-        })
-        .catch(() => {
-          loading.value = false;
-          // 重新获取验证码
-          if (captchaEnabled.value) {
-            getCode();
+      userStore.login(loginForm.value).then(() => {
+        const query = route.query
+        const otherQueryParams = Object.keys(query).reduce((acc, cur) => {
+          if (cur !== "redirect") {
+            acc[cur] = query[cur]
           }
-        });
+          return acc
+        }, {})
+        router.push({ path: redirect.value || "/", query: otherQueryParams })
+      }).catch(() => {
+        loading.value = false
+        // 重新获取验证码
+        if (captchaEnabled.value) {
+          getCode()
+        }
+      })
     }
-  });
+  })
 }
 
 function getCode() {
-  getCodeImg().then((res) => {
-    captchaEnabled.value = res.captchaEnabled === undefined ? true : res.captchaEnabled;
+  getCodeImg().then(res => {
+    captchaEnabled.value = res.captchaEnabled === undefined ? true : res.captchaEnabled
     if (captchaEnabled.value) {
-      codeUrl.value = 'data:image/gif;base64,' + res.img;
-      loginForm.value.uuid = res.uuid;
+      codeUrl.value = "data:image/gif;base64," + res.img
+      loginForm.value.uuid = res.uuid
     }
-  });
+  })
 }
 
 function getCookie() {
@@ -175,21 +164,21 @@ function getCookie() {
   };
 }
 
-getCode();
-getCookie();
+getCode()
+getCookie()
 </script>
 
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 .login {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-image: url('../assets/images/login-background.jpg');
+  background-image: url("../assets/images/login-background.jpg");
   background-size: cover;
   background-position: center;
   position: relative;
-
+  
   &::before {
     content: '';
     position: absolute;
@@ -223,10 +212,10 @@ getCookie();
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-
+  
   .el-form-item {
     margin-bottom: 25px;
-
+    
     &:last-child {
       margin-bottom: 20px;
     }
@@ -240,73 +229,73 @@ getCookie();
     height: 40px;
     border-radius: 8px;
     transition: all 0.3s ease;
-
+    
     input {
       height: 40px;
       border-radius: 8px;
       font-size: 14px;
       border: 2px solid #e8e8e8;
       transition: all 0.3s ease;
-
+      
       &:focus {
         border-color: #667eea;
         box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
       }
     }
-
+    
     .el-input__wrapper {
       box-shadow: none;
       border-radius: 8px;
     }
-
+    
     .el-input__prefix {
       left: 15px;
     }
   }
-
+  
   .input-icon {
     height: 16px;
     width: 16px;
     color: #909399;
     transition: color 0.3s ease;
   }
-
+  
   .el-input:focus-within .input-icon {
     color: #667eea;
   }
-
+  
   .el-checkbox {
     font-size: 13px;
     color: #606266;
-
+    
     .el-checkbox__input {
       margin-right: 8px;
-
+      
       &:is(:focus):not(:active) .el-checkbox__inner {
         box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
       }
-
+      
       .el-checkbox__inner {
         border-radius: 4px;
         border: 2px solid #dcdfe6;
         transition: all 0.3s ease;
-
+        
         &:hover {
           border-color: #667eea;
         }
       }
-
+      
       .el-checkbox__inner::after {
         left: 7px;
       }
     }
-
+    
     &.is-checked .el-checkbox__inner {
       background-color: #667eea;
       border-color: #667eea;
     }
   }
-
+  
   .el-button {
     height: 40px;
     border-radius: 8px;
@@ -316,28 +305,28 @@ getCookie();
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border: none;
     transition: all 0.3s ease;
-
+    
     &:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
       background: linear-gradient(135deg, #5a6fd8 0%, #6b46c1 100%);
     }
-
+    
     &:active {
       transform: translateY(0);
     }
-
+    
     &.is-loading {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
   }
-
+  
   .link-type {
     font-size: 13px;
     color: #667eea;
     text-decoration: none;
     transition: color 0.3s ease;
-
+    
     &:hover {
       color: #5a6fd8;
       text-decoration: underline;
@@ -351,14 +340,14 @@ getCookie();
   float: right;
   margin-left: 6px;
   overflow: hidden;
-
+  
   img {
     cursor: pointer;
     vertical-align: middle;
     width: 100%;
     height: 100%;
     transition: transform 0.3s ease;
-
+    
     &:hover {
       transform: scale(1.05);
     }

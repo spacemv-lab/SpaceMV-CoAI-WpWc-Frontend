@@ -1,5 +1,3 @@
-/** * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司 *This project is licensed under the MIT
-License - see the LICENSE file in the project root for details. **/
 <template>
   <div class="traffic-data">
     <div class="traffic-container">
@@ -48,9 +46,9 @@ import useMediaProductStore from '@/store/modules/mediaProduct'
 const props = defineProps({
   showTitle: {
     type: Boolean,
-    default: true,
-  },
-});
+    default: true
+  }
+})
 
 const mediaProductStore = useMediaProductStore()
 

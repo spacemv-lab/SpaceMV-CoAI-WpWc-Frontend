@@ -1,8 +1,8 @@
-/**
+/** 
  * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
  *This project is licensed under the MIT License - see the LICENSE file in the project root for details.
- **/
-import request from '@/utils/request';
+**/
+import request from '@/utils/request'
 
 // 获取已发布文章列表
 export function getPublishedList(params) {
@@ -35,9 +35,9 @@ export function publishArticle(params) {
     url: `/txwx-social-crm/article/publishDraft?id=${params.id}`,
     method: 'post',
     data: {
-      id: params.id,
-    },
-  });
+      id: params.id
+    }
+  })
 }
 
 // 删除已发布文章接口
@@ -64,8 +64,8 @@ export function addDraft(data) {
   return request({
     url: '/txwx-social-crm/article/addDraft',
     method: 'post',
-    data: data,
-  });
+    data: data
+  })
 }
 
 // 更新草稿接口
@@ -74,8 +74,8 @@ export function updateDraft(data) {
   return request({
     url: '/txwx-social-crm/article/updateDraft',
     method: 'post',
-    data: data,
-  });
+    data: data
+  })
 }
 
 // // 提交审核接口
@@ -93,8 +93,8 @@ export function reviewDraft(data) {
   return request({
     url: `/txwx-social-crm/article/reviewDraft?id=${data.id}&reviewResult=${data.reviewResult}`,
     method: 'post',
-    data: data,
-  });
+    data: data
+  })
 }
 
 // 获取草稿详情接口
@@ -114,3 +114,8 @@ export function getPublishStatus(id) {
     method: 'get'
   })
 }
+
+
+
+
+

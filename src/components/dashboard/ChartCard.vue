@@ -1,29 +1,35 @@
-/** * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司 *This project is licensed under the MIT
-License - see the LICENSE file in the project root for details. **/
+/** 
+ * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
+ *This project is licensed under the MIT License - see the LICENSE file in the project root for details.
+**/
 <template>
   <div class="chart-card">
     <div class="chart-title">{{ title }}</div>
-    <div :ref="chartRef" class="chart-container" :style="{ height: height }"></div>
+    <div 
+      :ref="chartRef" 
+      class="chart-container"
+      :style="{ height: height }"
+    ></div>
   </div>
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
+import { defineProps } from 'vue'
 
 const props = defineProps({
   title: {
     type: String,
-    default: '',
+    default: ''
   },
   chartRef: {
     type: Function,
-    default: null,
+    default: null
   },
   height: {
     type: String,
-    default: '300px',
-  },
-});
+    default: '300px'
+  }
+})
 </script>
 
 <style scoped lang="scss">

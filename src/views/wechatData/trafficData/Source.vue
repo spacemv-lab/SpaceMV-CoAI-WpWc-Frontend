@@ -1,17 +1,19 @@
-/** * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司 *This project is licensed under the MIT
-License - see the LICENSE file in the project root for details. **/
 <template>
   <div class="traffic-source">
     <!-- 操作按钮区域 -->
     <div class="action-buttons">
+
       <div class="button-wrapper">
         <el-button type="primary" @click="exportData">数据导出</el-button>
+
       </div>
       <div class="button-wrapper">
         <el-button type="primary" @click="viewChart">查看图表</el-button>
+
       </div>
       <div class="button-wrapper" v-if="isIntranet">
         <el-button type="primary" @click="createChart">图表制作</el-button>
+
       </div>
     </div>
     <el-table :data="sourceData" style="width: 100%" stripe>
@@ -27,25 +29,25 @@ License - see the LICENSE file in the project root for details. **/
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { ElMessage } from 'element-plus';
-import settings from '@/settings';
-import { getFlowSourceList, exportFlowSourceExcel } from '@/api/wechatdata/trafficData';
-import { saveAs } from 'file-saver';
-import { blobValidate } from '@/utils/tianxun';
-import useMediaProductStore from '@/store/modules/mediaProduct';
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import settings from '@/settings'
+import { getFlowSourceList, exportFlowSourceExcel } from '@/api/wechatdata/trafficData'
+import { saveAs } from 'file-saver'
+import { blobValidate } from '@/utils/tianxun'
+import useMediaProductStore from '@/store/modules/mediaProduct'
 
-const router = useRouter();
+const router = useRouter()
 
 // 使用媒体产品store
-const mediaProductStore = useMediaProductStore();
+const mediaProductStore = useMediaProductStore()
 
 const isIntranet = computed(() => {
-  return settings.env === 'intranet';
-});
+  return settings.env === 'intranet'
+})
 
-const sourceData = ref([]);
+const sourceData = ref([])
 
 // 获取流量来源数据
 const fetchFlowSourceData = async () => {
@@ -63,12 +65,12 @@ const fetchFlowSourceData = async () => {
   } else {
     ElMessage.error('获取数据失败')
   }
-};
+}
 
 // 组件挂载时获取数据
 onMounted(() => {
-  fetchFlowSourceData();
-});
+  fetchFlowSourceData()
+})
 
 const exportData = () => {
   // 构建请求参数
@@ -78,7 +80,7 @@ const exportData = () => {
   if (mediaProductStore.accountId) {
     params.accountId = mediaProductStore.accountId
   }
-
+  
   // 调用导出接口
   exportFlowSourceExcel(params).then(response => {
     const isBlob = blobValidate(response)
@@ -100,12 +102,16 @@ const exportData = () => {
 }
 
 const viewChart = () => {
-  router.push('/dashboard/wechatBoard');
-};
+  router.push('/dashboard/wechatBoard')
+}
 
 const createChart = () => {
-  window.open('http://localhost:7777', '_blank');
-};
+  if (!settings.chartStudioUrl) {
+    ElMessage.warning('未配置图表制作地址')
+    return
+  }
+  window.open(settings.chartStudioUrl, '_blank')
+}
 </script>
 
 <style scoped>
@@ -129,8 +135,8 @@ const createChart = () => {
   width: 250px;
   min-height: 100px;
   padding: 12px;
-  background-color: #fff9c4;
-  border: 1px solid #ffeb3b;
+  background-color: #FFF9C4;
+  border: 1px solid #FFEB3B;
   border-radius: 8px;
   font-size: 12px;
   line-height: 1.4;
@@ -156,7 +162,7 @@ const createChart = () => {
   width: 0;
   height: 0;
   border-top: 8px solid transparent;
-  border-right: 8px solid #fff9c4;
+  border-right: 8px solid #FFF9C4;
   border-bottom: 8px solid transparent;
 }
 </style>

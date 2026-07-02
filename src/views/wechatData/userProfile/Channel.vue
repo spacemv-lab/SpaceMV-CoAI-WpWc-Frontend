@@ -1,5 +1,3 @@
-/** * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司 *This project is licensed under the MIT
-License - see the LICENSE file in the project root for details. **/
 <template>
   <div class="channel-distribution">
     <!-- 操作按钮区域 -->
@@ -40,34 +38,29 @@ License - see the LICENSE file in the project root for details. **/
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { ElMessage } from 'element-plus';
-import settings from '@/settings';
-import {
-  downloadChannelTemplate,
-  importChannelData,
-  getChannelDataList,
-  exportChannelDataExcel,
-} from '@/api/wechatData/userProfile';
-import { saveAs } from 'file-saver';
-import { blobValidate } from '@/utils/tianxun';
-import useMediaProductStore from '@/store/modules/mediaProduct';
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import settings from '@/settings'
+import { downloadChannelTemplate, importChannelData, getChannelDataList, exportChannelDataExcel } from '@/api/wechatData/userProfile'
+import { saveAs } from 'file-saver'
+import { blobValidate } from '@/utils/tianxun'
+import useMediaProductStore from '@/store/modules/mediaProduct'
 
-const router = useRouter();
+const router = useRouter()
 
 // 使用媒体产品store
-const mediaProductStore = useMediaProductStore();
+const mediaProductStore = useMediaProductStore()
 
 // 文件输入引用
-const fileInput = ref(null);
+const fileInput = ref(null)
 
 const isIntranet = computed(() => {
-  return settings.env === 'intranet';
-});
+  return settings.env === 'intranet'
+})
 
 // 渠道构成数据
-const channelData = ref([]);
+const channelData = ref([])
 
 // 获取渠道构成数据列表
 const fetchChannelDataList = async () => {
@@ -79,38 +72,38 @@ const fetchChannelDataList = async () => {
     if (mediaProductStore.accountId) {
       params.accountId = mediaProductStore.accountId
     }
-
-    const response = await getChannelDataList(params);
-
+    
+    const response = await getChannelDataList(params)
+    
     if (response.code === 200) {
-      channelData.value = response.data.map((item) => ({
+      channelData.value = response.data.map(item => ({
         channel: item.channel,
         userNumber: item.userNumber,
-        proportion: item.proportion,
-      }));
+        proportion: item.proportion
+      }))
     } else {
-      ElMessage.error('获取数据失败');
+      ElMessage.error('获取数据失败')
     }
   } catch (error) {
     console.error('获取渠道构成数据失败:', error)
     
   }
-};
+}
 
 // 生命周期
 onMounted(() => {
-  fetchChannelDataList();
-});
+  fetchChannelDataList()
+})
 
 // 数据导入
 const importData = () => {
   // 触发文件选择
-  fileInput.value.click();
-};
+  fileInput.value.click()
+}
 
 // 处理文件选择
 const handleFileChange = (event) => {
-  const file = event.target.files[0];
+  const file = event.target.files[0]
   if (file) {
     const formData = new FormData()
     formData.append('file', file)
@@ -129,9 +122,9 @@ const handleFileChange = (event) => {
       console.error('导入数据失败:', error)
     })
     // 重置文件输入，以便可以选择同一个文件
-    event.target.value = '';
+    event.target.value = ''
   }
-};
+}
 
 // 数据导出
 const exportData = () => {
@@ -142,7 +135,7 @@ const exportData = () => {
   if (mediaProductStore.accountId) {
     params.accountId = mediaProductStore.accountId
   }
-
+  
   // 调用导出接口
   exportChannelDataExcel(params).then(response => {
     const isBlob = blobValidate(response)
@@ -164,30 +157,32 @@ const exportData = () => {
 }
 
 const viewChart = () => {
-  router.push('/dashboard/wechatBoard');
-};
+  router.push('/dashboard/wechatBoard')
+}
 
 const createChart = () => {
-  window.open('http://localhost:7777', '_blank');
-};
+  if (!settings.chartStudioUrl) {
+    ElMessage.warning('未配置图表制作地址')
+    return
+  }
+  window.open(settings.chartStudioUrl, '_blank')
+}
 
 // 下载模板
 const downloadTemplate = () => {
-  downloadChannelTemplate()
-    .then((response) => {
-      const isBlob = blobValidate(response);
-      if (isBlob) {
-        const blob = new Blob([response]);
-        saveAs(blob, '渠道构成数据模板.xlsx');
-      } else {
-        console.error('返回的数据不是Blob格式:', response);
-      }
-    })
-    .catch((error) => {
-      console.error('下载模板失败:', error);
-      ElMessage.error('下载模板失败，请稍后重试');
-    });
-};
+  downloadChannelTemplate().then(response => {
+    const isBlob = blobValidate(response)
+    if (isBlob) {
+      const blob = new Blob([response])
+      saveAs(blob, '渠道构成数据模板.xlsx')
+    } else {
+      console.error('返回的数据不是Blob格式:', response)
+    }
+  }).catch(error => {
+    console.error('下载模板失败:', error)
+    ElMessage.error('下载模板失败，请稍后重试')
+  })
+}
 </script>
 
 <style scoped>

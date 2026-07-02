@@ -257,15 +257,6 @@ const fetchSyncStatus = () => {
 
 // 处理时间范围变化
 const handleDateRangeChange = (val) => {
-//   if (val && val.length === 2) {
-//     const start = new Date(val[0])
-//     const end = new Date(val[1])
-//     const diffDays = Math.floor((end - start) / (24 * 60 * 60 * 1000))
-//     if (diffDays > 90) {
-//       ElMessage.warning('时间范围不能超过90天')
-//       dateRange.value = []
-//     }
-//   }
 }
 
 // 禁用日期逻辑（不能选择今天及以后的日期，且不能选择2025.11.01之前的日期）

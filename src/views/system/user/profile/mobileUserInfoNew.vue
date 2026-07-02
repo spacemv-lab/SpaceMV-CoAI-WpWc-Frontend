@@ -268,11 +268,6 @@ const realEmail = ref('')
 const realBackupContact = ref('')
 // 存储初始的加密备用联系方式（用于判断用户是否修改）
 const initialBackupContact = ref('')
-// const rules = ref({
-  // nickName: [{ required: true, message: "用户昵称不能为空", trigger: "blur" }],
-  // email: [{ required: true, message: "邮箱地址不能为空", trigger: "blur" }, { type: "email", message: "请输入正确的邮箱地址", trigger: ["blur", "change"] }],
-  // phonenumber: [{ required: true, message: "手机号码不能为空", trigger: "blur" }, { pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: "请输入正确的手机号码", trigger: "blur" }],
-// })
 
 // 绑定弹窗相关
 const showBindDialog = ref(false)
@@ -622,9 +617,7 @@ function openDeleteAccountDialog() {
     password: ''
   }
   
-  console.log('deleteForm.value:', deleteForm.value)
   showDeleteDialog.value = true
-  console.log('showDeleteDialog.value set to:', showDeleteDialog.value)
 }
 
 function sendDeleteVerificationCode() {
@@ -783,12 +776,6 @@ watch(() => props.user, user => {
         // 兼容两种返回码：0（新接口）和 200（系统其他接口）
         if ((userRes.code === 0 || userRes.code === 200) && userRes.data) {
           form.value = mapNewUserInfo(userRes.data)
-          // // 更新props.user以便父组件也能获取到最新数据
-          // if (props.user) {
-          //   props.user.userName = form.value.userName
-          //   props.user.phonenumber = form.value.phonenumber
-          //   props.user.email = form.value.email
-          // }
         } else {
           form.value = { userName: user.userName, phonenumber: user.phonenumber, email: user.email, sex: user.sex }
         }
@@ -813,7 +800,6 @@ watch(() => props.user, user => {
     }
     
   } else {
-    console.log('userInfoNew - props.user为空')
   }
 },{ immediate: true })
 

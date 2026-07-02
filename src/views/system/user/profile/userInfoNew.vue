@@ -622,9 +622,7 @@ function openDeleteAccountDialog() {
     password: ''
   }
   
-  console.log('deleteForm.value:', deleteForm.value)
   showDeleteDialog.value = true
-  console.log('showDeleteDialog.value set to:', showDeleteDialog.value)
 }
 
 function sendDeleteVerificationCode() {
@@ -813,7 +811,6 @@ watch(() => props.user, user => {
     }
     
   } else {
-    console.log('userInfoNew - props.user为空')
   }
 },{ immediate: true })
 

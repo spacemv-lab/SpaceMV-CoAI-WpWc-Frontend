@@ -1,10 +1,16 @@
-/** * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司 *This project is licensed under the MIT
-License - see the LICENSE file in the project root for details. **/
+/** 
+ * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
+ *This project is licensed under the MIT License - see the LICENSE file in the project root for details.
+**/
 <template>
   <div class="ranking-card">
     <div class="chart-title">{{ title }}</div>
     <div class="ranking-container" :style="{ height: height }">
-      <div v-for="(item, index) in data" :key="index" class="ranking-item">
+      <div 
+        v-for="(item, index) in data" 
+        :key="index" 
+        class="ranking-item"
+      >
         <div class="ranking-number">{{ index + 1 }}</div>
         <div class="ranking-title">{{ item.title }}</div>
         <div class="ranking-count">{{ item.count }}</div>
@@ -14,22 +20,22 @@ License - see the LICENSE file in the project root for details. **/
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
+import { defineProps } from 'vue'
 
 const props = defineProps({
   title: {
     type: String,
-    default: '',
+    default: ''
   },
   data: {
     type: Array,
-    default: () => [],
+    default: () => []
   },
   height: {
     type: String,
-    default: '300px',
-  },
-});
+    default: '300px'
+  }
+})
 </script>
 
 <style scoped lang="scss">
@@ -109,23 +115,23 @@ const props = defineProps({
     .chart-title {
       font-size: 14px;
     }
-
+    
     .ranking-container {
       height: 250px;
-
+      
       .ranking-item {
         padding: 8px 10px;
-
+        
         .ranking-number {
           font-size: 10px;
           width: 16px;
           height: 16px;
         }
-
+        
         .ranking-title {
           font-size: 12px;
         }
-
+        
         .ranking-count {
           font-size: 12px;
         }

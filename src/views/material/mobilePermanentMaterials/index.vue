@@ -156,7 +156,7 @@
     </template>
     
     <div v-else class="empty-state-wrapper">
-      <el-empty description="暂无数据，请绑定自媒体产品及平台" />
+      <el-empty description="暂无数据，需先于自媒体产品管理菜单中绑定自媒体产品及平台" />
     </div>
   </div>
 </template>

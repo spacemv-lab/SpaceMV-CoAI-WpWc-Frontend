@@ -1,5 +1,3 @@
-/** * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司 *This project is licensed under the MIT
-License - see the LICENSE file in the project root for details. **/
 <template>
   <div class="content-data">
     <div class="content-data-container">
@@ -8,7 +6,7 @@ License - see the LICENSE file in the project root for details. **/
         <span v-if="isWeChatPlatform" class="note-text">
           <el-icon class="title-icon"><WarningFilled /></el-icon>根据微信官方接口能力，仅统计文章发表后30天内的数据，统计时间上限为2025年11月01日。</span>
       </div>
-
+      
       <!-- 筛选区域 -->
       <div class="filter-card">
         <div class="filter-container">
@@ -124,14 +122,14 @@ import useMediaProductStore from '@/store/modules/mediaProduct'
 const props = defineProps({
   showTitle: {
     type: Boolean,
-    default: true,
-  },
-});
+    default: true
+  }
+})
 
-const router = useRouter();
+const router = useRouter()
 
 // 使用媒体产品store
-const mediaProductStore = useMediaProductStore();
+const mediaProductStore = useMediaProductStore()
 
 // 是否为微信平台（channelId 为 1）
 const isWeChatPlatform = computed(() => {
@@ -139,21 +137,21 @@ const isWeChatPlatform = computed(() => {
 })
 
 // 文件输入引用
-const fileInput = ref(null);
+const fileInput = ref(null)
 
 const isIntranet = computed(() => {
-  return settings.env === 'intranet';
-});
+  return settings.env === 'intranet'
+})
 
 // 内容数据列表
-const contentDataList = ref([]);
-const total = ref(0);
-const currentPage = ref(1);
-const pageSize = ref(10);
+const contentDataList = ref([])
+const total = ref(0)
+const currentPage = ref(1)
+const pageSize = ref(10)
 
 // 筛选相关
-const titleFilter = ref('');
-const dateRange = ref([]);
+const titleFilter = ref('')
+const dateRange = ref([])
 
 // 获取内容数据列表
 const fetchContentDataList = async () => {
@@ -167,13 +165,13 @@ const fetchContentDataList = async () => {
     if (mediaProductStore.accountId) {
       data.accountId = mediaProductStore.accountId
     }
-
+    
     // 添加时间范围参数
     if (dateRange.value && dateRange.value.length === 2) {
-      data.startTime = dateRange.value[0];
-      data.endTime = dateRange.value[1];
+      data.startTime = dateRange.value[0]
+      data.endTime = dateRange.value[1]
     }
-
+    
     // 构建查询参数（分页）
     const params = {
       pageNum: currentPage.value,
@@ -196,64 +194,62 @@ const fetchContentDataList = async () => {
       }))
       total.value = response.total || 0
     } else {
-      ElMessage.error('获取数据失败');
+      ElMessage.error('获取数据失败')
     }
   } catch (error) {
     console.error('获取内容数据失败:', error)
     
   }
-};
+}
 
 // 生命周期
 onMounted(() => {
-  fetchContentDataList();
-});
+  fetchContentDataList()
+})
 
 const search = () => {
-  currentPage.value = 1;
-  fetchContentDataList();
-};
+  currentPage.value = 1
+  fetchContentDataList()
+}
 
 const reset = () => {
-  titleFilter.value = '';
-  dateRange.value = [];
-  currentPage.value = 1;
-  fetchContentDataList();
-};
+  titleFilter.value = ''
+  dateRange.value = []
+  currentPage.value = 1
+  fetchContentDataList()
+}
 
 // 查看文章
 const viewArticle = (row) => {
   if (row.url) {
-    window.open(row.url, '_blank');
+    window.open(row.url, '_blank')
   }
-};
+}
 
 // 下载数据模板
 const downloadTemplate = () => {
-  downloadTemplateApi()
-    .then((response) => {
-      const isBlob = blobValidate(response);
-      if (isBlob) {
-        const blob = new Blob([response]);
-        saveAs(blob, '内容数据模板.xlsx');
-      } else {
-        console.error('返回的数据不是Blob格式:', response);
-      }
-    })
-    .catch((error) => {
-      console.error('下载模板失败:', error);
-    });
-};
+  downloadTemplateApi().then(response => {
+    const isBlob = blobValidate(response)
+    if (isBlob) {
+      const blob = new Blob([response])
+      saveAs(blob, '内容数据模板.xlsx')
+    } else {
+      console.error('返回的数据不是Blob格式:', response)
+    }
+  }).catch(error => {
+    console.error('下载模板失败:', error)
+  })
+}
 
 // 数据导入
 const importData = () => {
   // 触发文件选择
-  fileInput.value.click();
-};
+  fileInput.value.click()
+}
 
 // 处理文件选择
 const handleFileChange = (event) => {
-  const file = event.target.files[0];
+  const file = event.target.files[0]
   if (file) {
     const formData = new FormData()
     formData.append('file', file)
@@ -270,28 +266,28 @@ const handleFileChange = (event) => {
       console.error('导入数据失败:', error)
     })
     // 重置文件输入，以便可以选择同一个文件
-    event.target.value = '';
+    event.target.value = ''
   }
-};
+}
 
 // 数据导出
 const exportData = () => {
   // 构建请求体
   const data = {
-    title: titleFilter.value,
-  };
-
+    title: titleFilter.value
+  }
+  
   // 添加时间范围参数
   if (dateRange.value && dateRange.value.length === 2) {
-    data.startTime = dateRange.value[0];
-    data.endTime = dateRange.value[1];
+    data.startTime = dateRange.value[0]
+    data.endTime = dateRange.value[1]
   }
   
   // 添加账号ID参数
   if (mediaProductStore.accountId) {
     data.accountId= mediaProductStore.accountId
   }
-
+  
   // 调用导出接口
   exportContentDataExcel(data).then(response => {
     const isBlob = blobValidate(response)
@@ -314,25 +310,29 @@ const exportData = () => {
 
 // 查看图表
 const viewChart = () => {
-  router.push('/dashboard/wechatBoard');
-};
+  router.push('/dashboard/wechatBoard')
+}
 
 // 图表制作
 const createChart = () => {
-  window.open('http://localhost:7777', '_blank');
-};
+  if (!settings.chartStudioUrl) {
+    ElMessage.warning('未配置图表制作地址')
+    return
+  }
+  window.open(settings.chartStudioUrl, '_blank')
+}
 
 // 分页相关
 const handleSizeChange = (val) => {
-  pageSize.value = val;
-  currentPage.value = 1;
-  fetchContentDataList();
-};
+  pageSize.value = val
+  currentPage.value = 1
+  fetchContentDataList()
+}
 
 const handleCurrentChange = (val) => {
-  currentPage.value = val;
-  fetchContentDataList();
-};
+  currentPage.value = val
+  fetchContentDataList()
+}
 </script>
 
 <style scoped>
@@ -413,8 +413,8 @@ const handleCurrentChange = (val) => {
   width: 250px;
   min-height: 100px;
   padding: 12px;
-  background-color: #fff9c4;
-  border: 1px solid #ffeb3b;
+  background-color: #FFF9C4;
+  border: 1px solid #FFEB3B;
   border-radius: 8px;
   font-size: 12px;
   line-height: 1.4;
@@ -440,7 +440,7 @@ const handleCurrentChange = (val) => {
   width: 0;
   height: 0;
   border-top: 8px solid transparent;
-  border-right: 8px solid #fff9c4;
+  border-right: 8px solid #FFF9C4;
   border-bottom: 8px solid transparent;
 }
 

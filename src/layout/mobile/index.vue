@@ -10,11 +10,16 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
 import MobileNavbar from './MobileNavbar.vue'
 import MobileMenuDrawer from './MobileMenuDrawer.vue'
 import { AppMain, Settings } from '@/layout/components'
 
 const menuOpened = ref(false)
+
+onMounted(() => {
+  document.body.classList.add('ignore-vw')
+})
 </script>
 
 <style scoped lang="scss">

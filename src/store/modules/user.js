@@ -24,23 +24,6 @@ const useUserStore = defineStore(
     }),
     actions: {
       // 登录
-      // login(userInfo) {
-      //   const channelAccount = userInfo.channelAccount.trim()
-      //   const credential = userInfo.credential
-      //   const loginType = userInfo.loginType || 'password'
-      //   const code = userInfo.code
-      //   const uuid = userInfo.uuid
-      //   return new Promise((resolve, reject) => {
-      //     login({ channelAccount, credential, loginType, code, uuid }).then(res => {
-      //       let data = res.data
-      //       setToken(data.access_token)
-      //       this.token = data.access_token
-      //       resolve()
-      //     }).catch(error => {
-      //       reject(error)
-      //     })
-      //   })
-      // },
       login(userInfo) {
         const channelAccount = userInfo.channelAccount.trim()
         const credential = userInfo.credential

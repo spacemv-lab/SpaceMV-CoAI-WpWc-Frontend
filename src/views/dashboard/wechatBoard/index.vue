@@ -1,7 +1,10 @@
-/** * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司 *This project is licensed under the MIT
-License - see the LICENSE file in the project root for details. **/
+/**
+* Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
+*This project is licensed under the MIT License - see the LICENSE file in the project root for details.
+**/
 <template>
   <div class="wechat-board-container">
+
     <!-- 产品和平台选择器 -->
     <div v-if="hasAvailableProductPlatform" class="product-platform-selector">
       <div class="board-header">
@@ -96,7 +99,7 @@ License - see the LICENSE file in the project root for details. **/
     
     <!-- 空状态提示 -->
     <div v-else class="empty-state-wrapper">
-      <el-empty description="暂无数据，请绑定自媒体产品及平台" />
+      <el-empty description="暂无数据，需先于自媒体产品管理菜单中绑定自媒体产品及平台" />
     </div>
   </div>
 </template>
@@ -116,29 +119,29 @@ import { getUserTotalData, getReadTrendData, getNewFollowData, getTotalFollowDat
 import { getMediaProductList } from '@/api/media/mediaProduct/index'
 
 // 自媒体产品列表
-const productList = ref([]);
+const productList = ref([])
 
 // 是否有可用的产品平台
 const hasAvailableProductPlatform = ref(false)
 
 // 选中的产品索引
-const selectedProductIndex = ref(0);
+const selectedProductIndex = ref(0)
 
 // 选中的平台索引
-const selectedPlatformIndex = ref(0);
+const selectedPlatformIndex = ref(0)
 
 // 获取 router 实例
 const router = useRouter()
 
 // 当前选中的产品
 const selectedProduct = computed(() => {
-  return productList.value[selectedProductIndex.value];
-});
+  return productList.value[selectedProductIndex.value]
+})
 
 // 当前产品的平台列表
 const currentPlatformList = computed(() => {
-  return selectedProduct.value ? selectedProduct.value.platforms : [];
-});
+  return selectedProduct.value ? selectedProduct.value.platforms : []
+})
 
 // 是否选择了微信平台（channel id 为 1）
 const isWeChatPlatform = computed(() => {
@@ -183,46 +186,46 @@ const handleCascaderChange = (value) => {
 
 // 获取当前日期的前一天
 const yesterdayDate = computed(() => {
-  const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(today.getDate() - 1);
+  const today = new Date()
+  const yesterday = new Date(today)
+  yesterday.setDate(today.getDate() - 1)
 
-  const year = yesterday.getFullYear();
-  const month = String(yesterday.getMonth() + 1).padStart(2, '0');
-  const day = String(yesterday.getDate()).padStart(2, '0');
+  const year = yesterday.getFullYear()
+  const month = String(yesterday.getMonth() + 1).padStart(2, '0')
+  const day = String(yesterday.getDate()).padStart(2, '0')
 
-  return `${year}.${month}.${day}`;
-});
+  return `${year}.${month}.${day}`
+})
 
 // 获取当前日期时间
 const currentDate = computed(() => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  const weekday = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][now.getDay()];
-  const hours = String(now.getHours()).padStart(2, '0');
-  const minutes = String(now.getMinutes()).padStart(2, '0');
-  const seconds = String(now.getSeconds()).padStart(2, '0');
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  const weekday = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][now.getDay()]
+  const hours = String(now.getHours()).padStart(2, '0')
+  const minutes = String(now.getMinutes()).padStart(2, '0')
+  const seconds = String(now.getSeconds()).padStart(2, '0')
 
-  return `${year}年${month}月${day}日 ${weekday} ${hours}:${minutes}:${seconds}`;
-});
+  return `${year}年${month}月${day}日 ${weekday} ${hours}:${minutes}:${seconds}`
+})
 
 // 全屏容器引用
-const fullscreenContainer = ref(null);
+const fullscreenContainer = ref(null)
 
 // 统计数据
-const totalUsers = ref('0');
-const totalReaders = ref('0');
-const totalSharers = ref('0');
+const totalUsers = ref('0')
+const totalReaders = ref('0')
+const totalSharers = ref('0')
 
 // 排行榜和最佳数据
-const followRankingData = ref([]);
-const bestReaders = ref('0');
-const bestSharers = ref('0');
+const followRankingData = ref([])
+const bestReaders = ref('0')
+const bestSharers = ref('0')
 
 // Tab选择
-const activeTab = ref('7days');
+const activeTab = ref('7days')
 
 // 切换Tab
 const switchTab = (tab) => {
@@ -244,20 +247,20 @@ const fetchStatistics = async () => {
     accountId: accountId
   }
 
-  const res = await getUserTotalData(params);
+  const res = await getUserTotalData(params)
 
   if (res.code === 200) {
-    res.data.forEach((item) => {
+    res.data.forEach(item => {
       if (item.desc === '总用户数') {
-        totalUsers.value = item.value.toString();
+        totalUsers.value = item.value.toString()
       } else if (item.desc === '总阅读人数') {
-        totalReaders.value = item.value.toString();
+        totalReaders.value = item.value.toString()
       } else if (item.desc === '总分享人数') {
-        totalSharers.value = item.value.toString();
+        totalSharers.value = item.value.toString()
       }
-    });
+    })
   }
-};
+}
 
 // 跳转到自媒体管理详情页
 const goToMediaProductDetail = () => {
@@ -268,71 +271,61 @@ const goToMediaProductDetail = () => {
 
 // 全屏方法
 const toggleFullScreen = () => {
-  const element = fullscreenContainer.value;
-  if (!element) return;
+  const element = fullscreenContainer.value
+  if (!element) return
 
   if (!document.fullscreenElement) {
     if (element.requestFullscreen) {
-      element.requestFullscreen();
+      element.requestFullscreen()
     } else if (element.webkitRequestFullscreen) {
-      element.webkitRequestFullscreen();
+      element.webkitRequestFullscreen()
     } else if (element.msRequestFullscreen) {
-      element.msRequestFullscreen();
+      element.msRequestFullscreen()
     }
   } else {
     if (document.exitFullscreen) {
-      document.exitFullscreen();
+      document.exitFullscreen()
     } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
+      document.webkitExitFullscreen()
     } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
+      document.msExitFullscreen()
     }
   }
-};
+}
 
 // 图表引用
-const readTrendChart = ref(null);
-const shareTrendChart = ref(null);
-const readSourceChart = ref(null);
-const newFollowChart = ref(null);
-const totalFollowChart = ref(null);
-// const regionChart = ref(null)
-// const ageChart = ref(null)
-// const genderChart = ref(null)
-// const channelChart = ref(null)
+const readTrendChart = ref(null)
+const shareTrendChart = ref(null)
+const readSourceChart = ref(null)
+const newFollowChart = ref(null)
+const totalFollowChart = ref(null)
 // 图表实例
-let readTrendChartInstance = null;
-let shareTrendChartInstance = null;
-let readSourceChartInstance = null;
-let newFollowChartInstance = null;
-let totalFollowChartInstance = null;
-// let regionChartInstance = null
-// let ageChartInstance = null
-// let genderChartInstance = null
-// let channelChartInstance = null
+let readTrendChartInstance = null
+let shareTrendChartInstance = null
+let readSourceChartInstance = null
+let newFollowChartInstance = null
+let totalFollowChartInstance = null
 
 // 初始数据
-const dateData = ref([]);
-const newFollowData = ref([]);
-const totalFollowData = ref([]);
-// const originalReadSourceData = []
-// const readSourceLabels = []
+const dateData = ref([])
+const newFollowData = ref([])
+const totalFollowData = ref([])
 
 // 图表数据
 const readTrendData = ref({
   dateData: [],
-  readData: [],
-});
+  readData: []
+})
 
 const shareTrendData = ref({
   dateData: [],
-  shareData: [],
-});
+  shareData: []
+})
 
 const chartReadSourceData = ref({
   sourceLabels: [],
-  sourceValues: [],
-});
+  sourceValues: []
+})
 
 // 获取图表数据
 const fetchChartData = async (tabIgnore) => {
@@ -346,13 +339,13 @@ const fetchChartData = async (tabIgnore) => {
 
   // 根据Tab选择传递不同的参数
   const periodMap = {
-    '7days': 0, // 7天
-    '1month': 1, // 1月
-    '6months': 2, // 半年
-    '1year': 3, // 1年
-    all: 4, // 全部
-  };
-  const filterDimension = periodMap[activeTab.value] || 0;
+    '7days': 0,      // 7天
+    '1month': 1,     // 1月
+    '6months': 2,    // 半年
+    '1year': 3,      // 1年
+    'all': 4         // 全部
+  }
+  const filterDimension = periodMap[activeTab.value] || 0
   const params = {
     filterDimension,
     accountId: accountId
@@ -362,8 +355,8 @@ const fetchChartData = async (tabIgnore) => {
   const [readTrendRes, newFollowRes, totalFollowRes] = await Promise.all([
     getReadTrendData(params),
     getNewFollowData(params),
-    getTotalFollowData(params),
-  ]);
+    getTotalFollowData(params)
+  ])
 
   // 单独获取不涉及时间筛选的数据（仅在页面初次加载时调用，tab切换时不调用）
   const rankingParams = {
@@ -387,14 +380,14 @@ const fetchChartData = async (tabIgnore) => {
 
 
     readTrendData.value = {
-      dateData: readData.map((item) => item.refDate),
-      readData: readData.map((item) => item.readerNumber),
-    };
+      dateData: readData.map(item => item.refDate),
+      readData: readData.map(item => item.readerNumber)
+    }
 
     shareTrendData.value = {
-      dateData: shareData.map((item) => item.refDate),
-      shareData: shareData.map((item) => item.shareNumber),
-    };
+      dateData: shareData.map(item => item.refDate),
+      shareData: shareData.map(item => item.shareNumber)
+    }
 
     // 处理来源数据
     const firstSourceItem = sourceData[0] || {}
@@ -407,46 +400,46 @@ const fetchChartData = async (tabIgnore) => {
   // 更新新增关注人数趋势图数据
   if (newFollowRes.code === 200) {
     // 转换新的接口返回格式
-    dateData.value = newFollowRes.data.map((item) => item.refDate);
-    newFollowData.value = newFollowRes.data.map((item) => item.netNewUser);
+    dateData.value = newFollowRes.data.map(item => item.refDate)
+    newFollowData.value = newFollowRes.data.map(item => item.netNewUser)
   }
 
   // 更新累计关注人数趋势图数据
   if (totalFollowRes.code === 200) {
     // 转换新的接口返回格式
-    totalFollowData.value = totalFollowRes.data.map((item) => item.accumulatedUser);
+    totalFollowData.value = totalFollowRes.data.map(item => item.accumulatedUser)
   }
 
   // 更新阅读后关注人数排行数据
   if (followRankingRes.code === 200) {
-    followRankingData.value = followRankingRes.data.map((item) => ({
+    followRankingData.value = followRankingRes.data.map(item => ({
       title: item.article_title,
-      count: item.total_follows,
-    }));
+      count: item.total_follows
+    }))
   }
 
   // 更新最佳阅读人数和最佳分享人数
   if (bestReadersAndSharersRes.code === 200) {
-    bestReadersAndSharersRes.data.forEach((item) => {
+    bestReadersAndSharersRes.data.forEach(item => {
       if (item.desc === '最佳阅读人数') {
-        bestReaders.value = item.value.toString();
+        bestReaders.value = item.value.toString()
       } else if (item.desc === '最佳分享人数') {
-        bestSharers.value = item.value.toString();
+        bestSharers.value = item.value.toString()
       }
-    });
+    })
   }
 
   // 延迟一下，确保响应式变量更新后再重新初始化图表
   setTimeout(() => {
-    initCharts();
-  }, 100);
-};
+    initCharts()
+  }, 100)
+}
 
 // 初始化图表
 const initCharts = () => {
   // 阅读流量趋势图
   if (!readTrendChartInstance && readTrendChart.value) {
-    readTrendChartInstance = echarts.init(readTrendChart.value);
+    readTrendChartInstance = echarts.init(readTrendChart.value)
   }
   if (readTrendChartInstance) {
     readTrendChartInstance.setOption({
@@ -456,14 +449,14 @@ const initCharts = () => {
       legend: {
         data: ['阅读人数'],
         textStyle: {
-          color: '#999',
-        },
+          color: '#999'
+        }
       },
       grid: {
         left: '3%',
         right: '4%',
         bottom: '3%',
-        containLabel: true,
+        containLabel: true
       },
       xAxis: [
         {
@@ -472,31 +465,31 @@ const initCharts = () => {
           data: readTrendData.value.dateData,
           axisLine: {
             lineStyle: {
-              color: '#333',
-            },
+              color: '#333'
+            }
           },
           axisLabel: {
-            color: '#999',
-          },
-        },
+            color: '#999'
+          }
+        }
       ],
       yAxis: [
         {
           type: 'value',
           axisLine: {
             lineStyle: {
-              color: '#333',
-            },
+              color: '#333'
+            }
           },
           axisLabel: {
-            color: '#999',
+            color: '#999'
           },
           splitLine: {
             lineStyle: {
-              color: '#222',
-            },
-          },
-        },
+              color: '#222'
+            }
+          }
+        }
       ],
       series: [
         {
@@ -506,27 +499,27 @@ const initCharts = () => {
           areaStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
               { offset: 0, color: 'rgba(54, 162, 235, 0.5)' },
-              { offset: 1, color: 'rgba(54, 162, 235, 0.1)' },
-            ]),
+              { offset: 1, color: 'rgba(54, 162, 235, 0.1)' }
+            ])
           },
           emphasis: {
-            focus: 'series',
+            focus: 'series'
           },
           lineStyle: {
-            color: '#36a2eb',
+            color: '#36a2eb'
           },
           data: readTrendData.value.readData,
           markLine: {
-            show: false,
-          },
-        },
-      ],
-    });
+            show: false
+          }
+        }
+      ]
+    })
   }
 
   // 分享流量趋势图
   if (!shareTrendChartInstance && shareTrendChart.value) {
-    shareTrendChartInstance = echarts.init(shareTrendChart.value);
+    shareTrendChartInstance = echarts.init(shareTrendChart.value)
   }
   if (shareTrendChartInstance) {
     shareTrendChartInstance.setOption({
@@ -536,14 +529,14 @@ const initCharts = () => {
       legend: {
         data: ['分享人数'],
         textStyle: {
-          color: '#999',
-        },
+          color: '#999'
+        }
       },
       grid: {
         left: '3%',
         right: '4%',
         bottom: '3%',
-        containLabel: true,
+        containLabel: true
       },
       xAxis: [
         {
@@ -552,31 +545,31 @@ const initCharts = () => {
           data: shareTrendData.value.dateData,
           axisLine: {
             lineStyle: {
-              color: '#333',
-            },
+              color: '#333'
+            }
           },
           axisLabel: {
-            color: '#999',
-          },
-        },
+            color: '#999'
+          }
+        }
       ],
       yAxis: [
         {
           type: 'value',
           axisLine: {
             lineStyle: {
-              color: '#333',
-            },
+              color: '#333'
+            }
           },
           axisLabel: {
-            color: '#999',
+            color: '#999'
           },
           splitLine: {
             lineStyle: {
-              color: '#222',
-            },
-          },
-        },
+              color: '#222'
+            }
+          }
+        }
       ],
       series: [
         {
@@ -586,41 +579,41 @@ const initCharts = () => {
           areaStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
               { offset: 0, color: 'rgba(153, 102, 255, 0.5)' },
-              { offset: 1, color: 'rgba(153, 102, 255, 0.1)' },
-            ]),
+              { offset: 1, color: 'rgba(153, 102, 255, 0.1)' }
+            ])
           },
           emphasis: {
-            focus: 'series',
+            focus: 'series'
           },
           lineStyle: {
-            color: '#9966ff',
+            color: '#9966ff'
           },
           data: shareTrendData.value.shareData,
           markLine: {
-            show: false,
-          },
-        },
-      ],
-    });
+            show: false
+          }
+        }
+      ]
+    })
   }
 
   // 阅读人数流量来源占比
   if (!readSourceChartInstance && readSourceChart.value) {
-    readSourceChartInstance = echarts.init(readSourceChart.value);
+    readSourceChartInstance = echarts.init(readSourceChart.value)
   }
   if (readSourceChartInstance) {
     readSourceChartInstance.setOption({
       tooltip: {
         trigger: 'axis',
         axisPointer: {
-          type: 'shadow',
-        },
+          type: 'shadow'
+        }
       },
       grid: {
         left: '3%',
         right: '4%',
         bottom: '3%',
-        containLabel: true,
+        containLabel: true
       },
       xAxis: [
         {
@@ -628,32 +621,32 @@ const initCharts = () => {
           data: chartReadSourceData.value.sourceLabels,
           axisLine: {
             lineStyle: {
-              color: '#333',
-            },
+              color: '#333'
+            }
           },
           axisLabel: {
             color: '#999',
-            rotate: 45,
-          },
-        },
+            rotate: 45
+          }
+        }
       ],
       yAxis: [
         {
           type: 'value',
           axisLine: {
             lineStyle: {
-              color: '#333',
-            },
+              color: '#333'
+            }
           },
           axisLabel: {
-            color: '#999',
+            color: '#999'
           },
           splitLine: {
             lineStyle: {
-              color: '#222',
-            },
-          },
-        },
+              color: '#222'
+            }
+          }
+        }
       ],
       series: [
         {
@@ -664,18 +657,18 @@ const initCharts = () => {
           itemStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
               { offset: 0, color: 'rgba(54, 162, 235, 1)' },
-              { offset: 1, color: 'rgba(54, 162, 235, 0.5)' },
-            ]),
-          },
-        },
-      ],
-    });
+              { offset: 1, color: 'rgba(54, 162, 235, 0.5)' }
+            ])
+          }
+        }
+      ]
+    })
   }
 
   // 新关注人数趋势图
   if (newFollowChart.value && dateData.value.length > 0 && newFollowData.value.length > 0) {
     if (!newFollowChartInstance) {
-      newFollowChartInstance = echarts.init(newFollowChart.value);
+      newFollowChartInstance = echarts.init(newFollowChart.value)
     }
     if (newFollowChartInstance) {
       newFollowChartInstance.setOption({
@@ -685,14 +678,14 @@ const initCharts = () => {
         legend: {
           data: ['新关注人数'],
           textStyle: {
-            color: '#999',
-          },
+            color: '#999'
+          }
         },
         grid: {
           left: '3%',
           right: '4%',
           bottom: '3%',
-          containLabel: true,
+          containLabel: true
         },
         xAxis: [
           {
@@ -701,31 +694,31 @@ const initCharts = () => {
             data: dateData.value,
             axisLine: {
               lineStyle: {
-                color: '#333',
-              },
+                color: '#333'
+              }
             },
             axisLabel: {
-              color: '#999',
-            },
-          },
+              color: '#999'
+            }
+          }
         ],
         yAxis: [
           {
             type: 'value',
             axisLine: {
               lineStyle: {
-                color: '#333',
-              },
+                color: '#333'
+              }
             },
             axisLabel: {
-              color: '#999',
+              color: '#999'
             },
             splitLine: {
               lineStyle: {
-                color: '#222',
-              },
-            },
-          },
+                color: '#222'
+              }
+            }
+          }
         ],
         series: [
           {
@@ -735,25 +728,25 @@ const initCharts = () => {
             areaStyle: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 { offset: 0, color: 'rgba(255, 99, 132, 0.5)' },
-                { offset: 1, color: 'rgba(255, 99, 132, 0.1)' },
-              ]),
+                { offset: 1, color: 'rgba(255, 99, 132, 0.1)' }
+              ])
             },
             emphasis: {
-              focus: 'series',
+              focus: 'series'
             },
             lineStyle: {
-              color: '#ff6384',
+              color: '#ff6384'
             },
-            data: newFollowData.value,
-          },
-        ],
-      });
+            data: newFollowData.value
+          }
+        ]
+      })
     }
   }
   // 累计关注人数
   if (totalFollowChart.value && dateData.value.length > 0 && totalFollowData.value.length > 0) {
     if (!totalFollowChartInstance) {
-      totalFollowChartInstance = echarts.init(totalFollowChart.value);
+      totalFollowChartInstance = echarts.init(totalFollowChart.value)
     }
     if (totalFollowChartInstance) {
       // 计算数据的范围，用于自适应Y轴
@@ -780,14 +773,14 @@ const initCharts = () => {
         legend: {
           data: ['累计关注人数'],
           textStyle: {
-            color: '#999',
-          },
+            color: '#999'
+          }
         },
         grid: {
           left: '3%',
           right: '4%',
           bottom: '3%',
-          containLabel: true,
+          containLabel: true
         },
         xAxis: [
           {
@@ -796,13 +789,13 @@ const initCharts = () => {
             data: dateData.value,
             axisLine: {
               lineStyle: {
-                color: '#333',
-              },
+                color: '#333'
+              }
             },
             axisLabel: {
-              color: '#999',
-            },
-          },
+              color: '#999'
+            }
+          }
         ],
         yAxis: [
           {
@@ -812,18 +805,18 @@ const initCharts = () => {
             scale: true,
             axisLine: {
               lineStyle: {
-                color: '#333',
-              },
+                color: '#333'
+              }
             },
             axisLabel: {
-              color: '#999',
+              color: '#999'
             },
             splitLine: {
               lineStyle: {
-                color: '#222',
-              },
-            },
-          },
+                color: '#222'
+              }
+            }
+          }
         ],
         series: [
           {
@@ -832,14 +825,14 @@ const initCharts = () => {
             areaStyle: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 { offset: 0, color: 'rgba(54, 162, 235, 0.5)' },
-                { offset: 1, color: 'rgba(54, 162, 235, 0.1)' },
-              ]),
+                { offset: 1, color: 'rgba(54, 162, 235, 0.1)' }
+              ])
             },
             emphasis: {
-              focus: 'series',
+              focus: 'series'
             },
             lineStyle: {
-              color: '#36a2eb',
+              color: '#36a2eb'
             },
             showSymbol: true,
             symbol: 'circle',
@@ -850,88 +843,22 @@ const initCharts = () => {
       })
     }
   }
-  // // 地域分布
-  // regionChartInstance = echarts.init(regionChart.value)
-  // regionChartInstance.setOption({
-  //   tooltip: {
-  //     trigger: 'axis',
-  //     axisPointer: {
-  //       type: 'shadow'
-  //     }
-  //   },
-  //   grid: {
-  //     left: '3%',
-  //     right: '4%',
-  //     bottom: '3%',
-  //     containLabel: true
-  //   },
-  //   xAxis: [
-  //     {
-  //       type: 'category',
-  //       data: regionData.map(item => item.name),
-  //       axisLine: {
-  //         lineStyle: {
-  //           color: '#333'
-  //         }
-  //       },
-  //       axisLabel: {
-  //         color: '#999',
-  //         rotate: 45
-  //       }
-  //     }
-  //   ],
-  //   yAxis: [
-  //     {
-  //       type: 'value',
-  //       axisLine: {
-  //         lineStyle: {
-  //           color: '#333'
-  //         }
-  //       },
-  //       axisLabel: {
-  //         color: '#999'
-  //       },
-  //       splitLine: {
-  //         lineStyle: {
-  //           color: '#222'
-  //         }
-  //       }
-  //     }
-  //   ],
-  //   series: [
-  //     {
-  //       name: '地域分布',
-  //       type: 'bar',
-  //       data: regionData.map(item => item.value),
-  //       itemStyle: {
-  //         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-  //           { offset: 0, color: '#36a2eb' },
-  //           { offset: 1, color: '#1890ff' }
-  //         ])
-  //       }
-  //     }
-  //   ]
-  // })
-};
+}
 
 // 响应式调整
 const handleResize = () => {
-  readTrendChartInstance && readTrendChartInstance.resize();
-  shareTrendChartInstance && shareTrendChartInstance.resize();
-  readSourceChartInstance && readSourceChartInstance.resize();
-  newFollowChartInstance && newFollowChartInstance.resize();
-  totalFollowChartInstance && totalFollowChartInstance.resize();
-  // regionChartInstance && regionChartInstance.resize()
-  // ageChartInstance && ageChartInstance.resize()
-  // genderChartInstance && genderChartInstance.resize()
-  // channelChartInstance && channelChartInstance.resize()
-};
+  readTrendChartInstance && readTrendChartInstance.resize()
+  shareTrendChartInstance && shareTrendChartInstance.resize()
+  readSourceChartInstance && readSourceChartInstance.resize()
+  newFollowChartInstance && newFollowChartInstance.resize()
+  totalFollowChartInstance && totalFollowChartInstance.resize()
+}
 
 // 生命周期钩子
 onMounted(async () => {
-  fetchProductList();
-  window.addEventListener('resize', handleResize);
-});
+  fetchProductList()
+  window.addEventListener('resize', handleResize)
+})
 
 // 获取产品列表
 const fetchProductList = () => {
@@ -943,7 +870,6 @@ const fetchProductList = () => {
     }
   }).then(response => {
     if (response.code === 200) {
-      // 根据返回格式，转换数据结构
       const rawProducts = response.rows || response.data?.rows || response.data?.list || []
       productList.value = rawProducts.map(product => {
         const channelDTOList = product.channelDTOList || []
@@ -957,7 +883,6 @@ const fetchProductList = () => {
           }))
         }
       })
-
       // 构建级联选择器选项
       cascaderOptions.value = productList.value
         .filter(product => product.platforms && product.platforms.some(platform =>
@@ -980,8 +905,7 @@ const fetchProductList = () => {
           platform.accountDTOList && platform.accountDTOList.length > 0
         )
       )
-
-      // 默认选择第一个产品和第一个平台，获取数据
+      // 检查是否有可用的产品平台默认选择第一个产品和第一个平台，获取数据
       if (hasAvailableProductPlatform.value) {
         // 设置默认选中的级联值
         if (cascaderOptions.value.length > 0 && cascaderOptions.value[0].children.length > 0) {
@@ -1001,44 +925,44 @@ const fetchProductList = () => {
 
 // 获取所有数据
 const fetchAllData = async () => {
-  fetchStatistics();
-  await fetchChartData();
+  fetchStatistics()
+  await fetchChartData()
   // 等待响应式变量更新后再初始化图表
   setTimeout(() => {
-    initCharts();
-  }, 100);
-};
+    initCharts()
+  }, 100)
+}
 
 // 选择产品
 const selectProduct = (index) => {
-  selectedProductIndex.value = index;
-  selectedPlatformIndex.value = 0;
+  selectedProductIndex.value = index
+  selectedPlatformIndex.value = 0
   if (productList.value[index] && productList.value[index].platforms.length > 0) {
-    fetchAllData();
+    fetchAllData()
   }
-};
+}
 
 // 选择平台
 const selectPlatform = (index) => {
-  selectedPlatformIndex.value = index;
-  fetchAllData();
-};
+  selectedPlatformIndex.value = index
+  fetchAllData()
+}
 
 onUnmounted(() => {
-  window.removeEventListener('resize', handleResize);
-  readTrendChartInstance && readTrendChartInstance.dispose();
-  shareTrendChartInstance && shareTrendChartInstance.dispose();
-  readSourceChartInstance && readSourceChartInstance.dispose();
-  newFollowChartInstance && newFollowChartInstance.dispose();
-  totalFollowChartInstance && totalFollowChartInstance.dispose();
-});
+  window.removeEventListener('resize', handleResize)
+  readTrendChartInstance && readTrendChartInstance.dispose()
+  shareTrendChartInstance && shareTrendChartInstance.dispose()
+  readSourceChartInstance && readSourceChartInstance.dispose()
+  newFollowChartInstance && newFollowChartInstance.dispose()
+  totalFollowChartInstance && totalFollowChartInstance.dispose()
+})
 
 // 下载看板为图片
 const downloadBoardAsImage = async () => {
   // 获取看板容器元素
-  const boardContainer = document.querySelector('.wechat-board-container');
+  const boardContainer = document.querySelector('.wechat-board-container')
   if (!boardContainer) {
-    return;
+    return
   }
 
   // 使用html2canvas将容器转换为图片
@@ -1046,15 +970,15 @@ const downloadBoardAsImage = async () => {
     scale: 2, // 提高图片清晰度
     useCORS: true, // 允许加载跨域图片
     logging: false,
-    backgroundColor: '#1a1a2e', // 设置背景色
-  });
+    backgroundColor: '#1a1a2e' // 设置背景色
+  })
 
   // 将canvas转换为图片并下载
-  const link = document.createElement('a');
-  link.download = `微信看板_${new Date().toISOString().slice(0, 10)}.png`;
-  link.href = canvas.toDataURL('image/png');
-  link.click();
-};
+  const link = document.createElement('a')
+  link.download = `微信看板_${new Date().toISOString().slice(0, 10)}.png`
+  link.href = canvas.toDataURL('image/png')
+  link.click()
+}
 </script>
 
 <style scoped lang="scss">

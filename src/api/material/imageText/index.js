@@ -1,8 +1,8 @@
-/**
+/** 
  * Copyright (c) 2026 成都天巡微小卫星科技有限责任公司
  *This project is licensed under the MIT License - see the LICENSE file in the project root for details.
- **/
-import request from '@/utils/request';
+**/
+import request from '@/utils/request'
 
 // 获取图文消息图片列表（分页）
 export function getImageTextList(params) {
@@ -26,9 +26,9 @@ export function confirmUploadImageText(formData, params) {
     data: formData,
     params: params,
     headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+      'Content-Type': 'multipart/form-data'
+    }
+  })
 }
 
 // 删除图文消息图片

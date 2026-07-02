@@ -1,3 +1,5 @@
+const normalizeUrl = (value, fallback = '') => (value || fallback).replace(/\/+$/, '')
+
 export default {
   /**
    * 网页标题
@@ -12,14 +14,28 @@ export default {
   /**
    * PC端访问地址
    */
-  pcWeb: import.meta.env.VITE_ENV === 'intranet' ? 'http://localhost:666' : 'http:/example.com',
-  // pcWeb: import.meta.env.VITE_ENV === 'intranet' ? 'http://localhost:5174' : 'http:/example.com',
+  pcWeb: normalizeUrl(import.meta.env.VITE_PC_WEB_URL, 'https://pc.example.com'),
+
 
   /**
    * 移动端访问地址
    */
-  mobileWeb: import.meta.env.VITE_ENV === 'intranet' ? 'http://localhost:667' : 'http:/example.com',
-  // mobileWeb: import.meta.env.VITE_ENV === 'intranet' ? 'http://localhost:5173' : 'http:/example.com',
+  mobileWeb: normalizeUrl(import.meta.env.VITE_MOBILE_WEB_URL, 'https://mobile.example.com'),
+
+  /**
+   * 文档地址
+   */
+  docsUrl: normalizeUrl(import.meta.env.VITE_DOCS_URL, 'https://docs.example.com'),
+
+  /**
+   * 图表制作平台地址
+   */
+  chartStudioUrl: normalizeUrl(import.meta.env.VITE_CHART_STUDIO_URL, 'https://charts.example.com'),
+
+  /**
+   * 静态资源访问地址
+   */
+  staticAssetBaseUrl: normalizeUrl(import.meta.env.VITE_STATIC_ASSET_BASE_URL, ''),
 
   /**
    * 侧边栏主题 深色主题theme-dark，浅色主题theme-light
@@ -40,7 +56,7 @@ export default {
    * 是否显示 tagsView
    */
   tagsView: false,
-
+  
   /**
    * 显示页签图标
    */
